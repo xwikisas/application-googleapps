@@ -39,7 +39,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>false</hidden>
-  <content><![CDATA[
+  <content>
 admin.googleapps=Google Apps
 googleapps.config.heading=Configuration Intégration Google Apps
 googleapps.config.explanation=XWiki peut-etre intégré avec Google Apps, ce qui permet ensuite l'édition des attachements Office en utilisant les éditeurs Google Apps ainsi que leur sauvegarde dans le wiki. Cela permet également de télécharger un fichier Google Apps dans n'importe quelle page du Wiki. Afin d'activer Google Apps vous devez vous [[enregistrer pour l'accès à OAuth sur Google.com>>https://accounts.google.com/ManageDomains]] et insérer les informations dans les paramètres suivants (voir aussi  please see [[les instructions d'installation>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]).
@@ -55,7 +55,7 @@ GoogleApps.GoogleAppsConfigClass_domain.hint=Restreint le domaine des utilisateu
 GoogleApps.GoogleAppsConfigClass_useCookies=Utiliser les cookies
 GoogleApps.GoogleAppsConfigClass_useCookies.hint=Ces cookies permettent au navigateur de mémoriser quel compte Google était utilisé pour s'authentifier sur le wiki.
 GoogleApps.GoogleAppsConfigClass_skipLoginPage=(cookies nécessaires) Sauter la page d'autentification
-GoogleApps.GoogleAppsConfigClass_skipLoginPage.hint=Permettre aux navigateurs ayant le cookie de s'authentifier automatiquement (fonction <i>se souvenir de moi</i>).
+GoogleApps.GoogleAppsConfigClass_skipLoginPage.hint=Permettre aux navigateurs ayant le cookie de s'authentifier automatiquement (fonction "se souvenir de moi").
 GoogleApps.GoogleAppsConfigClass_authWithCookies=(cookies nécessaires) Sauter Google
 GoogleApps.GoogleAppsConfigClass_authWithCookies.hint=Permettre d'éviter l'autentification d'être répétée chez Google si le cookie est rencontré.
 GoogleApps.GoogleAppsConfigClass_cookiesTTL=(cookies nécessaires) Durée des cookies
@@ -99,5 +99,5 @@ googleapps.login.domainerror2=Votre compte Google actuel est
 googleapps.login.domainerror3=Merci de vous déconnecter de ce compte et réessayer l'authentification.
 
 googleapps.extension.name=Google Apps Integration (Pro)
-]]></content>
+</content>
 </xwikidoc>
