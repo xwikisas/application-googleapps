@@ -57,10 +57,20 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
 #macro(tp $n $p)##
     $services.localization.render("GoogleApps.GoogleAppsConfigClass_${n}",$p)##
 #end
+$services.localization.render('googleapps.config.explanation')
+
 
 {{html wiki=true}}
-&lt;form id="$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" onsubmit="cancelCancelEdit()" class="xform"&gt;
+#set($externalUrlOAuth=$xwiki.getDocument('GoogleApps.OAuth').getExternalURL('view'))
+#set($correctedUrl=$externalUrl.replace('http://','https://'))
+
+&lt;form id="second_$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" onsubmit="cancelCancelEdit()" class="xform"&gt;
     ; $configDoc.display("activate", 'edit', $obj) &lt;label for="${prefix}_activate"&gt;#t("activate")&lt;/label&gt;
+
+    #if(!$externalUrlOAuth.startsWith('https://'))
+        &lt;div id="warnIfNotHttps">{{error}}$services.localization.render('googleapps.config.externalUrlNotHttps',[$externalUrlOAuth,$correctedUrl]){{/error}}&lt;/div>
+        ## Your wiki is currently accessed over the URL xxxx but the Google services require the https protocol. The OAuth process will use yyyy. Please make sure that this is accessible.
+    #end
 
     &lt;fieldset&gt;
         &lt;legend&gt;#t("communicate")&lt;/legend&gt;
@@ -83,7 +93,7 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
         &lt;span class="xHint"&gt;#t("scope.hint")&lt;/span&gt;
         : &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_identity"  disabled="true" checked&gt;#t("scope_identity")&lt;/label&gt; ##
           &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_email"     disabled="true" checked&gt;#t("scope_email")&lt;/label&gt; ##
-          &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_gdocs"    disabled="true" checked&gt;#t("scope_gdoc")&lt;/label&gt; ##
+          &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_gdocs"     disabled="true" checked&gt;#t("scope_gdoc")&lt;/label&gt; ##
           &lt;label title="#t('checkbox_notyetdone')"&gt;&lt;input type="checkbox" name="scope_avatar"   disabled="true"        &gt;#t("scope_readAvatar")&lt;/label&gt; ##
           &lt;input type="hidden" name="${prefix}_scope"&gt;
 
@@ -121,13 +131,19 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
     &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
     &lt;input type="hidden" name="xcontinue" value="$xwiki.getURL($currentDoc, 'admin', "editor=${escapetool.url(${editor})}&amp;amp;section=${escapetool.url(${section})}&amp;amp;space=${escapetool.url(${currentSpace})}")" /&gt;
     &lt;input type="hidden" name="xredirect" value="$xwiki.getURL($currentDoc, 'admin', "editor=${escapetool.url(${editor})}&amp;amp;section=${escapetool.url(${section})}&amp;amp;space=${escapetool.url(${currentSpace})}")" /&gt;
+
+    ## submit
     &lt;div class="bottombuttons"&gt;
         &lt;p class="admin-buttons"&gt;
             &lt;span class="buttonwrapper"&gt;&lt;input class="button" type="submit" name="formactionsac" value="$services.localization.render('admin.save')" /&gt;&lt;/span&gt;
         &lt;/p&gt;
     &lt;/div&gt;
 &lt;/form&gt;
-{{/html}}
+
+
+#tp("nowWhat1", ['[[','>>GoogleApps.TestDocumentList]]'])
+
+#tp("nowWhat2", ['##~{~{drive/~}~}##']){{/html}}
 {{/velocity}}
 </content>
 </xwikidoc>

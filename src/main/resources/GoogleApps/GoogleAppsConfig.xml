@@ -183,7 +183,7 @@
       <activate>1</activate>
     </property>
     <property>
-      <appname></appname>
+      <appname>xwiki</appname>
     </property>
     <property>
       <authWithCookies>0</authWithCookies>
@@ -200,6 +200,7 @@
     <property>
       <scope>https://www.googleapis.com/auth/drive</scope>
     </property>
+    <property><authWithCookies>1</authWithCookies></property>
     <property>
       <secret></secret>
     </property>
@@ -401,13 +402,12 @@
   {{error}}$services.localization.render('googleapps.error.noValidLicense'){{/error}}
   #set ($discard = $app.set('configurationClass', ''))
 #else
-  $services.localization.render('googleapps.config.explanation')
+  {{include reference="GoogleApps.GoogleAppsConfigSheet" /}}
 #end
-{{include reference="GoogleApps.GoogleAppsConfigSheet" /}}
 </codeToExecute>
     </property>
     <property>
-      <configurationClass>GoogleApps.GoogleAppsConfigClass</configurationClass>
+      <configurationClass></configurationClass>
     </property>
     <property>
       <configureGlobally>1</configureGlobally>

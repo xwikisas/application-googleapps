@@ -65,7 +65,7 @@ import com.google.api.services.plus.PlusScopes;
 import org.xwiki.environment.Environment;
 import com.xpn.xwiki.web.Utils;
 import org.apache.commons.io.FileUtils;
-  
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -93,9 +93,9 @@ def skipLoginPage = false;
 def authWithCookies = false;
 def cookiesTTL = 0;
 
-def APPNAME; 
-def CLIENTID; 
-def SECRET; 
+def APPNAME;
+def CLIENTID;
+def SECRET;
 def SCOPE;
 def DOMAIN;
 def AUTH_PAGE = "GoogleApps.OAuth";
@@ -161,20 +161,20 @@ public init(xwiki, context, doc, services) {
 
  this.request = context.request;
  this.response = context.response;
- 
- 
+
+
  this.APPNAME  = getConfig("appname");
  this.CLIENTID  = getConfig("clientid");
  this.SECRET  = getConfig("secret");
  this.SCOPE  = getConfig("scope");
  this.DOMAIN  = getConfig("domain");
  this.active  = getConfig("active");
- this.REDIRECT_URI = xwiki.getDocument(AUTH_PAGE).getExternalURL("view");
+ this.REDIRECT_URI = xwiki.getDocument(AUTH_PAGE).getExternalURL("view").replace('http://','https://');
  this.useCookies = getConfig("useCookies");
  this.skipLoginPage = getConfig("skipLoginPage");
  this.authWithCookies = getConfig("authWithCookies");
  this.cookiesTTL = getConfig("cookiesTTL");
- 
+
  // adding user profile scopes
  // SCOPES.add(PlusScopes.PLUS_LOGIN);
  SCOPES.add(PlusScopes.USERINFO_EMAIL);
@@ -262,7 +262,7 @@ def getFlow() {
      userId = userId + "-" + request.getSession().hashCode();
    }
    addDebug("Getting credentials for user " + userId);
-   return storedCredentials.get(userId); 
+   return storedCredentials.get(userId);
  }
 
 /**
@@ -290,7 +290,7 @@ def getFlow() {
   def getCredentials(String authorizationCode, redirect)
       throws IOException {
       Credential credentials = null;
-     
+
       if (authorizationCode!=null &amp;&amp; authorizationCode!="") {
        addDebug("Trying to get credentials from authorization code: ${authorizationCode}");
        credentials = (authorizationCode==null) ? null : exchangeCode(authorizationCode);
@@ -307,7 +307,7 @@ def getFlow() {
         }
        }
       }
- 
+
       if (credentials==null) {
         addDebug("No credentials found. Checking stored credentials for user " + context.user);
         credentials = getStoredCredentials(context.user);
@@ -342,7 +342,7 @@ def getFlow() {
         .newAuthorizationUrl()
         .setRedirectUri(REDIRECT_URI)
         .setState(state);
-   // Add user email to filter account if the user is logged with multiple account 
+   // Add user email to filter account if the user is logged with multiple account
    if (useCookies) {
      def cookieTools = xwiki.parseGroovyFromPage("xwiki:GoogleApps.CookieAuthenticationPersistenceStoreTools")
      cookieTools.initialize(context.context)
@@ -420,7 +420,7 @@ def getFlow() {
         def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
         if ((wikiUserList==null) || (wikiUserList.size()==0))
           wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", email).execute()
-      
+
         if ((wikiUserList==null) || (wikiUserList.size()==0)) {
           // user not found.. need to create new user
           xwikiUser = email.substring(0, email.indexOf("@"));
@@ -429,7 +429,7 @@ def getFlow() {
           // create user
           def parentref = xwiki.getDocumentAsAuthor("Main.UserDirectory").getDocumentReference()
           def randomPassword = RandomStringUtils.randomAlphanumeric(8)
-          def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.name.givenName, "last_name" : user.name.familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context) 
+          def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.name.givenName, "last_name" : user.name.familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context)
           // Add google apps id to the user
           if (isCreated) {
             xwikiUser = "XWiki." + xwikiUser
@@ -467,7 +467,7 @@ def getFlow() {
              if (userDoc.getObject("GoogleApps.GoogleAppsAuthClass")==null) {
                 userDoc.getObject("GoogleApps.GoogleAppsAuthClass", true)
                 changed = true;
-             } 
+             }
              userDoc.use("GoogleApps.GoogleAppsAuthClass")
              if (userDoc.getValue("id") != id) {
                userDoc.set("id", id)
@@ -482,10 +482,10 @@ def getFlow() {
         // Restore database
         context.setDatabase(db)
       }
-      
+
       // we need to restore the credentials as the user will now be logged-in
       storeCredentials(xwikiUser, credential);
- 
+
       // store the validated xwiki user for the authentication module
       request.getSession().setAttribute("googleappslogin", "xwiki:" + xwikiUser);
 
@@ -526,16 +526,16 @@ def getFlow() {
  }
 
  public importFromGoogleApps(query, nbResults) {
-   def drive = getDriveService(); 
+   def drive = getDriveService();
    def req = drive.files().list().setQ(query).setFields("items(id,mimeType,title,exportLinks,selfLink,version,alternateLink)").setMaxResults(nbResults);
-   def result = req.execute();   
+   def result = req.execute();
    return result;
  }
 
 public listDocuments(query, nbResults) {
-   def drive = getDriveService(); 
+   def drive = getDriveService();
    def req = drive.files().list().setQ(query).setMaxResults(nbResults);
-   def result = req.execute();   
+   def result = req.execute();
    return result;
  }
 
@@ -596,8 +596,8 @@ public saveFileToXWiki(driveService, adoc, id, name, data, redirect) {
   if (embedLink==null)
      embedLink = docData.alternateLink;
 
-  adoc.save("Updated Attachment From Google Apps");   
-  
+  adoc.save("Updated Attachment From Google Apps");
+
   def object = adoc.getObject("GoogleApps.SynchronizedDocumentClass", "fileName", name.toString(), false);
   if (object==null) {
    object = adoc.newObject("GoogleApps.SynchronizedDocumentClass")
@@ -606,7 +606,7 @@ public saveFileToXWiki(driveService, adoc, id, name, data, redirect) {
   adoc.set("id", id)
   adoc.set("fileName", name)
   if (request.url)
-   adoc.set("exportLink", request.url) 
+   adoc.set("exportLink", request.url)
   adoc.set("version", docData.version.toString())
   adoc.set("editLink", docData.alternateLink)
   adoc.set("embedLink", embedLink)
@@ -698,7 +698,7 @@ public saveFileToXWiki(driveService, adoc, id, name, data, redirect) {
    def attach = adoc.getAttachment(name);
    def ctype = attach.getMimeType();
 
-   def file = new File();
+   def file = new com.google.api.services.drive.model.File();
    file.setTitle(name);
    file.setOriginalFilename(name);
    def content = new ByteArrayContent(ctype, attach.getContentAsBytes());
@@ -745,7 +745,7 @@ public saveAttachmentInGoogle(adoc, name, entry) {
 public createAttachmentInGoogle(client, adoc, name) {
   def tmaindir = xwiki.getXWiki().getTempDirectory(context.getContext());
   def tdir = new File(tmaindir, RandomStringUtils.randomAlphanumeric(8));
-  try { 
+  try {
        // save temporary file to disk
        tdir.mkdirs();
        def file = new File(tdir, name);
@@ -780,7 +780,7 @@ public getExistingFile(client, name) {
   else
     return null;
 }
- 
+
 public getExportURL(entry, name) {
  def ext = name.substring(name.indexOf(".")+1);
  return entry.getContent().getUri() + "&amp;exportFormat=" + ext;
@@ -800,7 +800,7 @@ public checkFileExists(page, name) {
   }
  }  else {
    sendAuthRequest();
- } 
+ }
 }
 
 public saveAttachmentToGoogle(page, name, overwrite) {
@@ -822,7 +822,7 @@ public saveAttachmentToGoogle(page, name, overwrite) {
   }
  }  else {
    sendAuthRequest();
- } 
+ }
 }
 
 

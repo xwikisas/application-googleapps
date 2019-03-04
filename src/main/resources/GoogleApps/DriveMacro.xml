@@ -297,22 +297,22 @@ gagroovy.init(xwiki, xcontext, doc)
 
 // adding stylesheet
 xwiki.ssx.use("GoogleApps.DriveMacro");
-  
+
 if (xcontext.macro.params.authentication) {
   if (gagroovy.authorize(false)==null) {
     def url = gagroovy.getAuthorizationURL()
     println "This macro might require [[authentication on Google Apps&gt;&gt;url:${url}]]"
   }
-}  
-  
+}
+
 if (nb==null)
   nb = 0;
 def embednb = (!request.nb) ? 0 : Integer.parseInt(request.nb)
 def query = request.getParameter("query${nb}")
-  
+
 if (request.update=="1" &amp;&amp; nb==embednb)
   force = true;
-  
+
 if (request.embed=="1") {
   if (embednb==nb) {
    def drive = gagroovy.getDriveService();
@@ -336,8 +336,8 @@ if (request.embed=="1") {
    doc.set("user", user)
    doc.save("Inserting Google Document")
   }
-}  
-  
+}
+
   if (id!=null) {
     println id;
   } else if (obj!=null &amp;&amp; !force) {
@@ -350,7 +350,7 @@ if (request.embed=="1") {
    if (editLink &amp;&amp; editLink.startsWith("http"))
      print """ - [[Edit&gt;&gt;url:${editLink}]]"""
    println ")))"
-   println """{{html clean=false}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""   
+   println """{{html clean=false}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""
   } else {
     def tquery = ""
     if (query)
@@ -361,28 +361,28 @@ To insert or change the current Google Drive document being embedded, you need t
 
 {{html clean==false}}
 &lt;form action="" method="get"&gt;
-Insert a Google Document: 
+Insert a Google Document:
 &lt;input type="hidden" name="update" value="1" /&gt;
 &lt;input type="hidden" name="nb" value="${nb}" /&gt;
 &lt;input type="text" name="query${nb}" value="${tquery}" /&gt;
 &lt;input type="submit" value="Search" /&gt;
 &lt;/form&gt;
 {{/html}}
-"""    
+"""
 if (query &amp;&amp; embednb==nb) {
  def squery = "'" + query + "'"
  def results = gagroovy.listDocuments("fullText contains ${squery}", 10)
  def nbres = results.items.size();
-  
- println "${nbres} documents found: " 
+
+ println "${nbres} documents found: "
  for (entry in results.items) {
   def docName = entry.title;
   def embedLink = entry.embedLink;
   if (embedLink==null)
     embedLink = entry.alternateLink;
   if (embedLink==null)
-   println """* ${docName}: this document cannot be embedded"""   
-  else  
+   println """* ${docName}: this document cannot be embedded"""
+  else
    println """* ${docName}: [[embed this document&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
  }
 }

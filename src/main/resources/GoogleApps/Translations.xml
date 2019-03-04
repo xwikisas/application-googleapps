@@ -62,14 +62,12 @@ GoogleApps.GoogleAppsConfigClass_domain.hintTextOn=Only users with domain name \
 GoogleApps.GoogleAppsConfigClass_domain.hintTextOff=All users recognized by Google will be allowed to login to this wiki with Google.
 GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain=Invalid domain name "{0}".
 
-
 GoogleApps.GoogleAppsConfigClass_scope=Permissions to request
 GoogleApps.GoogleAppsConfigClass_scope.hint=Which information should XWiki request to the Google account?
 GoogleApps.GoogleAppsConfigClass_scope_identity=First and last name
 GoogleApps.GoogleAppsConfigClass_scope_email=Email address
 GoogleApps.GoogleAppsConfigClass_scope_gdoc=Read and write Google Docs
 GoogleApps.GoogleAppsConfigClass_scope_readAvatar=User image
-
 GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=This is required
 GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=This is not implemented yet
 
@@ -83,6 +81,8 @@ GoogleApps.GoogleAppsConfigClass_authWithCookies.hint=Allows authentication with
 GoogleApps.GoogleAppsConfigClass_cookiesTTL=Duration
 GoogleApps.GoogleAppsConfigClass_cookiesTTL.hint=How long should the cookie stay valid? (In seconds, default : 3 days)
 
+GoogleApps.GoogleAppsConfigClass_nowWhat1=You can verify your installation by visiting the page {0}TestDocumentList{1}, which should list you 10 documents of your Google Docs instance.
+GoogleApps.GoogleAppsConfigClass_nowWhat2=You can also use the "drive" macro to insert a Google Document in your page. Use {0} for this.
 
 googleapps.edit.editingoogleapps.link=Edit in Google Apps
 googleapps.edit.title=Edit XWiki Attachment in Google Apps
@@ -94,6 +94,7 @@ googleapps.edit.newfile.desc=A new Google Apps document has been created. You ca
 googleapps.edit.desc=Once you have edited the document in Google Apps, using the following button you can retrieve the document content and resave it as an XWiki attachement:
 googleapps.edit.retrieve.button=Retrieve Document Content
 googleapps.edit.editingoogle.button=Edit Google Apps Document
+googleapps.edit.confirm=Confirm Edit in Google Apps
 
 googleapps.import.importfromgoogleapps=Import from Google Apps
 googleapps.import.title=Importing a document from Google Apps
@@ -122,6 +123,8 @@ googleapps.login.domainerror2=Your current google account is
 googleapps.login.domainerror3=Please disconnect from this account, and try to login again.
 
 googleapps.extension.name=Google Apps Integration (Pro)
+googleapps.error.noValidLicense=A license for this application is missing. Please visit the License setting (in the Extensions section) to obtain one.
+googleapps.config.externalUrlNotHttps=Your wiki is currently accessed over the URL {0} but the Google services require the https protocol. The OAuth process will use {1}. Please make sure that this is accessible.
   </content>
   <object>
     <name>GoogleApps.Translations</name>
