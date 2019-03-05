@@ -50,7 +50,7 @@ GoogleApps.GoogleAppsConfigClass_communicate.hint=To activate Google Apps you ne
 GoogleApps.GoogleAppsConfigClass_communicate.hint2=For more information, please see {0}the installation instructions{1}.
 
 GoogleApps.GoogleAppsConfigClass_appname=Application Name
-GoogleApps.GoogleAppsConfigClass_appname.hint=For your own organisation..
+GoogleApps.GoogleAppsConfigClass_appname.hint=For your own organisation.
 GoogleApps.GoogleAppsConfigClass_clientid=Client ID
 GoogleApps.GoogleAppsConfigClass_clientid.hint=As provided by the Google Console.
 GoogleApps.GoogleAppsConfigClass_secret=Secret Key
@@ -115,11 +115,11 @@ googleapps.login.error=An error occured while trying to login with Google. Pleas
 googleapps.login.message=You are being redirected to Google for Authentication.
 googleapps.login.redirectmessage=You are being redirected to your requested page.
 googleapps.login.oauth.message=Google Authentication in progress
-googleapps.login.oauth.success=Successfull authentication.
-googleapps.login.oauth.successwithredirect=Successfull authentication. You are being redirected to your page.
+googleapps.login.oauth.success=Successful authentication.
+googleapps.login.oauth.successwithredirect=Successful authentication. You are being redirected to your page.
 googleapps.login.oauth.notauthenticated=You will be redirected to Google for Authentication.
-googleapps.login.domainerror1=You are not authorized to login on this XWiki instance.
-googleapps.login.domainerror2=Your current google account is
+googleapps.login.domainerror1=This Google account does not allow you to login to this XWiki, because it does not match the expected domain name.
+googleapps.login.domainerror2=Your current Google account is
 googleapps.login.domainerror3=Please disconnect from this account, and try to login again.
 
 googleapps.extension.name=Google Apps Integration (Pro)
