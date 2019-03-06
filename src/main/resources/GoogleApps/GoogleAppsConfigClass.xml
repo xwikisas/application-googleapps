@@ -31,14 +31,11 @@
   <creationDate>1451602800000</creationDate>
   <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <date>1550610872000</date>
   <contentUpdateDate>1550092888000</contentUpdateDate>
   <version>1.1</version>
   <title>Google Apps Config Class</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
@@ -237,7 +234,6 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
-        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
@@ -411,7 +407,6 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
-        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
