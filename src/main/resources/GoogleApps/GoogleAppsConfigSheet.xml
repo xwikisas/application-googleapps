@@ -51,6 +51,7 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
 #set($className="GoogleApps.GoogleAppsConfigClass")
 #set($prefix="${configDoc.fullName}_${className}_0")
 #set($obj = $configDoc.getObject($className))
+## shorthand for t(ranslation) and tp(translation with parameters).
 #macro(t $n)##
     $services.localization.render("GoogleApps.GoogleAppsConfigClass_${n}")##
 #end
@@ -65,12 +66,15 @@ $services.localization.render('googleapps.config.explanation')
 #set($correctedUrl=$externalUrlOAuth.replace('http://','https://'))
 #set($externalUrl=$externalUrlOAuth.replace('bin/view/GoogleApps/OAuth',''))
 
-&lt;form id="second_$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" onsubmit="cancelCancelEdit()" class="xform"&gt;
+&lt;form id="$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" class="xform"&gt;
     ; $configDoc.display("activate", 'edit', $obj) &lt;label for="${prefix}_activate"&gt;#t("activate")&lt;/label&gt;
 
     #if(!$externalUrlOAuth.startsWith('https://'))
-        &lt;div id="warnIfNotHttps">{{error}}$services.localization.render('googleapps.config.externalUrlNotHttps',[$externalUrl,$correctedUrl]){{/error}}&lt;/div>
-        ## Your wiki is currently accessed over the URL xxxx but the Google services require the https protocol. The OAuth process will use yyyy. Please make sure that this is accessible.
+        &lt;div id="warnIfNotHttps"&gt;{{error}}
+          $services.localization.render('googleapps.config.externalUrlNotHttps',[$externalUrl,$correctedUrl])
+        {{/error}}&lt;/div&gt;
+        ## Your wiki is currently accessed over the URL xxxx but the Google services require the https protocol.
+        ## The OAuth process will use yyyy. Please make sure that this is accessible.
     #end
 
 
@@ -93,10 +97,14 @@ $services.localization.render('googleapps.config.explanation')
         ## checkboxes for scope, needs JS
         ; &lt;label&gt;#t("scope")&lt;/label&gt; ##
         &lt;span class="xHint"&gt;#t("scope.hint")&lt;/span&gt;
-        : &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_identity"  disabled="true" checked&gt;#t("scope_identity")&lt;/label&gt; ##
-          &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_email"     disabled="true" checked&gt;#t("scope_email")&lt;/label&gt; ##
-          &lt;label title="#t('checkbox_mandatory')"&gt;&lt;input type="checkbox" name="scope_gdocs"     disabled="true" checked&gt;#t("scope_gdoc")&lt;/label&gt; ##
-          &lt;label title="#t('checkbox_notyetdone')"&gt;&lt;input type="checkbox" name="scope_avatar"   disabled="true"        &gt;#t("scope_readAvatar")&lt;/label&gt; ##
+        : &lt;label title="#t('checkbox_mandatory')"&gt; ##
+            &lt;input type="checkbox" name="scope_identity" disabled="true" checked&gt;#t("scope_identity")&lt;/label&gt; ##
+          &lt;label title="#t('checkbox_mandatory')"&gt; ##
+            &lt;input type="checkbox" name="scope_email"    disabled="true" checked&gt;#t("scope_email")&lt;/label&gt; ##
+          &lt;label title="#t('checkbox_mandatory')"&gt; ##
+            &lt;input type="checkbox" name="scope_gdocs"       disabled="true" checked&gt;#t("scope_gdoc")&lt;/label&gt; ##
+          &lt;label title="#t('checkbox_notyetdone')"&gt; ##
+            &lt;input type="checkbox" name="scope_avatar"      disabled="true"        &gt;#t("scope_readAvatar")&lt;/label&gt; ##
           &lt;input type="hidden" name="${prefix}_scope"&gt;
 
         ; &lt;label for="${prefix}_appname"&gt;#t("appname")&lt;/label&gt; ##
@@ -114,30 +122,35 @@ $services.localization.render('googleapps.config.explanation')
           &lt;span id="googleapps-domain-livehint" class="xHint"&gt;&amp;nbsp;&lt;/span&gt;
 
         ; $configDoc.display("useCookies", 'edit', $obj) &lt;label for="${prefix}_useCookies"&gt;#t("useCookies")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("useCookies.hint")&lt;/span&gt;
+          &lt;span class="xHint"&gt;#t("useCookies.hint")&lt;/span&gt;
 
         :; $configDoc.display("skipLoginPage", 'edit', $obj) ##
           &lt;label for="${prefix}_skipLoginPage"&gt;#t("skipLoginPage")&lt;/label&gt; ##
           &lt;span class="xHint"&gt;#t("skipLoginPage.hint")&lt;/span&gt;
 
-        :; $configDoc.display("authWithCookies", 'edit', $obj) &lt;label for="${prefix}_authWithCookies"&gt;#t("authWithCookies")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("authWithCookies.hint")&lt;/span&gt;
+        :; $configDoc.display("authWithCookies", 'edit', $obj) ##
+          &lt;label for="${prefix}_authWithCookies"&gt;#t("authWithCookies")&lt;/label&gt; ##
+          &lt;span class="xHint"&gt;#t("authWithCookies.hint")&lt;/span&gt;
 
         :; &lt;label for="${prefix}_cookiesTTL"&gt;#t("cookiesTTL")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("cookiesTTL.hint")&lt;/span&gt;
+          &lt;span class="xHint"&gt;#t("cookiesTTL.hint")&lt;/span&gt;
         :: $configDoc.display("cookiesTTL", 'edit', $obj)
     &lt;/fieldset&gt;
 
 
     ## Hidden form elements
-    &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
-    &lt;input type="hidden" name="xcontinue" value="$xwiki.getURL($currentDoc, 'admin', "editor=${escapetool.url(${editor})}&amp;amp;section=${escapetool.url(${section})}&amp;amp;space=${escapetool.url(${currentSpace})}")" /&gt;
-    &lt;input type="hidden" name="xredirect" value="$xwiki.getURL($currentDoc, 'admin', "editor=${escapetool.url(${editor})}&amp;amp;section=${escapetool.url(${section})}&amp;amp;space=${escapetool.url(${currentSpace})}")" /&gt;
+      #set($params="editor=${escapetool.url(${editor})}))&amp;amp;section=${escapetool.url(${section})}")
+      #set($params="${params}&amp;amp;space=${escapetool.url(${currentSpace})}")
+      #set($continueURL=$xwiki.getURL($currentDoc, 'admin', $params))
+      &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
+      &lt;input type="hidden" name="xcontinue" value="${continueURL}" /&gt;
+      &lt;input type="hidden" name="xredirect" value="${continueURL}" /&gt;
 
     ## submit
     &lt;div class="bottombuttons"&gt;
         &lt;p class="admin-buttons"&gt;
-            &lt;span class="buttonwrapper"&gt;&lt;input class="button" type="submit" name="formactionsac" value="$services.localization.render('admin.save')" /&gt;&lt;/span&gt;
+            &lt;span class="buttonwrapper"&gt;&lt;input class="button" type="submit" name="formactionsac" ##
+              value="$services.localization.render('admin.save')" /&gt;&lt;/span&gt;
         &lt;/p&gt;
     &lt;/div&gt;
 &lt;/form&gt;

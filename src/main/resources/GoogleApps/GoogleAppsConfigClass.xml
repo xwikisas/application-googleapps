@@ -300,84 +300,87 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>require(['jquery'], function (jQuery) {
+      <code>
+        require(['jquery'], function (jQuery) {
 
-        var prefix = '#GoogleApps\\.GoogleAppsConfigClass_0_';
+          var prefix = '#GoogleApps\\.GoogleAppsConfigClass_0_';
 
-        //deactivating
-        function deactivate(elts) {
-        elts.each(function () {
-        jQuery(jQuery(this).closest('dl')).find('label').css('color','darkgrey');
-        this.wasDisabled = jQuery(this).prop('disabled');
-        jQuery(this).prop('disabled', true);
-        });
-        }
-
-
-        // reactivating
-        function reactivate(elts) {
-        jQuery(elts).each(function () {
-        if (typeof (this.wasDisabled)) {
-        jQuery(jQuery(this).closest('dl')).find('label').css('color','black');
-        jQuery(this).prop('disabled', this.wasDisabled);
-        }
-        });
-        }
+          //deactivating
+          function deactivate(elts) {
+            elts.each(function () {
+              jQuery(jQuery(this).closest('dl')).find('label').css('color','darkgrey');
+              this.wasDisabled = jQuery(this).prop('disabled');
+              jQuery(this).prop('disabled', true);
+            });
+          }
 
 
-        // updaters
-        function updateAllInputs() {
-        if (this.checked) {
-        reactivate(allInputs);
-        } else {
-        deactivate(allInputs);
-        }
-        }
-
-        function updateCookieFields() {
-        if (this.checked) {
-        reactivate(cookieInputs);
-        } else {
-        deactivate(cookieInputs);
-        }
-        }
-
-        function updateDomainHint() {
-        if (typeof(this.value)=='undefined') return;
-        var domainHint = jQuery('#googleapps-domain-livehint');
-        var valid = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(this.value);
-        if (this.value.length &gt; 0) {
-        if (valid) {
-        domainHint.text(hintTextOn.replace('\{0\}', this.value));
-        domainHint.removeClass('warningmessage');
-        } else {
-        domainHint.text(hintTextInvaliddomain.replace('\{0\}', this.value));
-        domainHint.addClass('warningmessage');
-        }
-        } else {
-        domainHint.text(hintTextOff);
-        domainHint.removeClass('warningmessage');
-        }
-        }
+          // reactivating
+          function reactivate(elts) {
+            jQuery(elts).each(function () {
+              if (typeof (this.wasDisabled)) {
+                jQuery(jQuery(this).closest('dl')).find('label').css('color','black');
+                jQuery(this).prop('disabled', this.wasDisabled);
+              }
+            });
+          }
 
 
-        var allInput, cookieInputs;
-        var hintTextOn = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOn'))}",
-        hintTextOff = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOff'))}",
-        hintTextInvaliddomain = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain'))}";
+          // updaters
+          function updateAllInputs() {
+            if (this.checked) {
+              reactivate(allInputs);
+            } else {
+              deactivate(allInputs);
+            }
+          }
 
-        (function () {
-        // register listeners
-        cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
-        jQuery(prefix + 'useCookies').each(updateCookieFields).change(updateCookieFields);
+          function updateCookieFields() {
+            if (this.checked) {
+              reactivate(cookieInputs);
+            } else {
+              deactivate(cookieInputs);
+            }
+          }
 
-        allInputs = jQuery('#googleapps_GoogleApps\\.GoogleAppsConfig input:not([name$=\'_activate\'])');
-        jQuery(prefix + 'activate').each(updateAllInputs).change(updateAllInputs);
+          function updateDomainHint() {
+            if (typeof(this.value)=='undefined') return;
+            var domainHint = jQuery('#googleapps-domain-livehint');
+            var valid = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(this.value);
+            if (this.value.length &gt; 0) {
+              if (valid) {
+                domainHint.text(hintTextOn.replace('\{0\}', this.value));
+                domainHint.removeClass('warningmessage');
+              } else {
+                domainHint.text(hintTextInvaliddomain.replace('\{0\}', this.value));
+                domainHint.addClass('warningmessage');
+              }
+            } else {
+              domainHint.text(hintTextOff);
+              domainHint.removeClass('warningmessage');
+            }
+          }
 
-        jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
 
-        if(location.protocol=='https') { jQuery("#warnIfNotHttps").hide(); }
-        }).defer();
+          var allInput, cookieInputs;
+          var hintTextOn = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOn'))}",
+          hintTextOff = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOff'))}",
+          hintTextInvaliddomain = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain'))}";
+
+          (function () {
+            // register listeners
+            cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
+            jQuery(prefix + 'useCookies').each(updateCookieFields).change(updateCookieFields);
+
+            allInputs = jQuery('#googleapps_GoogleApps\\.GoogleAppsConfig input:not([name$=\'_activate\'])');
+            jQuery(prefix + 'activate').each(updateAllInputs).change(updateAllInputs);
+
+            jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
+
+            if(location.protocol=='https') { jQuery("#warnIfNotHttps").hide(); }
+
+            jQuery("#${formId.replace('.','\.')}").submit(cancelCancelEdit);
+          }).defer();
         });
       </code>
     </property>
@@ -489,20 +492,21 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>#googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset &gt; legend {
-    margin-bottom:0;
-    border:none;
-    font-size:100%;
-    font-weight: bold;
-}
+      <code>
+        #googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset &gt; legend {
+          margin-bottom:0;
+          border:none;
+          font-size:100%;
+          font-weight: bold;
+        }
 
-#googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset {
-    border: solid thin #e5e5e5;
-    padding: 1em;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-</code>
+        #googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset {
+          border: solid thin #e5e5e5;
+          padding: 1em;
+          margin-top: 1em;
+          margin-bottom: 1em;
+        }
+      </code>
     </property>
     <property>
       <contentType/>
