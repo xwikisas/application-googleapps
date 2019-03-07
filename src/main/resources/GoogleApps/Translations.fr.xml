@@ -42,12 +42,12 @@
   <content>
 admin.googleapps=Google Apps
 googleapps.config.heading=Configuration Intégration Google Apps
-googleapps.config.explanation=XWiki peut-etre intégré avec Google Apps, ce qui permet ensuite l'édition des attachements Office en utilisant les éditeurs Google Apps ainsi que leur sauvegarde dans le wiki. Cela permet également de télécharger un fichier Google Apps dans n'importe quelle page du Wiki. Afin d'activer Google Apps vous devez vous [[enregistrer pour l'accès à OAuth sur Google.com>>https://accounts.google.com/ManageDomains]] et insérer les informations dans les paramètres suivants (voir aussi  [[les instructions d'installation>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]).
+googleapps.config.explanation=XWiki peut-etre intégré avec Google Apps, ce qui permet ensuite l'édition des attachements Office en utilisant les éditeurs Google Apps ainsi que leur sauvegarde dans le wiki. Cela permet également de télécharger un fichier Google Apps dans n'importe quelle page du Wiki.
 GoogleApps.GoogleAppsConfigClass_activate=Activer
 
 GoogleApps.GoogleAppsConfigClass_communicate=Communication avec les services Google
-GoogleApps.GoogleAppsConfigClass_communicate.hint=Afin d'activer Google Apps vous devez {0}vous enregistrer pour l'accès à OAuth sur la console Google{1} et insérer les informations dans les paramètres suivants
-GoogleApps.GoogleAppsConfigClass_communicate.hint2=voir aussi {0}les instructions d''installation{1}.
+GoogleApps.GoogleAppsConfigClass_communicate.hint=Afin d''activer Google Apps vous devez {0}vous enregistrer pour l''accès à OAuth sur la console Google{1} et insérer les informations dans les paramètres suivants.
+GoogleApps.GoogleAppsConfigClass_communicate.hint2=Voir aussi {0}les instructions d''installation{1}.
 
 GoogleApps.GoogleAppsConfigClass_appname=Nom de l'application
 GoogleApps.GoogleAppsConfigClass_appname.hint=Pour votre propre organisation.
