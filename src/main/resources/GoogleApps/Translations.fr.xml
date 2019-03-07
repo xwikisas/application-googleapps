@@ -108,8 +108,8 @@ googleapps.retrieve.fail=Échec de la récupération du document de Google Apps
 googleapps.retrieve.nodocument=Aucun document donné pour la récupération.
 
 googleapps.login.title=Authentification Google Apps
-googleapps.login.withgoogle=S'authentifier avec Google
-googleapps.login.withxwiki=S'authentifier avec XWiki
+googleapps.login.withgoogle=Connexion avec Google
+googleapps.login.withxwiki=Connexion avec XWiki
 googleapps.login.error=Une erreur est survenue pendant l'authentification avec Google. Merci de prendre contact avec le Support XWiki Support ou essayez à nouveau.
 googleapps.login.message=Vous allez être redirigé vers Google pour l'authentification.
 googleapps.login.redirectmessage=Vous allez être redirigé vers la page demandée.
@@ -123,6 +123,6 @@ googleapps.login.domainerror3=Merci de vous déconnecter de ce compte et réessa
 
 googleapps.extension.name=Intégration Google Apps (Pro)
 googleapps.error.noValidLicense=Il manque une licence pour cette application. Veuillez visiter les réglages de licences (dans la section extensions)
-googleapps.config.externalUrlNotHttps=Vous accédez votre wiki au travers de l'URL {0} mais les services Google exigent l''utilisation du protocole https. Le processus OAuth utilisera {1}. Assurez-vous que cet URL est accessible.
+googleapps.config.externalUrlNotHttps=Vous accédez votre wiki au travers de l''URL {0} mais les services Google exigent l''utilisation du protocole https. Le processus OAuth utilisera {1}. Assurez-vous que cet URL est accessible.
 </content>
 </xwikidoc>

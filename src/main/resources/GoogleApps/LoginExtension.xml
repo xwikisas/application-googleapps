@@ -129,15 +129,15 @@ function loginWithXWiki() {
    return false;
 }
 
-require(['jquery', 'xwiki-events-bridge', 'xwiki-meta'], function($, xm) {  
+require(['jquery', 'xwiki-events-bridge', 'xwiki-meta'], function($, xm) {
  $(document).ready(function(event, data) {
    if (XWiki.contextaction == "login" || XWiki.contextaction == "loginsubmit" ) {
      jQuery('&lt;div id="googleapps-login-choice"&gt;'
-            + '&lt;div class="col-xs-12" style="margin-bottom: 20px; padding: 20px;"&gt;' 
-            + '&lt;a href="${url}?' + location.href.substring(location.href.indexOf("?")) 
-            + '" class="btn btn-primary col-xs-5" href=""&gt;${services.localization.render("googleapps.login.withgoogle")}&lt;/a&gt;'
+            + '&lt;div class="col-xs-12" style="margin-bottom: 20px; padding: 20px;"&gt;'
+            + '&lt;a href="${url}?' + location.href.substring(location.href.indexOf("?"))
+            + '" class="btn btn-primary col-xs-5" href=""&gt;${escapetool.javascript($services.localization.render("googleapps.login.withgoogle"))}&lt;/a&gt;'
             + '&lt;div class="col-xs-2"&gt;&lt;/div&gt;'
-            + '&lt;a href="javascript:void(0)" onclick="return loginWithXWiki()" class="btn btn-primary col-xs-5" href=""&gt;${services.localization.render("googleapps.login.withxwiki")}&lt;/a&gt;&lt;/div&gt;'
+            + '&lt;a href="javascript:void(0)" onclick="return loginWithXWiki()" class="btn btn-primary col-xs-5" href=""&gt;${escapetool.javascript($services.localization.render("googleapps.login.withxwiki"))}&lt;/a&gt;&lt;/div&gt;'
             + '&lt;div style="clear: both;"&gt;&lt;/div&gt;&lt;/div&gt;').insertBefore(jQuery(".panel .panel-body dl"))
    }
    if (XWiki.contextaction != "loginsubmit") {
@@ -230,7 +230,7 @@ require(['jquery', 'xwiki-events-bridge', 'xwiki-meta'], function($, xm) {
     <property>
       <content>{{velocity}}
 #if("${doc}" == "XWiki.XWikiLogin")
-  $xwiki.jsx.use('xwiki:GoogleApps.LoginExtension') 
+  $xwiki.jsx.use('xwiki:GoogleApps.LoginExtension')
 #end
 {{/velocity}}</content>
     </property>
