@@ -87,11 +87,11 @@ $services.localization.render('googleapps.config.explanation')
 
 
         ; &lt;label for="${prefix}_clientid"&gt;#t("clientid")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("clientid.hint")&lt;/span&gt;
+          &lt;span class="xHint"&gt;#t("clientid.hint")&lt;/span&gt;
         : $configDoc.display("clientid", 'edit', $obj)
 
         ; &lt;label for="${prefix}_secret"&gt;#t("secret")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("secret.hint")&lt;/span&gt;
+          &lt;span class="xHint"&gt;#t("secret.hint")&lt;/span&gt;
         : $configDoc.display("secret", 'edit', $obj)
 
         ## checkboxes for scope, needs JS
@@ -108,7 +108,7 @@ $services.localization.render('googleapps.config.explanation')
           &lt;input type="hidden" name="${prefix}_scope"&gt;
 
         ; &lt;label for="${prefix}_appname"&gt;#t("appname")&lt;/label&gt; ##
-        &lt;span class="xHint"&gt;#t("appname.hint")&lt;/span&gt;
+          &lt;span class="xHint"&gt;#t("appname.hint")&lt;/span&gt;
         : $configDoc.display("appname", 'edit', $obj)
 
     &lt;/fieldset&gt;
