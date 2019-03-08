@@ -71,9 +71,11 @@ $services.localization.render('googleapps.config.explanation')
 
     #if(!$externalUrlOAuth.startsWith('https://'))
         &lt;div id="warnIfNotHttps"&gt;
+
           {{error}}
             $services.localization.render('googleapps.config.externalUrlNotHttps',[$externalUrl,$correctedUrl])
           {{/error}}
+
         &lt;/div&gt;
         ## Your wiki is currently accessed over the URL xxxx but the Google services require the https protocol.
         ## The OAuth process will use yyyy. Please make sure that this is accessible.
