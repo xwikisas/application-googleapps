@@ -31,9 +31,8 @@
   <author>xwiki:XWiki.Admin</author>
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1420066800000</creationDate>
-  <date>1420066800000</date>
-  <contentUpdateDate>1420066800000</contentUpdateDate>
+  <date>1550646416000</date>
+  <contentUpdateDate>1550093127000</contentUpdateDate>
   <version>1.1</version>
   <title>Google Apps Configuration</title>
   <defaultTemplate/>
@@ -79,6 +78,20 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </appname>
+      <authWithCookies>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>authWithCookies</name>
+        <number>9</number>
+        <prettyName>authWithCookies</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </authWithCookies>
       <clientid>
         <customDisplay/>
         <disabled>0</disabled>
@@ -133,6 +146,34 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.PasswordClass</classType>
       </secret>
+      <skipLoginPage>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>skipLoginPage</name>
+        <number>8</number>
+        <prettyName>skipLoginPage</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </skipLoginPage>
+      <useCookies>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>useCookies</name>
+        <number>7</number>
+        <prettyName>useCookies</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </useCookies>
     </class>
     <name>GoogleApps.GoogleAppsConfig</name>
     <number>0</number>
@@ -142,10 +183,16 @@
       <activate>1</activate>
     </property>
     <property>
-      <appname/>
+      <appname>xwiki</appname>
     </property>
     <property>
-      <clientid/>
+      <authWithCookies>0</authWithCookies>
+    </property>
+    <property>
+      <clientid></clientid>
+    </property>
+    <property>
+      <cookiesTTL/>
     </property>
     <property>
       <domain/>
@@ -153,8 +200,15 @@
     <property>
       <scope>https://www.googleapis.com/auth/drive</scope>
     </property>
+    <property><authWithCookies>1</authWithCookies></property>
     <property>
-      <secret/>
+      <secret></secret>
+    </property>
+    <property>
+      <skipLoginPage>0</skipLoginPage>
+    </property>
+    <property>
+      <useCookies>1</useCookies>
     </property>
   </object>
   <object>
@@ -345,14 +399,17 @@
     <property>
       <codeToExecute>#set ($mainReference = $services.model.createDocumentReference('', 'GoogleApps', 'OAuth'))
 #if (!$services.licensing.licensor.hasLicensureForEntity($mainReference))
+
   {{error}}$services.localization.render('googleapps.error.noValidLicense'){{/error}}
+
   #set ($discard = $app.set('configurationClass', ''))
 #else
-  $services.localization.render('googleapps.config.explanation')
-#end</codeToExecute>
+  {{include reference="GoogleApps.GoogleAppsConfigSheet" /}}
+#end
+</codeToExecute>
     </property>
     <property>
-      <configurationClass>GoogleApps.GoogleAppsConfigClass</configurationClass>
+      <configurationClass></configurationClass>
     </property>
     <property>
       <configureGlobally>1</configureGlobally>
@@ -376,18 +433,7 @@
       <linkPrefix/>
     </property>
     <property>
-      <propertiesToShow>
-        <value>activate</value>
-        <value>appname</value>
-        <value>clientid</value>
-        <value>secret</value>
-        <value>scope</value>
-        <value>domain</value>
-        <value>useCookies</value>
-        <value>skipLoginPage</value>
-        <value>authWithCookies</value>
-        <value>cookiesTTL</value>
-      </propertiesToShow>
+      <propertiesToShow/>
     </property>
     <property>
       <sectionOrder/>

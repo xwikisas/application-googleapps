@@ -39,17 +39,50 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>admin.googleapps=Google Apps
+  <content>
+admin.googleapps=Google Apps
 googleapps.config.heading=Google Apps Integration Configuration
-googleapps.config.explanation=XWiki can be integrated with Google Apps, which then allows you to edit Office Attachments using the Google Apps editors as well as resave them in the wiki. It also allows to upload a Google Apps file to any Wiki Page. To activate Google Apps you need to [[register for OAuth access on Google.com&gt;&gt;https://accounts.google.com/ManageDomains]] and to insert your domain name and key in the following settings.
+googleapps.config.explanation=XWiki can be integrated with Google Apps, which then allows you to edit Office Attachments using the Google Apps editors as well as resave them in the wiki. It also allows to upload a Google Apps file to any Wiki Page.
+GoogleApps.GoogleAppsConfigClass_activate=Activate
+
+GoogleApps.GoogleAppsConfigClass_communicate=Communication with Google services
+GoogleApps.GoogleAppsConfigClass_communicate.hint=To activate Google Apps you need to {0}register for OAuth access on the Google Cloud console{1} and to insert your Client-Id and secret in the following settings.
+GoogleApps.GoogleAppsConfigClass_communicate.hint2=For more information, please see {0}the installation instructions{1}.
+
 GoogleApps.GoogleAppsConfigClass_appname=Application Name
-GoogleApps.GoogleAppsConfigClass_key=Secret Key
-GoogleApps.GoogleAppsConfigClass_domain=Domain Google Apps
-GoogleApps.GoogleAppsConfigClass_active=Activate
-GoogleApps.GoogleAppsConfigClass_useCookies=Enable the use of cookies
-GoogleApps.GoogleAppsConfigClass_skipLoginPage=(Need Cookies enabled) Skip login page 
-GoogleApps.GoogleAppsConfigClass_authWithCookies=(Need Cookies enabled) Allow authentication with cookie - skip google if already logged one time
-GoogleApps.GoogleAppsConfigClass_cookiesTTL=(Need Cookies enabled) Cookies Time To Live in seconds - default : 3 days.
+GoogleApps.GoogleAppsConfigClass_appname.hint=For your own organisation.
+GoogleApps.GoogleAppsConfigClass_clientid=Client ID
+GoogleApps.GoogleAppsConfigClass_clientid.hint=As provided by the Google Console.
+GoogleApps.GoogleAppsConfigClass_secret=Secret Key
+GoogleApps.GoogleAppsConfigClass_secret.hint=As provided by the Google Console.
+
+GoogleApps.GoogleAppsConfigClass_domain=Domain
+GoogleApps.GoogleAppsConfigClass_domain.hint=Restricts the domain of the users allowed to login to the Wiki.
+GoogleApps.GoogleAppsConfigClass_domain.hintTextOn=Only users with domain name \"{0}\" will be allowed to login to this wiki with Google.
+GoogleApps.GoogleAppsConfigClass_domain.hintTextOff=All users recognized by Google will be allowed to login to this wiki with Google.
+GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain=Invalid domain name "{0}".
+
+GoogleApps.GoogleAppsConfigClass_scope=Permissions to request
+GoogleApps.GoogleAppsConfigClass_scope.hint=Which information should XWiki request to the Google account?
+GoogleApps.GoogleAppsConfigClass_scope_identity=First and last name
+GoogleApps.GoogleAppsConfigClass_scope_email=Email address
+GoogleApps.GoogleAppsConfigClass_scope_gdoc=Read and write Google Docs
+GoogleApps.GoogleAppsConfigClass_scope_readAvatar=User image
+GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=This is required
+GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=This is not implemented yet
+
+GoogleApps.GoogleAppsConfigClass_loginbehaviour=XWiki Login Behaviour
+GoogleApps.GoogleAppsConfigClass_useCookies=Use of cookies for Google Apps Login
+GoogleApps.GoogleAppsConfigClass_useCookies.hint=These cookies allow browsers to remember which Google user was used to login to the Wiki.
+GoogleApps.GoogleAppsConfigClass_skipLoginPage=Skip login page
+GoogleApps.GoogleAppsConfigClass_skipLoginPage.hint=Allows browsers with the cookies be automatically logged in ("remember-me" is active for all).
+GoogleApps.GoogleAppsConfigClass_authWithCookies=Skip Google
+GoogleApps.GoogleAppsConfigClass_authWithCookies.hint=Allows authentication with cookies, so that an authorization at Google is not necessary if the cookie is present.
+GoogleApps.GoogleAppsConfigClass_cookiesTTL=Duration
+GoogleApps.GoogleAppsConfigClass_cookiesTTL.hint=How long should the cookie stay valid? (In seconds, default : 3 days)
+
+GoogleApps.GoogleAppsConfigClass_nowWhat1=You can verify your installation by visiting the page {0}TestDocumentList{1}, which should list you 10 documents of your Google Docs instance.
+GoogleApps.GoogleAppsConfigClass_nowWhat2=You can also use the "drive" macro to insert a Google Document in your page. Use {0} for this.
 
 googleapps.edit.editingoogleapps.link=Edit in Google Apps
 googleapps.edit.title=Edit XWiki Attachment in Google Apps
@@ -61,11 +94,12 @@ googleapps.edit.newfile.desc=A new Google Apps document has been created. You ca
 googleapps.edit.desc=Once you have edited the document in Google Apps, using the following button you can retrieve the document content and resave it as an XWiki attachement:
 googleapps.edit.retrieve.button=Retrieve Document Content
 googleapps.edit.editingoogle.button=Edit Google Apps Document
+googleapps.edit.confirm=Confirm Edit in Google Apps
 
 googleapps.import.importfromgoogleapps=Import from Google Apps
 googleapps.import.title=Importing a document from Google Apps
 googleapps.import.desc=To import a Google Apps document in the page {0} ({1}) search for the document in the Google Apps repository and click 'Import to XWiki':
-googleapps.import.form.title=Search for Google Documents: 
+googleapps.import.form.title=Search for Google Documents:
 googleapps.import.form.button=Search
 googleapps.import.importas=Import to XWiki as
 googleapps.import.nextresults.button=Next results
@@ -81,14 +115,17 @@ googleapps.login.error=An error occured while trying to login with Google. Pleas
 googleapps.login.message=You are being redirected to Google for Authentication.
 googleapps.login.redirectmessage=You are being redirected to your requested page.
 googleapps.login.oauth.message=Google Authentication in progress
-googleapps.login.oauth.success=Successfull authentication.
-googleapps.login.oauth.successwithredirect=Successfull authentication. You are being redirected to your page.
+googleapps.login.oauth.success=Successful authentication.
+googleapps.login.oauth.successwithredirect=Successful authentication. You are being redirected to your page.
 googleapps.login.oauth.notauthenticated=You will be redirected to Google for Authentication.
-googleapps.login.domainerror1=You are not authorized to login on this XWiki instance.
-googleapps.login.domainerror2=Your current google account is
+googleapps.login.domainerror1=This Google account does not allow you to login to this XWiki, because it does not match the expected domain name.
+googleapps.login.domainerror2=Your current Google account is
 googleapps.login.domainerror3=Please disconnect from this account, and try to login again.
 
-googleapps.extension.name=Google Apps Integration (Pro)</content>
+googleapps.extension.name=Google Apps Integration (Pro)
+googleapps.error.noValidLicense=A license for this application is missing. Please visit the License setting (in the Extensions section) to obtain one.
+googleapps.config.externalUrlNotHttps=Your wiki is currently accessed over the URL {0} but the Google services require the https protocol. The OAuth process will use {1}. Please make sure that this is accessible.
+  </content>
   <object>
     <name>GoogleApps.Translations</name>
     <number>0</number>

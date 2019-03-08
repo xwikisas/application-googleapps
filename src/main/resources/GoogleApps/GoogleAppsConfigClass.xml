@@ -28,16 +28,14 @@
   <translation>0</translation>
   <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1451602800000</creationDate>
-  <date>1451602800000</date>
-  <contentUpdateDate>1451602800000</contentUpdateDate>
+  <parent>GoogleApps.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1550610872000</date>
+  <contentUpdateDate>1550092888000</contentUpdateDate>
   <version>1.1</version>
   <title>Google Apps Config Class</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
@@ -82,7 +80,7 @@
       <customDisplay/>
       <defaultValue/>
       <disabled>0</disabled>
-      <displayFormType>select</displayFormType>
+      <displayFormType>checkbox</displayFormType>
       <displayType/>
       <name>authWithCookies</name>
       <number>9</number>
@@ -163,7 +161,7 @@
       <customDisplay/>
       <defaultValue/>
       <disabled>0</disabled>
-      <displayFormType>select</displayFormType>
+      <displayFormType>checkbox</displayFormType>
       <displayType/>
       <name>skipLoginPage</name>
       <number>8</number>
@@ -177,7 +175,7 @@
       <customDisplay/>
       <defaultValue/>
       <disabled>0</disabled>
-      <displayFormType>select</displayFormType>
+      <displayFormType>checkbox</displayFormType>
       <displayType/>
       <name>useCookies</name>
       <number>7</number>
@@ -217,12 +215,16 @@
     <className>XWiki.ClassSheetBinding</className>
     <guid>20e3c507-fc25-4578-9cc9-909bbb77adad</guid>
     <property>
-      <sheet>GoogleAppsConfigSheet</sheet>
+      <sheet>GoogleApps.GoogleAppsConfigSheet</sheet>
     </property>
   </object>
   <object>
+    <name>GoogleApps.GoogleAppsConfigClass</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>97d587c9-6727-468a-8989-2374955e82b6</guid>
     <class>
-      <name>XWiki.DocumentSheetBinding</name>
+      <name>XWiki.JavaScriptExtension</name>
       <customClass/>
       <customMapping/>
       <defaultViewSheet/>
@@ -230,27 +232,293 @@
       <defaultWeb/>
       <nameField/>
       <validationScript/>
-      <sheet>
-        <customDisplay/>
+      <cache>
+        <cache>0</cache>
         <disabled>0</disabled>
-        <name>sheet</name>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
         <number>1</number>
-        <picker>0</picker>
-        <prettyName>Sheet</prettyName>
+        <prettyName>Name</prettyName>
         <size>30</size>
         <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-      </sheet>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
     </class>
-    <name>GoogleApps.GoogleAppsConfigClass</name>
-    <number>0</number>
-    <className>XWiki.DocumentSheetBinding</className>
-    <guid>36739e92-a0f6-4048-8ae8-5097b04b54e3</guid>
     <property>
-      <sheet>XWiki.ClassSheet</sheet>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>
+        require(['jquery'], function (jQuery) {
+
+          var prefix = '#GoogleApps\\.GoogleAppsConfigClass_0_';
+
+          //deactivating
+          function deactivate(elts) {
+            elts.each(function () {
+              jQuery(jQuery(this).closest('dl')).find('label').css('color','darkgrey');
+              this.wasDisabled = jQuery(this).prop('disabled');
+              jQuery(this).prop('disabled', true);
+            });
+          }
+
+
+          // reactivating
+          function reactivate(elts) {
+            jQuery(elts).each(function () {
+              if (typeof (this.wasDisabled)) {
+                jQuery(jQuery(this).closest('dl')).find('label').css('color','black');
+                jQuery(this).prop('disabled', this.wasDisabled);
+              }
+            });
+          }
+
+
+          // updaters
+          function updateAllInputs() {
+            if (this.checked) {
+              reactivate(allInputs);
+            } else {
+              deactivate(allInputs);
+            }
+          }
+
+          function updateCookieFields() {
+            if (this.checked) {
+              reactivate(cookieInputs);
+            } else {
+              deactivate(cookieInputs);
+            }
+          }
+
+          function updateDomainHint() {
+            if (typeof(this.value)=='undefined') return;
+            var domainHint = jQuery('#googleapps-domain-livehint');
+            var valid = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(this.value);
+            if (this.value.length &gt; 0) {
+              if (valid) {
+                domainHint.text(hintTextOn.replace('\{0\}', this.value));
+                domainHint.removeClass('warningmessage');
+              } else {
+                domainHint.text(hintTextInvaliddomain.replace('\{0\}', this.value));
+                domainHint.addClass('warningmessage');
+              }
+            } else {
+              domainHint.text(hintTextOff);
+              domainHint.removeClass('warningmessage');
+            }
+          }
+
+
+          var allInput, cookieInputs;
+          var hintTextOn = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOn'))}",
+          hintTextOff = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOff'))}",
+          hintTextInvaliddomain = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain'))}";
+
+          (function () {
+            // register listeners
+            cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
+            jQuery(prefix + 'useCookies').each(updateCookieFields).change(updateCookieFields);
+
+            allInputs = jQuery('#googleapps_GoogleApps\\.GoogleAppsConfig input:not([name$=\'_activate\'])');
+            jQuery(prefix + 'activate').each(updateAllInputs).change(updateAllInputs);
+
+            jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
+
+            if(location.protocol=='https') { jQuery("#warnIfNotHttps").hide(); }
+
+            jQuery("#${formId.replace('.','\.')}").submit(cancelCancelEdit);
+          }).defer();
+        });
+      </code>
+    </property>
+    <property>
+      <name>GoogleApp Config JSExtension</name>
+    </property>
+    <property>
+      <parse>1</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
     </property>
   </object>
-  <content/>
+  <object>
+    <name>GoogleApps.GoogleAppsConfigClass</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>932ea8ab-1668-48ca-8df5-e7d0e69caae9</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>
+        #googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset &gt; legend {
+          margin-bottom:0;
+          border:none;
+          font-size:100%;
+          font-weight: bold;
+        }
+
+        #googleapps_GoogleApps\.GoogleAppsConfig &gt; fieldset {
+          border: solid thin #e5e5e5;
+          padding: 1em;
+          margin-top: 1em;
+          margin-bottom: 1em;
+        }
+      </code>
+    </property>
+    <property>
+      <contentType/>
+    </property>
+    <property>
+      <name>Google apps configuration</name>
+    </property>
+    <property>
+      <parse/>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
 </xwikidoc>
