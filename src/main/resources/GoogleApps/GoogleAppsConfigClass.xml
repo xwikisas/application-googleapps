@@ -377,9 +377,9 @@
 
             jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
 
-            if(location.protocol=='https') { jQuery("#warnIfNotHttps").hide(); }
+            if(location.protocol=='https:') { jQuery("#warnIfNotHttps").hide(); }
 
-            jQuery("#${formId.replace('.','\.')}").submit(cancelCancelEdit);
+            jQuery('#googleapps_GoogleApps\.GoogleAppsConfig').submit(cancelCancelEdit);
           }).defer();
         });
       </code>
