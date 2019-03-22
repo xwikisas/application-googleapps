@@ -198,7 +198,7 @@
       <domain/>
     </property>
     <property>
-      <scope>https://www.googleapis.com/auth/drive</scope>
+      <scope>drive avatar</scope>
     </property>
     <property><authWithCookies>1</authWithCookies></property>
     <property>

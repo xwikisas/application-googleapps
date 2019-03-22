@@ -45,27 +45,29 @@
   <content>{{velocity}}
 #set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
 #set($ok = $gagroovy.init($xwiki, $context, $doc))
+#if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
+  #set($gdoc = $gagroovy.getGoogleDocument($request.page, $request.name))
+  #if($request.confirm)
+   Uploading file to Google Drive
+   #set($gdoc = $gagroovy.saveAttachmentToGoogle($request.page, $request.name))
+  #end
 
-#set($gdoc = $gagroovy.getGoogleDocument($request.page, $request.name))
-#if($request.confirm)
- Uploading file to Google Drive
- #set($gdoc = $gagroovy.saveAttachmentToGoogle($request.page, $request.name))
-#end
+  #if($gdoc)
+  Document is in Google Drive.
 
-#if($gdoc)
-Document is in Google Drive. 
+  (% class="buttonwrapper" %)
+  {{html clean=false}}&lt;a href="${gdoc.editLink}" target="_blank"&gt;$services.localization.render("googleapps.edit.editingoogle.button")&lt;/a&gt;{{/html}}
 
-(% class="buttonwrapper" %)
-{{html clean=false}}&lt;a href="${gdoc.editLink}" target="_blank"&gt;$services.localization.render("googleapps.edit.editingoogle.button")&lt;/a&gt;{{/html}}
+  $services.localization.render("googleapps.edit.desc")
 
-$services.localization.render("googleapps.edit.desc")
+  (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
+  #else
+  This document is not yet uploaded to Google Drive. Please confirm that you would like to upload it to edit it.
 
-(% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
+  (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
+  #end
 #else
-This document is not yet uploaded to Google Drive. Please confirm that you would like to upload it to edit it.
-
-(% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
+    This macro is disabled.
 #end
-
 {{/velocity}}</content>
 </xwikidoc>

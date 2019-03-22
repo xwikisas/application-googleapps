@@ -106,10 +106,10 @@ $services.localization.render('googleapps.config.explanation')
           &lt;label title="#t('checkbox_mandatory')"&gt; ##
             &lt;input type="checkbox" name="scope_email"    disabled="true" checked&gt;#t("scope_email")&lt;/label&gt; ##
           &lt;label title="#t('checkbox_mandatory')"&gt; ##
-            &lt;input type="checkbox" name="scope_gdocs"       disabled="true" checked&gt;#t("scope_gdoc")&lt;/label&gt; ##
+            &lt;input type="checkbox" name="scope_drive"                           &gt;#t("scope_drive")&lt;/label&gt; ##
           &lt;label title="#t('checkbox_notyetdone')"&gt; ##
-            &lt;input type="checkbox" name="scope_avatar"      disabled="true"        &gt;#t("scope_readAvatar")&lt;/label&gt; ##
-          &lt;input type="hidden" name="${prefix}_scope"&gt;
+            &lt;input type="checkbox" name="scope_avatar"                          &gt;#t("scope_avatar")&lt;/label&gt; ##
+          $configDoc.display("scope", "hidden")
 
         ; &lt;label for="${prefix}_appname"&gt;#t("appname")&lt;/label&gt; ##
           &lt;span class="xHint"&gt;#t("appname.hint")&lt;/span&gt;
@@ -143,7 +143,7 @@ $services.localization.render('googleapps.config.explanation')
 
 
     ## Hidden form elements
-      #set($params="editor=${escapetool.url(${editor})}))&amp;amp;section=${escapetool.url(${section})}")
+      #set($params="editor=${escapetool.url(${editor})}&amp;amp;section=${escapetool.url(${section})}")
       #set($params="${params}&amp;amp;space=${escapetool.url(${currentSpace})}")
       #set($continueURL=$xwiki.getURL($currentDoc, 'admin', $params))
       &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
@@ -160,9 +160,15 @@ $services.localization.render('googleapps.config.explanation')
 &lt;/form&gt;
 
 
-#tp("nowWhat1", ['[[','>>GoogleApps.TestDocumentList]]'])
+      &lt;div id="driveOnNowWhat"&gt;
 
-#tp("nowWhat2", ['##~{~{drive/~}~}##']){{/html}}
+      #tp("nowWhat1", ['[[','&gt;&gt;GoogleApps.TestDocumentList]]'])
+
+      #tp("nowWhat2", ['##~{~{drive/~}~}##'])
+
+      &lt;/div&gt;
+      {{/html}}
+
 {{/velocity}}
 </content>
 </xwikidoc>

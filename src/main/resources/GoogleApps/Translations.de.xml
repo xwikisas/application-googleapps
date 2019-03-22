@@ -66,8 +66,8 @@ GoogleApps.GoogleAppsConfigClass_scope=Autorisierungen
 GoogleApps.GoogleAppsConfigClass_scope.hint=Welche Information sollte dieses Wiki Google abfragen?
 GoogleApps.GoogleAppsConfigClass_scope_identity=Vor- und Nachname.
 GoogleApps.GoogleAppsConfigClass_scope_email=Emailadresse.
-GoogleApps.GoogleAppsConfigClass_scope_gdoc=Google Docs lesen und speichern.
-GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Benutzerprofilbild
+GoogleApps.GoogleAppsConfigClass_scope_drive=Google Docs lesen und speichern.
+GoogleApps.GoogleAppsConfigClass_scope_avatar=Benutzerprofilbild
 GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=Diese Autorisierung ist nötig.
 GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=Diese Autorisierung wird noch implementiert.
 

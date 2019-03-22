@@ -66,8 +66,8 @@ GoogleApps.GoogleAppsConfigClass_scope=Permissions to request
 GoogleApps.GoogleAppsConfigClass_scope.hint=Which information should XWiki request to the Google account?
 GoogleApps.GoogleAppsConfigClass_scope_identity=First and last name
 GoogleApps.GoogleAppsConfigClass_scope_email=Email address
-GoogleApps.GoogleAppsConfigClass_scope_gdoc=Read and write Google Docs
-GoogleApps.GoogleAppsConfigClass_scope_readAvatar=User image
+GoogleApps.GoogleAppsConfigClass_scope_drive=Read and write Google Docs
+GoogleApps.GoogleAppsConfigClass_scope_avatar=User image
 GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=This is required
 GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=This is not implemented yet
 
