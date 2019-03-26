@@ -296,7 +296,7 @@ def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy")
 gagroovy.init(xwiki, xcontext, doc)
 
 if(!gagroovy.useDrive) {
-        println "This macro is disabled."
+  println "This macro is disabled."
 } else {
   // adding stylesheet
   xwiki.ssx.use("GoogleApps.DriveMacro");

@@ -380,13 +380,14 @@
           function readScopes() {
             var scope = jQuery("input[name$='_scope']").val();
             jQuery(("input[name^='scope_']")).each(function() {
-            if(jQuery.attr(this, "disabled")!=="disabled")
-            var n = this.name.substring('scope_'.length);
-            if(scope.indexOf(n)&gt;-1) {
-              this.checked = true;
-            } else {
-              this.checked = false;
-            }
+              if(jQuery.attr(this, "disabled")!=="disabled") {
+                var n = this.name.substring('scope_'.length);
+                if (scope.indexOf(n) > -1) {
+                  this.checked = true;
+                } else {
+                  this.checked = false;
+                }
+              }
             });
             updateDriveNowWhat();
           }

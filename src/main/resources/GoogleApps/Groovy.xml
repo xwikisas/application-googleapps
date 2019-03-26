@@ -158,7 +158,7 @@ public class GoogleAppsGroovy {
         this.SCOPE  = getConfig("scope");
         this.DOMAIN  = getConfig("domain");
         this.active  = getConfig("active");
-        this.REDIRECT_URI = xwiki.getDocument(AUTH_PAGE).getExternalURL("view").replace('http://','https://');
+        this.REDIRECT_URI = xwiki.getDocument(AUTH_PAGE).getExternalURL("view");
         this.useCookies = getConfig("useCookies");
         this.skipLoginPage = getConfig("skipLoginPage");
         this.authWithCookies = getConfig("authWithCookies");
@@ -410,7 +410,7 @@ public class GoogleAppsGroovy {
             try {
                 // Force main wiki database to create the user as global
                 context.setDatabase("xwiki")
-                email = (user.emails!=null &amp;&amp; user.emails.size()>0) ? user.emails.getAt(0).value : "";
+                email = (user.emails!=null &amp;&amp; user.emails.size()&gt;0) ? user.emails.getAt(0).value : "";
                 def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
                 if ((wikiUserList==null) || (wikiUserList.size()==0))
                     wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", email).execute()
@@ -810,7 +810,7 @@ public getExistingFile(client, name) {
   dquery.setMaxResults(1);
   def resultFeed = client.getFeed(dquery, DocumentListFeed.class);
   def entries = resultFeed.getEntries();
-  if (entries.size()>0)
+  if (entries.size()&gt;0)
     return entries.get(0);
   else
     return null;
