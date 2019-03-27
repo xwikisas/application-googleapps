@@ -413,8 +413,6 @@
             });
             readScopes();
 
-            if(location.protocol=='https:') { jQuery("#warnIfNotHttps").hide(); }
-
             jQuery('#googleapps_GoogleApps\.GoogleAppsConfig').submit(cancelCancelEdit);
           }).defer();
         });

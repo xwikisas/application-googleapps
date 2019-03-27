@@ -62,25 +62,9 @@ $services.localization.render('googleapps.config.explanation')
 
 
 {{html wiki=true}}
-#set($externalUrlOAuth=$xwiki.getDocument('GoogleApps.OAuth').getExternalURL('view'))
-#set($correctedUrl=$externalUrlOAuth.replace('http://','https://'))
-#set($externalUrl=$externalUrlOAuth.replace('bin/view/GoogleApps/OAuth',''))
 
 &lt;form id="$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" class="xform"&gt;
     ; $configDoc.display("activate", 'edit', $obj) &lt;label for="${prefix}_activate"&gt;#t("activate")&lt;/label&gt;
-
-    #if(!$externalUrlOAuth.startsWith('https://'))
-        &lt;div id="warnIfNotHttps"&gt;
-
-          {{error}}
-            $services.localization.render('googleapps.config.externalUrlNotHttps',[$externalUrl,$correctedUrl])
-          {{/error}}
-
-        &lt;/div&gt;
-        ## Your wiki is currently accessed over the URL xxxx but the Google services require the https protocol.
-        ## The OAuth process will use yyyy. Please make sure that this is accessible.
-    #end
-
 
     &lt;fieldset&gt;
         &lt;legend&gt;#t("communicate")&lt;/legend&gt;
