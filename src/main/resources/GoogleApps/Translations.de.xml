@@ -66,8 +66,8 @@ GoogleApps.GoogleAppsConfigClass_scope=Autorisierungen
 GoogleApps.GoogleAppsConfigClass_scope.hint=Welche Information sollte dieses Wiki Google abfragen?
 GoogleApps.GoogleAppsConfigClass_scope_identity=Vor- und Nachname.
 GoogleApps.GoogleAppsConfigClass_scope_email=Emailadresse.
-GoogleApps.GoogleAppsConfigClass_scope_gdoc=Google Docs lesen und speichern.
-GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Benutzerprofilbild
+GoogleApps.GoogleAppsConfigClass_scope_drive=Google Docs lesen und speichern.
+GoogleApps.GoogleAppsConfigClass_scope_avatar=Benutzerprofilbild
 GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=Diese Autorisierung ist nötig.
 GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=Diese Autorisierung wird noch implementiert.
 
@@ -124,6 +124,13 @@ googleapps.login.domainerror3=Bitte melde dich ab von diesem Konto und versuche 
 
 googleapps.extension.name=Google Apps Integration (Pro)
 googleapps.error.noValidLicense=Eine Lizenz für diese Erweiterung fehlt. Bitte besuche die Lizenzeinstellungen (in der Eweiterungenabschnitt), um eine zu erhalten.
+
+#@deprecatedstart
+##################################################
+## until 2.4-rc-1
+##################################################
+GoogleApps.GoogleAppsConfigClass_scope_gdoc=Google Docs lesen und speichern.
+GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Benutzerprofilbild
 googleapps.config.externalUrlNotHttps=Dein Wiki wird über die Adresse {0} aber die Google Servers erwarten das https Protokoll. Die OAuth Stufen werden {1} verwenden. Mache bitte sicher, dass dieses erreichbar ist.
 </content>
 </xwikidoc>

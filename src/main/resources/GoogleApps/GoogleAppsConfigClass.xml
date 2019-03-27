@@ -367,6 +367,37 @@
           hintTextOff = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOff'))}",
           hintTextInvaliddomain = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain'))}";
 
+          function updateScopes() {
+            var scopes = "";
+            jQuery(("input[name^='scope_']")).each(function() {
+            if(jQuery.attr(this, "disabled")!=="disabled" &amp;&amp; this.checked)
+              scopes = scopes + " " + this.name.substring('scope_'.length);
+            });
+            jQuery("input[name$='_scope']").val(scopes);
+            updateDriveNowWhat();
+          }
+
+          function readScopes() {
+            var scope = jQuery("input[name$='_scope']").val();
+            jQuery(("input[name^='scope_']")).each(function() {
+              if(jQuery.attr(this, "disabled")!=="disabled") {
+                var n = this.name.substring('scope_'.length);
+                if (scope.indexOf(n) > -1) {
+                  this.checked = true;
+                } else {
+                  this.checked = false;
+                }
+              }
+            });
+            updateDriveNowWhat();
+          }
+
+          function updateDriveNowWhat() {
+            var driveInput = jQuery("input[name='scope_drive']")[0];
+            if(driveInput.checked) jQuery("#driveOnNowWhat").show();
+              else jQuery("#driveOnNowWhat").hide();
+          }
+
           (function () {
             // register listeners
             cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
@@ -377,7 +408,10 @@
 
             jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
 
-            if(location.protocol=='https:') { jQuery("#warnIfNotHttps").hide(); }
+            jQuery(("input[name^='scope_']")).each(function() {
+            jQuery(this).change(function() { updateScopes(); });
+            });
+            readScopes();
 
             jQuery('#googleapps_GoogleApps\.GoogleAppsConfig').submit(cancelCancelEdit);
           }).defer();

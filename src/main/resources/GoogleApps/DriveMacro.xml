@@ -295,97 +295,101 @@ def force = false;
 def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy")
 gagroovy.init(xwiki, xcontext, doc)
 
-// adding stylesheet
-xwiki.ssx.use("GoogleApps.DriveMacro");
+if(!gagroovy.useDrive) {
+  println "This macro is disabled."
+} else {
+  // adding stylesheet
+  xwiki.ssx.use("GoogleApps.DriveMacro");
 
-if (xcontext.macro.params.authentication) {
-  if (gagroovy.authorize(false)==null) {
-    def url = gagroovy.getAuthorizationURL()
-    println "This macro might require [[authentication on Google Apps&gt;&gt;url:${url}]]"
+  if (xcontext.macro.params.authentication) {
+    if (gagroovy.authorize(false)==null) {
+      def url = gagroovy.getAuthorizationURL()
+      println "This macro might require [[authentication on Google Apps&gt;&gt;url:${url}]]"
+    }
   }
-}
 
-if (nb==null)
-  nb = 0;
-def embednb = (!request.nb) ? 0 : Integer.parseInt(request.nb)
-def query = request.getParameter("query${nb}")
+  if (nb==null)
+    nb = 0;
+  def embednb = (!request.nb) ? 0 : Integer.parseInt(request.nb)
+  def query = request.getParameter("query${nb}")
 
-if (request.update=="1" &amp;&amp; nb==embednb)
-  force = true;
+  if (request.update=="1" &amp;&amp; nb==embednb)
+    force = true;
 
-if (request.embed=="1") {
-  if (embednb==nb) {
-   def drive = gagroovy.getDriveService();
-   def user = drive.about().get().execute().getUser().emailAddress;
-   def docData = drive.files().get(request.id).execute();
-   def embedLink = docData.embedLink;
-   if (embedLink==null)
-     embedLink = docData.alternateLink;
+  if (request.embed=="1") {
+    if (embednb==nb) {
+     def drive = gagroovy.getDriveService();
+     def user = drive.about().get().execute().getUser().emailAddress;
+     def docData = drive.files().get(request.id).execute();
+     def embedLink = docData.embedLink;
+     if (embedLink==null)
+       embedLink = docData.alternateLink;
 
-   if (obj==null) {
-     obj = doc.newObject("GoogleApps.SynchronizedDocumentClass");
-     obj.getBaseObject().setNumber(nb);
+     if (obj==null) {
+       obj = doc.newObject("GoogleApps.SynchronizedDocumentClass");
+       obj.getBaseObject().setNumber(nb);
+     }
+     doc.use(obj);
+     doc.set("id", request.id)
+     if (embedLink!=null)
+      doc.set("embedLink", embedLink)
+     doc.set("editLink", docData.alternateLink)
+     doc.set("version", docData.version.toString())
+     doc.set("fileName", docData.originalFilename ? docData.originalFilename : docData.title)
+     doc.set("user", user)
+     doc.save("Inserting Google Document")
+    }
+  }
+
+    if (id!=null) {
+      println id;
+    } else if (obj!=null &amp;&amp; !force) {
+     doc.use(obj);
+     def embedLink = doc.getValue("embedLink")
+     def editLink = doc.getValue("editLink")
+     def swidth = (width.endsWith("%")) ? width : width + "px";
+     print """(% class="drive-links" style="width: ${swidth};" %)((("""
+     print """[[Change&gt;&gt;||queryString="update=1&amp;nb=${nb}"]]"""
+     if (editLink &amp;&amp; editLink.startsWith("http"))
+       print """ - [[Edit&gt;&gt;url:${editLink}]]"""
+     println ")))"
+     println """{{html clean=false}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""
+    } else {
+      def tquery = ""
+      if (query)
+       tquery = escapetool.xml(query)
+  println """
+
+  To insert or change the current Google Drive document being embedded, you need to search for it and choose which format to embed the document in. Use the following form to find your document.
+
+  {{html clean==false}}
+  &lt;form action="" method="get"&gt;
+  Insert a Google Document:
+  &lt;input type="hidden" name="update" value="1" /&gt;
+  &lt;input type="hidden" name="nb" value="${nb}" /&gt;
+  &lt;input type="text" name="query${nb}" value="${tquery}" /&gt;
+  &lt;input type="submit" value="Search" /&gt;
+  &lt;/form&gt;
+  {{/html}}
+  """
+  if (query &amp;&amp; embednb==nb) {
+   def squery = "'" + query + "'"
+   def results = gagroovy.listDocuments("fullText contains ${squery}", 10)
+   def nbres = results.items.size();
+
+   println "${nbres} documents found: "
+   for (entry in results.items) {
+    def docName = entry.title;
+    def embedLink = entry.embedLink;
+    if (embedLink==null)
+      embedLink = entry.alternateLink;
+    if (embedLink==null)
+     println """* ${docName}: this document cannot be embedded"""
+    else
+     println """* ${docName}: [[embed this document&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
    }
-   doc.use(obj);
-   doc.set("id", request.id)
-   if (embedLink!=null)
-    doc.set("embedLink", embedLink)
-   doc.set("editLink", docData.alternateLink)
-   doc.set("version", docData.version.toString())
-   doc.set("fileName", docData.originalFilename ? docData.originalFilename : docData.title)
-   doc.set("user", user)
-   doc.save("Inserting Google Document")
   }
-}
-
-  if (id!=null) {
-    println id;
-  } else if (obj!=null &amp;&amp; !force) {
-   doc.use(obj);
-   def embedLink = doc.getValue("embedLink")
-   def editLink = doc.getValue("editLink")
-   def swidth = (width.endsWith("%")) ? width : width + "px";
-   print """(% class="drive-links" style="width: ${swidth};" %)((("""
-   print """[[Change&gt;&gt;||queryString="update=1&amp;nb=${nb}"]]"""
-   if (editLink &amp;&amp; editLink.startsWith("http"))
-     print """ - [[Edit&gt;&gt;url:${editLink}]]"""
-   println ")))"
-   println """{{html clean=false}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""
-  } else {
-    def tquery = ""
-    if (query)
-     tquery = escapetool.xml(query)
-println """
-
-To insert or change the current Google Drive document being embedded, you need to search for it and choose which format to embed the document in. Use the following form to find your document.
-
-{{html clean==false}}
-&lt;form action="" method="get"&gt;
-Insert a Google Document:
-&lt;input type="hidden" name="update" value="1" /&gt;
-&lt;input type="hidden" name="nb" value="${nb}" /&gt;
-&lt;input type="text" name="query${nb}" value="${tquery}" /&gt;
-&lt;input type="submit" value="Search" /&gt;
-&lt;/form&gt;
-{{/html}}
-"""
-if (query &amp;&amp; embednb==nb) {
- def squery = "'" + query + "'"
- def results = gagroovy.listDocuments("fullText contains ${squery}", 10)
- def nbres = results.items.size();
-
- println "${nbres} documents found: "
- for (entry in results.items) {
-  def docName = entry.title;
-  def embedLink = entry.embedLink;
-  if (embedLink==null)
-    embedLink = entry.alternateLink;
-  if (embedLink==null)
-   println """* ${docName}: this document cannot be embedded"""
-  else
-   println """* ${docName}: [[embed this document&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
- }
-}
+    }
   }
 }
 {{/groovy}}</code>
