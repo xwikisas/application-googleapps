@@ -124,15 +124,15 @@ googleapps.login.domainerror3=Please disconnect from this account, and try to lo
 
 googleapps.extension.name=Google Apps Integration (Pro)
 googleapps.error.noValidLicense=A license for this application is missing. Please visit the License setting (in the Extensions section) to obtain one.
-googleapps.config.externalUrlNotHttps=Your wiki is currently accessed over the URL {0} but the Google services require the https protocol. The OAuth process will use {1}. Please make sure that this is accessible.
 
 #@deprecatedstart
 ##################################################
-## until 2.3
+## until 2.4-rc-1
 ##################################################
-GoogleApps.GoogleAppsConfigClass_scope_gdoc=Google Docs lesen und speichern.
-GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Benutzerprofilbild
-  </content>
+GoogleApps.GoogleAppsConfigClass_scope_gdoc=Read and write Google Docs
+GoogleApps.GoogleAppsConfigClass_scope_readAvatar=User image
+googleapps.config.externalUrlNotHttps=Your wiki is currently accessed over the URL {0} but the Google services require the https protocol. The OAuth process will use {1}. Please make sure that this is accessible.
+</content>
   <object>
     <name>GoogleApps.Translations</name>
     <number>0</number>

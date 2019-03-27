@@ -123,6 +123,13 @@ googleapps.login.domainerror3=Merci de vous déconnecter de ce compte et réessa
 
 googleapps.extension.name=Intégration Google Apps (Pro)
 googleapps.error.noValidLicense=Il manque une licence pour cette application. Veuillez visiter les réglages de licences (dans la section extensions)
+
+#@deprecatedstart
+##################################################
+## until 2.4-rc-1
+##################################################
+GoogleApps.GoogleAppsConfigClass_scope_gdoc=Lecture et écriture dans le Google Drive
+GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Photo de profil
 googleapps.config.externalUrlNotHttps=Vous accédez votre wiki au travers de l''URL {0} mais les services Google exigent l''utilisation du protocole https. Le processus OAuth utilisera {1}. Assurez-vous que cet URL est accessible.
 </content>
 </xwikidoc>
