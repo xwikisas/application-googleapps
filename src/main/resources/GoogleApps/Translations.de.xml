@@ -21,116 +21,20 @@
 -->
 
 <xwikidoc version="1.2" reference="GoogleApps.Translations" locale="de">
-    <web>GoogleApps</web>
-    <name>Translations</name>
-    <language>de</language>
-    <defaultLanguage>en</defaultLanguage>
-    <translation>1</translation>
-    <creator>xwiki:XWiki.Admin</creator>
-    <creationDate>1549634091000</creationDate>
-    <parent>GoogleApps.WebHome</parent>
-    <author>xwiki:XWiki.Admin</author>
-    <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-    <date>1549634668000</date>
-    <contentUpdateDate>1549634668000</contentUpdateDate>
-    <version>1.1</version>
-    <title>Google Apps Integration Translations</title>
-    <comment/>
-    <minorEdit>false</minorEdit>
-    <syntaxId>plain/1.0</syntaxId>
-    <hidden>false</hidden>
-    <content>
-admin.googleapps=Google Apps
-googleapps.config.heading=Einstellungen der Google Apps Integration
-googleapps.config.explanation=XWiki kann mit Google Apps integriert werden, was dann dich erlaubt, Office Anhangsdateien mit den Editoren von Google Drive zu bearbeiten und dann sie zurück ins Wiki zu speichern. Es erlaubt auch jegliche Google Drive Datei auf einer Webseite zu laden oder zu einbetten.
-GoogleApps.GoogleAppsConfigClass_activate=Aktivieren
-
-GoogleApps.GoogleAppsConfigClass_communicate=Schnittstellen zu den Google Servers
-GoogleApps.GoogleAppsConfigClass_communicate.hint=Um Google Apps zu aktivieren, musst du {0}dein Server für OAuth Zugang auf der Google Cloud Console registrieren{1} und die genannten Client-ID und Clientschlüssel in den folgenden Einstellungen einfügen.
-GoogleApps.GoogleAppsConfigClass_communicate.hint2=Du erhälst mehr Information in den {0}Installationsanweisungen{1}.
-
-GoogleApps.GoogleAppsConfigClass_appname=Name
-GoogleApps.GoogleAppsConfigClass_appname.hint=Für deine eigene Organisation
-GoogleApps.GoogleAppsConfigClass_clientid=Client-ID
-GoogleApps.GoogleAppsConfigClass_clientid.hint=Wird bei der Google Console als "Client-ID für Webanwendung" gegeben.
-GoogleApps.GoogleAppsConfigClass_secret=Clientschlüssel
-GoogleApps.GoogleAppsConfigClass_secret.hint=Wird bei der Google Console gegeben.
-
-GoogleApps.GoogleAppsConfigClass_domain=Domäne
-GoogleApps.GoogleAppsConfigClass_domain.hint=Beschränkt die Domäne der Google-erkannte Emailadresse der Benutzern, die sich bei dem Wiki anmelden dürfen.
-GoogleApps.GoogleAppsConfigClass_domain.hintTextOn=Nur Benutzern, deren Emailadresse in Domäne \"{0}\" liegt, dürfen bei diesem Wiki durch Google registrieren und anmelden.
-GoogleApps.GoogleAppsConfigClass_domain.hintTextOff=Alle Benutzern, die Google erkennt, dürfen sich in diesem Wiki anmelden und registrieren.
-GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain="{0}" ist kein gültige Domänename.
-
-GoogleApps.GoogleAppsConfigClass_scope=Autorisierungen
-GoogleApps.GoogleAppsConfigClass_scope.hint=Welche Information sollte dieses Wiki Google abfragen?
-GoogleApps.GoogleAppsConfigClass_scope_identity=Vor- und Nachname.
-GoogleApps.GoogleAppsConfigClass_scope_email=Emailadresse.
-GoogleApps.GoogleAppsConfigClass_scope_drive=Google Docs lesen und speichern.
-GoogleApps.GoogleAppsConfigClass_scope_avatar=Benutzerprofilbild
-GoogleApps.GoogleAppsConfigClass_checkbox_mandatory=Diese Autorisierung ist nötig.
-GoogleApps.GoogleAppsConfigClass_checkbox_notyetdone=Diese Autorisierung wird noch implementiert.
-
-GoogleApps.GoogleAppsConfigClass_loginbehaviour=XWiki Anmeldungsvorgang
-GoogleApps.GoogleAppsConfigClass_useCookies=Cookies anwenden für die Google Apps Integration
-GoogleApps.GoogleAppsConfigClass_useCookies.hint=Diese Cookies erlauben Browsers zu erinneren, welche Google Benutzer benutzt war, um sich zum Wiki anzumelden.
-GoogleApps.GoogleAppsConfigClass_skipLoginPage=Loginseite überspringen
-GoogleApps.GoogleAppsConfigClass_skipLoginPage.hint=Erlaubt Browser mit dem Cookie sich automatisch anzumelden.
-GoogleApps.GoogleAppsConfigClass_authWithCookies=Google Dialog überspringen
-GoogleApps.GoogleAppsConfigClass_authWithCookies.hint=Erlaubt die automatische Anmeldung durch das Cookie, dammit die Autorisierung bei Google nicht nötig ist.
-GoogleApps.GoogleAppsConfigClass_cookiesTTL=Dauer
-GoogleApps.GoogleAppsConfigClass_cookiesTTL.hint=Wie lang soll dieses Cookie gültig bleiben? (In Sekunden, Defautwerte: 3 Tage)
-
-GoogleApps.GoogleAppsConfigClass_nowWhat1=Du kannst die Installation auf der {0}TestDocumentList{1} Seite prüfen. Diese Seite präsentiert 10 Dokumente deiner Google Drive Ordner.
-GoogleApps.GoogleAppsConfigClass_nowWhat2=Du kannst auch das "drive" Makro verwenden, um ein Google Dokument in deiner Wikiseite einzubetten. Benutze {0} dafür; bei der Anzeige wirst du dann das Google Dokument wählen.
-
-googleapps.edit.editingoogleapps.link=Mit Google Apps bearbeiten
-googleapps.edit.title=Der XWiki Anhang mit Google Apps bearbeiten
-googleapps.edit.overwritemessage=Ein Dokument mit Name {0} existiert bereits. Du kannst es überschreiben oder ein neues gestalten:
-googleapps.edit.overwrite.button=Überschreiben
-googleapps.edit.newfile.button=Neues Dokument
-googleapps.edit.overwrite.desc=Das Google Apps Dokument würde überschrieben. Jetzt kannst du:
-googleapps.edit.newfile.desc=Ein neues Google Apps Dokument wurde gestaltet. Jetzt kannst du:
-googleapps.edit.desc=Nachdem du das Dokument in Google Apps bearbeitet hast, du kannst die folgende Buttons verwenden, um den Inhalt des Dokuments zu holen, damit er wieder als XWiki Anhang aktuell ist:
-googleapps.edit.retrieve.button=Dokument Inhalt abrufen
-googleapps.edit.editingoogle.button=Dokument mit Google Apps bearbeiten
-googleapps.edit.confirm=Bestätige die Berbeitung mit Google Apps
-
-googleapps.import.importfromgoogleapps=Aus Google Apps importieren
-googleapps.import.title=Ein Dokument aus Google Apps importieren
-googleapps.import.desc=Um ein Google Apps Dokument auf der Seite {0} ({1}) zu importieren, suche nach das Dokument in deinem Google Drive und klicke 'Ins XWiki importieren'.
-googleapps.import.form.title=Suche nahch Google Dokumente:
-googleapps.import.form.button=Suchen
-googleapps.import.importas=Ins XWiki importien, als
-googleapps.import.nextresults.button=Weitere Ergebnisse
-
-googleapps.retrieve.title=Aus Google Apps abrufen
-googleapps.retrieve.fail=Fehler beim Abrufen aus Google Apps
-googleapps.retrieve.nodocument=Kein Dokument kann abgerufen werden.
-
-googleapps.login.title=Google Apps Anmeldung
-googleapps.login.withgoogle=Mit Google anmelden
-googleapps.login.withxwiki=Mit XWiki anmelden
-googleapps.login.error=Es ist ein Fehler während des Anmeldevorgangs aufgetreten. Bitte kontaktiere das XWiki Support für Hilfe oder versuche es wieder.
-googleapps.login.message=Du wirst zu den Google Servers weitergeleitet, damit du dich dort anmeldest und die Informationsvermittlung zum Wiki zustimmst.
-googleapps.login.redirectmessage=Du wirst zur angeforderten Seite weitergeleitet.
-googleapps.login.oauth.message=Die Google Authentifizierung läuft
-googleapps.login.oauth.success=Die Google Authentifizierung ist erfolgreich.
-googleapps.login.oauth.successwithredirect=Erfolgreiche Authentifizierung. Du wirst zu der angeforderten Wikiseite weitergeleitet.
-googleapps.login.oauth.notauthenticated=Du wirst zur Google Authentifizierung weitergeleitet.
-googleapps.login.domainerror1=Du darfst mit mit diesem Google Konto nicht auf dieser XWik Instanz einloggen, weil der Domänename nicht wie erwartet ist.
-googleapps.login.domainerror2=Dein aktuelles Google Konto ist
-googleapps.login.domainerror3=Bitte melde dich ab von diesem Konto und versuche es wieder.
-
-googleapps.extension.name=Google Apps Integration (Pro)
-googleapps.error.noValidLicense=Eine Lizenz für diese Erweiterung fehlt. Bitte besuche die Lizenzeinstellungen (in der Eweiterungenabschnitt), um eine zu erhalten.
-
-#@deprecatedstart
-##################################################
-## until 2.4-rc-1
-##################################################
-GoogleApps.GoogleAppsConfigClass_scope_gdoc=Google Docs lesen und speichern.
-GoogleApps.GoogleAppsConfigClass_scope_readAvatar=Benutzerprofilbild
-googleapps.config.externalUrlNotHttps=Dein Wiki wird über die Adresse {0} aber die Google Servers erwarten das https Protokoll. Die OAuth Stufen werden {1} verwenden. Mache bitte sicher, dass dieses erreichbar ist.
-</content>
+  <web>GoogleApps</web>
+  <name>Translations</name>
+  <language>de</language>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>1</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>GoogleApps.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Google Apps Integration Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content/>
 </xwikidoc>

@@ -31,8 +31,6 @@
   <author>xwiki:XWiki.Admin</author>
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <date>1550646416000</date>
-  <contentUpdateDate>1550093127000</contentUpdateDate>
   <version>1.1</version>
   <title>Google Apps Configuration</title>
   <defaultTemplate/>
@@ -189,7 +187,7 @@
       <authWithCookies>0</authWithCookies>
     </property>
     <property>
-      <clientid></clientid>
+      <clientid/>
     </property>
     <property>
       <cookiesTTL/>
@@ -200,9 +198,11 @@
     <property>
       <scope>drive avatar</scope>
     </property>
-    <property><authWithCookies>1</authWithCookies></property>
     <property>
-      <secret></secret>
+      <authWithCookies>1</authWithCookies>
+    </property>
+    <property>
+      <secret/>
     </property>
     <property>
       <skipLoginPage>0</skipLoginPage>
@@ -409,7 +409,7 @@
 </codeToExecute>
     </property>
     <property>
-      <configurationClass></configurationClass>
+      <configurationClass/>
     </property>
     <property>
       <configureGlobally>1</configureGlobally>
