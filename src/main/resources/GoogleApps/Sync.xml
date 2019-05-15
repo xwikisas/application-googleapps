@@ -51,7 +51,7 @@ import com.google.gdata.client.docs.DocsService;
 import java.util.Arrays;
 import java.io.File;
 
-  
+
 SERVICE_ACCOUNT_EMAIL = "58448820359-1ojbugr6426kukbo6vobrchh6cmtksv4@developer.gserviceaccount.com";
 SERVICE_ACCOUNT_PKCS12_FILE_PATH = "/WEB-INF/GoogleApps.p12";
 
@@ -74,7 +74,7 @@ def getCredential(email) {
       .setServiceAccountPrivateKeyFromP12File(new File(xcontext.context.getEngineContext().getRealPath(SERVICE_ACCOUNT_PKCS12_FILE_PATH)))
       .build();
     return credential;
- } 
+ }
 
 httpTransport = new NetHttpTransport();
 jsonFactory = new JacksonFactory();
@@ -88,7 +88,7 @@ def getDocsService(credential) {
   service.setOAuth2Credentials(credential);
   return service
 }
-  
+
 boolean needUpdate = false;
 def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy");
 gagroovy.init(xwiki, xcontext, doc)
@@ -108,11 +108,11 @@ for(item in xwiki.searchDocuments(", BaseObject as obj where doc.fullName = obj.
     def credential = getCredential(email);
     def driveService = getDriveService(credential);
     def docsService = getDocsService(credential);
-    try { 
+    try {
       def result = driveService.files().get(id).execute();
       if (version==null || version=="" || version!="${result.version}") {
         if (exportLink!=null &amp;&amp; exportLink.startsWith("http")) {
-        println "* Document ${item} ${name} requires updating"
+        println "* {{translation key='googleapps.sync.reqUpdate' parameters='${item},${name}'/}}"
         println "** ${item} ${itemobj.nb} ${name} ${email} ${version}"
         println "** ${result.title} ${result.version}"
         needUpdate = true;
@@ -120,20 +120,20 @@ for(item in xwiki.searchDocuments(", BaseObject as obj where doc.fullName = obj.
            gagroovy.retrieveFileFromGoogle(docsService, driveService, item, name, result.id, exportLink)
         }
        } else {
-        println "* Document ${item} ${name} requires updating but cannot be updated (exportLink missing)"          
+        println "* {{translation key='googleapps.sync.reqUpdateCannot' parameters='${item},${name}'/}}"
        }
       } else {
-        println "* Document ${item} ${name} is up to date"
-      } 
+        println "* {{translation key='googleapps.sync.isUpToDate' parameters='${item},${name}'/}}"
+      }
     } catch(e) {
       println e.getMessage();
     }
    }
-  } 
-} 
+  }
+}
 
 if (needUpdate) {
    println """[[Confirm&gt;&gt;||queryString="confirm=1"]]"""
-}  
+}
 {{/groovy}}</content>
 </xwikidoc>

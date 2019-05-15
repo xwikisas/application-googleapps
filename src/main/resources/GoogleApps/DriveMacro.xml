@@ -293,7 +293,7 @@ def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy")
 gagroovy.init(xwiki, xcontext, doc)
 
 if(!gagroovy.useDrive) {
-  println "This macro is disabled."
+  println "{{translation key='googleapps.error.driveDisabled' /}}"
 } else {
   // adding stylesheet
   xwiki.ssx.use("GoogleApps.DriveMacro");
@@ -301,7 +301,7 @@ if(!gagroovy.useDrive) {
   if (xcontext.macro.params.authentication) {
     if (gagroovy.authorize(false)==null) {
       def url = gagroovy.getAuthorizationURL()
-      println "This macro might require [[authentication on Google Apps&gt;&gt;url:${url}]]"
+      println "{{translation key='googleapps.macro.maybeReqAuth' parameters='[[,>>url:${url}]]'/}}"
     }
   }
 
@@ -357,11 +357,11 @@ if(!gagroovy.useDrive) {
        tquery = escapetool.xml(query)
   println """
 
-  To insert or change the current Google Drive document being embedded, you need to search for it and choose which format to embed the document in. Use the following form to find your document.
+  {{translation key='googleapps.macro.mainHint'/}}
 
-  {{html clean==false}}
+  {{html clean=false wiki=true}}
   &lt;form action="" method="get"&gt;
-  Insert a Google Document:
+  {{translation key='googleapps.macro.insert'/}}
   &lt;input type="hidden" name="update" value="1" /&gt;
   &lt;input type="hidden" name="nb" value="${nb}" /&gt;
   &lt;input type="text" name="query${nb}" value="${tquery}" /&gt;
@@ -381,9 +381,9 @@ if(!gagroovy.useDrive) {
     if (embedLink==null)
       embedLink = entry.alternateLink;
     if (embedLink==null)
-     println """* ${docName}: this document cannot be embedded"""
+     println """* ${docName}: {{translation key='googleapps.macro.canBeEmbedded'/}}"""
     else
-     println """* ${docName}: [[embed this document&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
+     println """* ${docName}: [[{{translation key='googleapps.macro.nowEmbed'/}}&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
    }
   }
     }

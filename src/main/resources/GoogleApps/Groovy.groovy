@@ -76,6 +76,7 @@ public class GoogleAppsGroovy {
     def SCOPES = new ArrayList();
 
     public getConfig(name) {
+
         def config = "";
         def configdoc = xwiki.getDocument(CONFIG_PAGE);
         configdoc.use(CONFIG_CLASS);
@@ -98,7 +99,7 @@ public class GoogleAppsGroovy {
         init(xwiki, context, doc, null)
     }
 
-    public init(xwiki, context, doc, services) {
+    public init(XWiki xwiki, context, doc, services) {
         this.xwiki = xwiki;
         this.context = context;
         this.doc = doc;

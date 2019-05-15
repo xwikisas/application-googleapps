@@ -46,12 +46,18 @@
 #if (!$services.licensing.licensor.hasLicensureForEntity($mainReference))
   {{error}}#getMissingLicenseMessage('googleapps.extension.name'){{/error}}
 #else
-This is the code for the Google Apps extension, allowing to integrate XWiki with Google's editing application (Google Docs, Spreadsheet, Presentations and Drawing). Thanks to this application it possible to easily import a Google Apps document as an attachment in XWiki (in multiple formats) and also to launch editing of an XWiki attachment in Google Apps. Once your editing session is finished you can reimport it in XWiki.
+$services.localization.render('googleapps.webHome.1')
+$services.localization.render('googleapps.webHome.2')
+## You can test the integration in test-document-list
+$services.localization.render('googleapps.webHome.3', ["[[","&gt;&gt;TestDocumentList]]"])
 
-Go to [[Google Apps section of the XWiki Preferences&gt;&gt;path:$xwiki.getURL('XWiki.XWikiPreferences', 'admin', 'editor=globaladmin&amp;section=googleapps')]] in order to configure the application. Once this is properly done, you will be able to see the feature in the Attachments section of XWiki pages. You can either click on the edit link next to each attachment or use the "Import from Google Apps" button.
-
-You can verify your installation by visiting the page [[TestDocumentList]], which should list you 10 documents of your Google Docs instance.
-You can also use the "drive" macro to insert a Google Document in your page. See [[DriveMacroTest]] to try it out.
+#if($hasGlobalAdmin)
+#set($url=$xwiki.getURL('XWiki.XWikiPreferences', 'admin', 'editor=globaladmin&amp;section=googleapps'))
+## you can modify the config here
+$services.localization.render('googleapps.webHome.4', ["[[","&gt;&gt;path:$url]]"])
+## you can try it in driveMacroTest
+$services.localization.render('googleapps.webHome.5', ["[[","&gt;&gt;DriveMacroTest]]"])
+#end
 #end
 {{/velocity}}
 </content>

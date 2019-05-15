@@ -45,12 +45,12 @@
 #if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
   #set($gdoc = $gagroovy.getGoogleDocument($request.page, $request.name))
   #if($request.confirm)
-   Uploading file to Google Drive
+  {{translation key='googleapps.editInGA.uploading'/}}
    #set($gdoc = $gagroovy.saveAttachmentToGoogle($request.page, $request.name))
   #end
 
   #if($gdoc)
-  Document is in Google Drive.
+  {{translation key='googleapps.editInGA.isInGDrive'/}}
 
   (% class="buttonwrapper" %)
   {{html clean=false}}&lt;a href="${gdoc.editLink}" target="_blank"&gt;$services.localization.render("googleapps.edit.editingoogle.button")&lt;/a&gt;{{/html}}
@@ -59,12 +59,12 @@
 
   (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
   #else
-  This document is not yet uploaded to Google Drive. Please confirm that you would like to upload it to edit it.
+  {{translation key='googleapps.editInGA.notYetInGDrive'/}}
 
   (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
   #end
 #else
-    This macro is disabled.
+  {{translation key='googleapps.error.driveDisabled'/}}
 #end
 {{/velocity}}</content>
 </xwikidoc>

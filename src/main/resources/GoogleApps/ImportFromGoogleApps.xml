@@ -42,12 +42,12 @@
   <content>{{velocity}}
 #set($pagedoc = $xwiki.getDocument($request.page))
 #set($pagetitle = $pagedoc.displayTitle)
-
-To import a Google Apps document in the page "${pagetitle}" ($pagedoc.fullName) search for the document in the Google Apps repository and click 'Import to XWiki':
+{{translation key=''/}}
+      {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'
 
 {{html clean==false}}
 &lt;form action="" method="get"&gt;
-Search for Google Documents: 
+{{translation key='googleapps.importGA.search'/}}
 &lt;input type="text" name="query" value="$!{request.query}" /&gt;
 &lt;input type="hidden" name="page" value="$!{request.page}" /&gt;
 &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
@@ -67,50 +67,8 @@ Search for Google Documents:
   #set($stype = $exportData.type)
   #set($newDocName = $exportData.newDocName)
  [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
- 
-#end
-#end
-
-#*
-#set($docinfo = $gagroovy.getFileDisplayInfo($entry.mimeType, $docName))
- * $entry.downloadUrl $entry.exportLinks $entry
- * ${docName} - Import to XWiki as #foreach($type in $docinfo.availableTypes)
-#if($type=="")
- #set($stype = "file")
- #set($newDocName = $docinfo.docName)
-#elseif ($type=="folder")
- Cannot import a folder
-#else
- #set($stype = $type)
- #set($newDocName = "${docinfo.docName}.${type}")
-#end
-#set($gurl = "${entry.alternateLink}&amp;exportFormat=${type}")
-[[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;id=${escapetool.url($gurl)}"]] #end
-#end
-*#
-#*
-#set($docName = $entry.getTitle().getPlainText())
- #set($rid = $entry.getResourceId())
- #set($docinfo = $gagroovy.getFileDisplayInfo($rid, $docName))
- * ${docName} - Import to XWiki as #foreach($type in $docinfo.availableTypes)
-#if($type=="")
- #set($stype = "file")
- #set($newDocName = $docinfo.docName)
-#else
- #set($stype = $type)
- #set($newDocName = "${docinfo.docName}.${type}")
-#end
-#set($gurl = "${entry.getContent().getUri()}&amp;exportFormat=${type}")
-[[${stype}&gt;&gt;RetrieveFromGoogleApps?page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;id=${escapetool.url($gurl)}]] #end
 
 #end
-
-#set($nextLink = $resultFeed.getNextLink())
-#if($nextLink)
-[[Next results&gt;&gt;?query=${escapetool.url($request.query)}&amp;feed=${escapetool.url($nextLink.getHref())}]]
 #end
-
-#end
-*#
 {{/velocity}}</content>
 </xwikidoc>
