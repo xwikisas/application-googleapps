@@ -293,7 +293,7 @@ def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy")
 gagroovy.init(xwiki, xcontext, doc)
 
 if(!gagroovy.useDrive) {
-  println "{{translation key='googleapps.error.driveDisabled' /}}"
+  println services.localization.render('googleapps.error.driveDisabled')
 } else {
   // adding stylesheet
   xwiki.ssx.use("GoogleApps.DriveMacro");
@@ -301,7 +301,7 @@ if(!gagroovy.useDrive) {
   if (xcontext.macro.params.authentication) {
     if (gagroovy.authorize(false)==null) {
       def url = gagroovy.getAuthorizationURL()
-      println "{{translation key='googleapps.macro.maybeReqAuth' parameters='[[,>>url:${url}]]'/}}"
+      println services.localization.render("googleapps.macro.maybeReqAuth", ["[[", ">>url:${url}]]"]);
     }
   }
 
@@ -357,7 +357,7 @@ if(!gagroovy.useDrive) {
        tquery = escapetool.xml(query)
   println """
 
-  {{translation key='googleapps.macro.mainHint'/}}
+{{translation key='googleapps.macro.mainHint'/}}
 
   {{html clean=false wiki=true}}
   &lt;form action="" method="get"&gt;
@@ -381,7 +381,7 @@ if(!gagroovy.useDrive) {
     if (embedLink==null)
       embedLink = entry.alternateLink;
     if (embedLink==null)
-     println """* ${docName}: {{translation key='googleapps.macro.canBeEmbedded'/}}"""
+     println """* ${docName}: """ + services.localization.render('googleapps.macro.canBeEmbedded')
     else
      println """* ${docName}: [[{{translation key='googleapps.macro.nowEmbed'/}}&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
    }
