@@ -727,6 +727,25 @@ public class GoogleAppsGroovy {
         return googleUser;
     }
 
+    /**
+     * checks that the xwiki.cfg adjustments are in (note: only works from XWiki 11)
+     * @return true if found and equal, false otherwise
+     */
+    public missesAuthenticationConfig(services) {
+        /*
+            xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl
+            xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService
+         */
+        def xwikicfg = services.component.getInstance(
+          Class.forName("org.xwiki.configuration.ConfigurationSource"), "xwikicfg");
+        if(xwikicfg==null) return false;
+        return !(xwikicfg.containsKey("xwiki.authentication.authclass") &&
+          xwikicfg.containsKey("xwiki.authentication.groovy.pagename") &&
+          xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &&
+          xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
+    }
+
+
 /*
 public saveAttachmentInGoogle(adoc, name, entry) {
   def data = adoc.getAttachment(name).getContentAsBytes();
