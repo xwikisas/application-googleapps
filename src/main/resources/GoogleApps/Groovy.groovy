@@ -739,8 +739,7 @@ public class GoogleAppsGroovy {
         def xwikicfg = services.component.getInstance(
           Class.forName("org.xwiki.configuration.ConfigurationSource"), "xwikicfg");
         if(xwikicfg==null) return false;
-        return !(xwikicfg.containsKey("xwiki.authentication.authclass") &&
-          xwikicfg.containsKey("xwiki.authentication.groovy.pagename") &&
+        return !(
           xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &&
           xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
     }

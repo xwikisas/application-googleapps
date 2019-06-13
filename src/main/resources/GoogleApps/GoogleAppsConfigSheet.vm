@@ -60,12 +60,12 @@ $configDoc.display("scope", "hidden")
 </fieldset>
 
 #if($gagroovy.missesAuthenticationConfig($services))
-{{warning}}$services.localization.render('googleapps.error.authConfigNotFound')
-$services.localization.render('googleapps.error.authConfigShould',['[[','>>https://store-clone.devxwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]']):
+    {{warning}}$services.localization.render('googleapps.error.authConfigNotFound')
+    $services.localization.render('googleapps.error.authConfigShould',['[[','>>https://store-clone.devxwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]']):
 
-{{code}}xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl
-xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService{{/code}}
-{{/warning}}
+    {{code}}xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl
+    xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService{{/code}}
+    {{/warning}}
 
 #else<!-- no misses configuration (e.g. config not found)-->#end
 <fieldset>
