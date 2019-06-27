@@ -6,7 +6,6 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
 #set($formId = "${section.toLowerCase()}_${configClassName}")
 #set($configDoc = $xwiki.getDocument($configClassName))
 #set($className="GoogleApps.GoogleAppsConfigClass")
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
 #set($prefix="${configDoc.fullName}_${className}_0")
 #set($obj = $configDoc.getObject($className))
 ## shorthand for t(ranslation) and tp(translation with parameters).
@@ -59,7 +58,7 @@ $configDoc.display("scope", "hidden")
 
 </fieldset>
 
-#if($gagroovy.missesAuthenticationConfig($services))
+#if($services.googleAppsService.missesAuthenticationConfig())
     {{warning}}$services.localization.render('googleapps.error.authConfigNotFound')
     $services.localization.render('googleapps.error.authConfigShould',['[[','>>https://store-clone.devxwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]']):
 
@@ -67,7 +66,7 @@ $configDoc.display("scope", "hidden")
     xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService{{/code}}
     {{/warning}}
 
-#else<!-- no misses configuration (e.g. config not found)-->#end
+#end
 <fieldset>
 <legend>#t("loginbehaviour")</legend>
 
