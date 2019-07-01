@@ -284,17 +284,21 @@
               xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl
               xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService
             */
-            if(xwikicfg==null) {
-              System.err.println("No xwikicfg"); return false;
+            if(xwikicfg == null) {
+              System.err.println("No xwikicfg");
+              return false;
             }
+            def authClass = xwikicfg.getProperty("xwiki.authentication.authclass");
+            def pageName = xwikicfg.getProperty("xwiki.authentication.groovy.pagename")
             return !(
-              xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &amp;&amp;
-              xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
+              authClass == "com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &amp;&amp;
+              pageName == "xwiki:GoogleApps.AuthService" );
           }
         }
 
-        // the objects and this registration are mostly copied from https://extensions.xwiki.org/xwiki/bin/view/Extension/Script%20Module/GroovyScriptServiceTutorial
-        // See comments on code there
+        // the objects and the registration below are mostly copied from
+        // https://extensions.xwiki.org/xwiki/bin/view/Extension/Script%20Module/GroovyScriptServiceTutorial
+        // See comments on code there.
 
         def componentManager = services.component.getRootComponentManager();
         def loader = new ComponentAnnotationLoader()
