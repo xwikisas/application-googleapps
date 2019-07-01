@@ -301,7 +301,7 @@ if(!gagroovy.useDrive) {
   if (xcontext.macro.params.authentication) {
     if (gagroovy.authorize(false)==null) {
       def url = gagroovy.getAuthorizationURL()
-      println services.localization.render("googleapps.macro.maybeReqAuth", ["[[", ">>url:${url}]]"]);
+      println services.localization.render("googleapps.macro.maybeReqAuth", ["[[", "&gt;&gt;url:${url}]]"]);
     }
   }
 

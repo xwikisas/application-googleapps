@@ -1,4 +1,4 @@
-<?xml version='1.1' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -163,9 +163,11 @@
       </name>
     </class>
     <property>
-      <code>{{groovy}}&#xd;
-xcontext.method.output.value = []&#xd;
-{{/groovy}}</code>
+      <code>
+        {{groovy}}
+          xcontext.method.output.value = []
+        {{/groovy}}
+      </code>
     </property>
     <property>
       <name>getEvents</name>
@@ -207,9 +209,11 @@ xcontext.method.output.value = []&#xd;
       </name>
     </class>
     <property>
-      <code>{{groovy}}&#xd;
-xcontext.method.output.value = doc.documentReference.toString()&#xd;
-{{/groovy}}</code>
+      <code>
+        {{groovy}}
+          xcontext.method.output.value = doc.documentReference.toString()
+        {{/groovy}}
+      </code>
     </property>
     <property>
       <name>getName</name>
