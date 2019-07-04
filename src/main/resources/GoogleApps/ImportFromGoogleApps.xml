@@ -43,9 +43,9 @@
 #set($pagedoc = $xwiki.getDocument($request.page))
 #set($pagetitle = $pagedoc.displayTitle)
 {{translation key=''/}}
-      {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'
+    {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'/}}
 
-{{html clean==false}}
+{{html clean==false wiki=true}}
 &lt;form action="" method="get"&gt;
 {{translation key='googleapps.importGA.search'/}}
 &lt;input type="text" name="query" value="$!{request.query}" /&gt;
