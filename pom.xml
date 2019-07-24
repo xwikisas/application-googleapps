@@ -83,7 +83,7 @@
   <scm>
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
-    <url>https://github.com/xwikisas/application-googleapps</url>
+    <url>https://github.com/xwikisas/application-googleapps/tree/master</url>
     <tag>HEAD</tag>
   </scm>
   <build>
