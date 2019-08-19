@@ -38,7 +38,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>import org.apache.commons.lang.StringUtils;
 import org.securityfilter.filter.URLPattern;
 import org.securityfilter.filter.URLPatternFactory;

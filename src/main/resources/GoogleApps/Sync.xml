@@ -38,7 +38,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>{{groovy}}
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
