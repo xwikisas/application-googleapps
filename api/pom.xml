@@ -1,0 +1,94 @@
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.xwiki.googleapps</groupId>
+    <artifactId>application-googleapps-parent</artifactId>
+    <version>2.5-SNAPSHOT</version>
+  </parent>
+  <artifactId>application-googleapps-api</artifactId>
+  <version>2.5-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Google Apps Integration (API)</name>
+  <description>This is the XWiki-API part of the Google Apps which allows to connect Google Apps to XWiki.</description>
+  <properties>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.xwiki.licensing</groupId>
+      <artifactId>application-licensing-licensor-api</artifactId>
+      <version>${licensing.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.23.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gdata</groupId>
+      <artifactId>core</artifactId>
+      <version>1.47.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-plus</artifactId>
+      <version>v1-rev585-1.23.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-drive</artifactId>
+      <version>v2-rev358-1.23.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+    </dependency>
+  </dependencies>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xwikisas/application-googleapps/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
+    <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
+    <url>https://github.com/xwikisas/application-googleapps</url>
+    <tag>HEAD</tag>
+  </scm>
+  <build>
+    <plugins>
+       <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+              <failOnViolation>false</failOnViolation>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>checkstyle-validation</id>
+                    <phase>none</phase>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+
+</project>
