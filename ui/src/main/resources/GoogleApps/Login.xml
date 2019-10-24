@@ -40,29 +40,32 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc, $services))
-#set($result = $gagroovy.updateUser())
-#if($result==-1)
-#set($user = $gagroovy.getGoogleUser())
-#set($email = $user.emails[0].value)
-${services.localization.render("googleapps.login.domainerror1")}
+#set($gagroovy = $services.GAScriptService)
+#if($gagroovy.active)
+  #set($result = $gagroovy.updateUser())
+  #if($result=="failed login")
+    #set($user = $gagroovy.getGoogleUser())
+    #set($email = $user.emails[0].value)
+    ${services.localization.render("googleapps.login.domainerror1")}
 
-${services.localization.render("googleapps.login.domainerror2")} $!{email}.
-${services.localization.render("googleapps.login.domainerror3")}
+    ${services.localization.render("googleapps.login.domainerror2")} $!{email}.
+    ${services.localization.render("googleapps.login.domainerror3")}
 
-#elseif($result)
-${services.localization.render("googleapps.login.redirectmessage")}
+  #elseif($result=="ok")
+    ${services.localization.render("googleapps.login.redirectmessage")}
 
-  #if($request.xredirect &amp;&amp; $request.xredirect!="")
-    $response.sendRedirect($request.xredirect)
-  #else
-    $response.sendRedirect($xwiki.getURL("Main.WebHome"))
+    #if($request.xredirect &amp;&amp; $request.xredirect!="")
+      $response.sendRedirect($request.xredirect)
+    #else
+      $response.sendRedirect($xwiki.getURL("Main.WebHome"))
+    #end
+  #else ## $result is "no user"
+  ${services.localization.render("googleapps.login.message")}
+
+    ${services.localization.render("googleapps.login.error")}
   #end
 #else
-${services.localization.render("googleapps.login.message")}
-
-  ${services.localization.render("googleapps.login.error")}
+    ${services.localization.render("googleapps.error.extensionDisabled")}
 #end
 {{/velocity}}</content>
 </xwikidoc>

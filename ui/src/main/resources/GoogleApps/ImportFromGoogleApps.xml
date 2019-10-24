@@ -42,7 +42,6 @@
   <content>{{velocity}}
 #set($pagedoc = $xwiki.getDocument($request.page))
 #set($pagetitle = $pagedoc.displayTitle)
-{{translation key=''/}}
     {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'/}}
 
 {{html clean==false wiki=true}}
@@ -56,18 +55,21 @@
 {{/html}}
 
 #if($request.query)
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc))
+#set($gagroovy = $services.GAScriptService)
 #set($squery = "'" + $request.query + "'")
-#set($result = $gagroovy.importFromGoogleApps("fullText contains ${squery}", 10))
-#foreach($entry in $result.items)
+#set($result = $gagroovy.listDriveDocumentsWithTypes("fullText contains ${squery}", 20))
+#if(!$result.empty)
+#foreach($entry in $result)
  #set($docName = $entry.title)
-* $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($docName)}&amp;url=${escapetool.url($entry.selfLink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #foreach($elink in $entry.exportLinks)
+* $docName #foreach($elink in $entry.exportLinks)
   #set($exportData = $gagroovy.getExportLink($docName, $elink))
-  #set($stype = $exportData.type)
-  #set($newDocName = $exportData.newDocName)
+  #set($stype = $exportData[0])
+  #set($newDocName = $exportData[1])
  [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
 
+#end
+#else
+    {{translation key='googleapps.importGA.empty'/}}
 #end
 #end
 {{/velocity}}</content>

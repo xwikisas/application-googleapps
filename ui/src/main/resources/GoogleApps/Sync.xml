@@ -90,8 +90,7 @@ def getDocsService(credential) {
 }
 
 boolean needUpdate = false;
-def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy");
-gagroovy.init(xwiki, xcontext, doc)
+def gagroovy = services.GAScriptService;
 for(item in xwiki.searchDocuments(", BaseObject as obj where doc.fullName = obj.name and obj.className='GoogleApps.SynchronizedDocumentClass'", 0, 0)) {
   def itemdoc = xwiki.getDocument(item)
   for (itemobj in itemdoc.getObjects("GoogleApps.SynchronizedDocumentClass")) {

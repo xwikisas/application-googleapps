@@ -289,8 +289,7 @@ def nb = Integer.parseInt(xcontext.macro.params.nb);
 def obj = doc.getObject("GoogleApps.SynchronizedDocumentClass", nb)
 def escapetool = new org.xwiki.velocity.tools.EscapeTool();
 def force = false;
-def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy")
-gagroovy.init(xwiki, xcontext, doc)
+def gagroovy = services.GAScriptService
 
 if(!gagroovy.useDrive) {
   println services.localization.render('googleapps.error.driveDisabled')

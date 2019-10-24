@@ -51,11 +51,10 @@
   <content>{{velocity}}
 {{translation key='googleapps.testDocList.about'/}}
 
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc))
+#set($gagroovy = $services.GAScriptService)
 #set($doclist = $gagroovy.getDocumentList())
-#foreach($item in $doclist.items)
-* $item.title $item.id $item.selfLink
+#foreach($item in $doclist)
+  * [[$item.title $item.id>>$item.alternateLink]]
 #end
 {{/velocity}}</content>
 </xwikidoc>

@@ -119,10 +119,8 @@
       <cache>short</cache>
     </property>
     <property>
-      <code>#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
-#set($ok = $configdoc.use("GoogleApps.GoogleAppsConfigClass"))
-#set($active = $configdoc.getValue("activate"))
-#if($active &amp;&amp; $configdoc.getValue("scope").contains("drive"))
+      <code>#set($gagroovy = $services.GAScriptService)
+        #if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
 var listener = function(event) {
   if (event.memo.id == 'Attachments') {
      var buttons = $$(".xwikibuttonlinks")
