@@ -32,9 +32,10 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.google.api.services.plus.Plus;
-import com.google.api.services.plus.PlusScopes;
-import com.google.api.services.plus.model.Person;
+import com.google.api.services.people.v1.PeopleService;
+import com.google.api.services.people.v1.PeopleServiceScopes;
+import com.google.api.services.people.v1.model.EmailAddress;
+import com.google.api.services.people.v1.model.Person;
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.media.MediaSource;
@@ -445,9 +446,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
             // create scopes from config
             List<String> gScopes = new ArrayList<>();
-            gScopes.add(PlusScopes.USERINFO_EMAIL);
-            gScopes.add(PlusScopes.USERINFO_PROFILE);
-            gScopes.add(PlusScopes.PLUS_ME);
+            gScopes.add(PeopleServiceScopes.USERINFO_EMAIL);
+            gScopes.add(PeopleServiceScopes.USERINFO_PROFILE);
             if (configScopeUseDrive != null && configScopeUseDrive) {
                 gScopes.add(DriveScopes.DRIVE);
             }
@@ -602,7 +602,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
         GoogleAuthorizationCodeRequestUrl urlBuilder = getFlow()
                 .newAuthorizationUrl()
                 .setRedirectUri(getOAuthUrl())
-                .setState(state);
+                .setState(state).setClientId(configClientId)
+                .setAccessType("offline").setApprovalPrompt("auto");
         // Add user email to filter account if the user is logged with multiple account
         if (useCookies) {
             CookieAuthenticationPersistenceStoreTools cookieTools =
@@ -681,13 +682,18 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
             XWikiContext context = xwikiContextProvider.get();
             String xwikiUser;
             Credential credential = authorize();
+
             Person user = null;
             if(credential != null) {
-                Plus plus = new Plus.Builder(
+                PeopleService pservice = new PeopleService.Builder(httpTransport,
+                        jacksonFactory, credential).setApplicationName(configAppName)
+                        .build();
+                user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
+/*                Plus plus = new Plus.Builder(
                         httpTransport, jacksonFactory, credential)
                         .setApplicationName(configAppName)
                         .build();
-                user = plus.people().get("me").execute();
+                user = plus.people().get("me").execute(); */
                 // GOOGLEAPPS: User: [displayName:..., emails:[[type:account, value:...]], etag:"...",
                 // id:...., image:[isDefault:false, url:https://...], kind:plus#person, language:en,
                 // name:[familyName:..., givenName:...]]
@@ -696,20 +702,33 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
             context.getRequest().setAttribute("googleUser", user);
             if (user == null) {
                 return "no user";
-            } else if (configDomain != null && !configDomain.equals(user.getDomain())) {
-                String userId = getCurrentXWikiUserName();
-                getCredentialStore().remove(userId);
-                log.debug("Wrong domain: Removed credentials for userid " + userId);
-                return "failed login";
+            } else if (configDomain != null ) {
+                boolean foundCompatibleDomain = false;
+                if(user.getEmailAddresses() != null) {
+                    for(EmailAddress address: user.getEmailAddresses()) {
+                        String email = address.getValue();
+                        if(email.endsWith(configDomain)) {
+                            foundCompatibleDomain = true;
+                            break;
+                        }
+                    }
+                }
+                if(!foundCompatibleDomain) {
+                    String userId = getCurrentXWikiUserName();
+                    getCredentialStore().remove(userId);
+                    log.debug("Wrong domain: Removed credentials for userid " + userId);
+                    return "failed login";
+                }
             } else {
-                String id = user.getId();
+                // this seems undocumented but well working
+                String id = (String) user.get("resourceName");
                 String email;
                 String currentWiki = context.getWikiId();
                 try {
                     // Force main wiki database to create the user as global
                     context.setMainXWiki("xwiki");
-                    email = (user.getEmails() != null && user.getEmails().size() > 0)
-                            ? user.getEmails().get(0).getValue() : "";
+                    email = (user.getEmailAddresses() != null && user.getEmailAddresses().size() > 0)
+                            ? user.getEmailAddresses().get(0).getValue() : "";
                     List<Object> wikiUserList = queryManager.createQuery(
                             "from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id",
                             Query.XWQL).bindValue("id", id).execute();
@@ -730,9 +749,9 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
                         String randomPassword = RandomStringUtils.randomAlphanumeric(8);
                         Map<String, String> userAttributes = new HashMap<>();
 
-                        if (user.getName() != null) {
-                            userAttributes.put("first_name", user.getName().getGivenName());
-                            userAttributes.put("last_name", user.getName().getFamilyName());
+                        if (user.getNames() != null && user.getNames().size()>0) {
+                            userAttributes.put("first_name", user.getNames().get(0).getGivenName());
+                            userAttributes.put("last_name", user.getNames().get(0).getFamilyName());
                         }
                         userAttributes.put("email", email);
                         userAttributes.put("password", randomPassword);
@@ -746,14 +765,16 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
                             BaseObject userObj = userDoc.getXObject(getXWikiUserClassRef());
 
                             // TODO: is this not redundant when having used createUser (map) ?
-                            if (user.getName() != null) {
-                                userObj.set("first_name", user.getName().getGivenName(), context);
-                                userObj.set("last_name", user.getName().getFamilyName(), context);
+                            if (user.getNames() != null && user.getNames().size()>0) {
+                                userObj.set("first_name", user.getNames().get(0).getGivenName(), context);
+                                userObj.set("last_name", user.getNames().get(0).getFamilyName(), context);
                             }
                             userObj.set("active", 1, context);
-                            if (configScopeUseAvatar && user.getImage() != null && user.getImage().getUrl() != null) {
-                                log.debug("Adding avatar " + user.getImage().getUrl());
-                                URL u = new URL(user.getImage().getUrl());
+                            if (configScopeUseAvatar && user.getPhotos() != null
+                                    && user.getPhotos().size()>0 && user.getPhotos().get(0).getUrl() != null) {
+                                String photoUrl = user.getPhotos().get(0).getUrl();
+                                log.debug("Adding avatar " + photoUrl);
+                                URL u = new URL(photoUrl);
                                 InputStream b = u.openStream();
                                 String fileName = u.getFile().substring(u.getFile().lastIndexOf('/') + 1);
                                 userDoc.addAttachment(fileName, u.openStream(), context);
@@ -784,16 +805,21 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
                                 userObj.set("email", email, context);
                                 changed = true;
                             }
-                            if (!userObj.getStringValue("first_name").equals(user.getName().getGivenName())) {
-                                userObj.set("first_name", user.getName().getGivenName(), context);
-                                changed = true;
+                            if(user.getNames() != null && user.getNames().size()>0) {
+                                if (!userObj.getStringValue("first_name").equals(
+                                        user.getNames().get(0).getGivenName())) {
+                                    userObj.set("first_name", user.getNames().get(0).getGivenName(), context);
+                                    changed = true;
+                                }
+                                if (!userObj.getStringValue("last_name").equals(
+                                        user.getNames().get(0).getFamilyName())) {
+                                    userObj.set("last_name", user.getNames().get(0).getFamilyName(), context);
+                                    changed = true;
+                                }
                             }
-                            if (!userObj.getStringValue("last_name").equals(user.getName().getFamilyName())) {
-                                userObj.set("last_name", user.getName().getFamilyName(), context);
-                                changed = true;
-                            }
-                            if (configScopeUseAvatar && user.getImage() != null  && user.getImage().getUrl() != null) {
-                                String imageUrl = user.getImage().getUrl();
+                            if (configScopeUseAvatar && user.getPhotos() != null  && user.getPhotos().size() > 0 &&
+                                    user.getPhotos().get(0).getUrl() != null) {
+                                String imageUrl = user.getPhotos().get(0).getUrl();
                                 log.debug("Pulling avatar " + imageUrl);
                                 HttpGet httpget = new HttpGet(imageUrl);
                                 // TODO: add an if-modified-since
@@ -863,9 +889,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
                 // store the validated xwiki user for the authentication module
                 context.getRequest().getSession().setAttribute("googleappslogin", xwikiUser);
-
-                return "ok";
             }
+            return "ok";
         } catch (Exception e) {
             log.warn("Problem at updateUser", e);
             return "no user";
