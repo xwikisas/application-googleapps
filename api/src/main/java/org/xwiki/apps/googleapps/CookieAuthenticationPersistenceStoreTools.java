@@ -39,12 +39,16 @@ import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.web.XWikiRequest;
 
-/** Copied code from xwiki-authenticator-trusted
+/**
+ * Tools to help storing and retrieving enriched information within cookies such as the
+ * linked Google user profile.
+ *
+ * Copied code from xwiki-authenticator-trusted
  * https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
  *   /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
  *   /internal/CookieAuthenticationPersistenceStore.java.
  * @version $Id$
- * @since 2.5-RC1
+ * @since 2.5
  */
 public class CookieAuthenticationPersistenceStoreTools
 {
