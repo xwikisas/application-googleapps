@@ -11,8 +11,11 @@ import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.*;
 
 import com.google.api.client.http.ByteArrayContent;
-import com.google.api.services.plus.Plus;
-import com.google.api.services.plus.PlusScopes;
+
+import com.google.api.services.people.v1.PeopleService;
+import com.google.api.services.people.v1.PeopleServiceScopes;
+import com.google.api.services.people.v1.model.EmailAddress;
+import com.google.api.services.people.v1.model.Person;
 
 import org.xwiki.environment.Environment;
 import com.xpn.xwiki.web.Utils;
@@ -125,10 +128,8 @@ public class GoogleAppsGroovy {
 
         // adding user profile scopes
         // SCOPES.add(PlusScopes.PLUS_LOGIN);
-        SCOPES.add(PlusScopes.USERINFO_EMAIL);
-        SCOPES.add(PlusScopes.USERINFO_PROFILE);
-        SCOPES.add(PlusScopes.PLUS_ME);
-        // TODO: exclude functions if drive is disabled (attachments, macro, particular page)
+        SCOPES.add(PeopleServiceScopes.USERINFO_EMAIL);
+        SCOPES.add(PeopleServiceScopes.USERINFO_PROFILE);
         addDebug("SCOPE config: ${SCOPE}.")
         if(useDrive)  SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
 
@@ -290,7 +291,8 @@ public class GoogleAppsGroovy {
         def urlBuilder = getFlow()
                 .newAuthorizationUrl()
                 .setRedirectUri(REDIRECT_URI)
-                .setState(state);
+                .setState(state).setClientId(CLIENTID)
+                .setAccessType("offline").setApprovalPrompt("auto");
         // Add user email to filter account if the user is logged with multiple account
         if (useCookies) {
             def cookieTools = xwiki.parseGroovyFromPage("xwiki:GoogleApps.CookieAuthenticationPersistenceStoreTools")
@@ -329,45 +331,45 @@ public class GoogleAppsGroovy {
         return creds;
     }
 
-    /**
-     * Build and return an authorized Google Plus client service.
-     * @return an authorized Drive client service
-     * @throws IOException
-     */
-    def getPlusService() throws IOException {
-        Credential credential = authorize();
-        return new Plus.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPNAME)
-                .build();
-    }
-
     def updateUser() {
         def xwikiUser = null;
         def credential = authorize();
-        def plus = new Plus.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPNAME)
+        PeopleService pservice = new PeopleService.Builder(HTTP_TRANSPORT,
+                JSON_FACTORY, credential).setApplicationName(APPNAME)
                 .build();
-        def user = plus.people().get("me").execute()
+        def user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
         this.googleUser = user
         addDebug("user: " + user);
         // GOOGLEAPPS: User: [displayName:Paul Libbrecht, emails:[[type:account, value:paul.libbrecht@googlemail.com]], etag:"k-5ZH5-QJvSewqvyYHTE9ETORZg/EbrzZ-WXep7ocoOnw7mPH3ohUF0", id:108124822654357414762, image:[isDefault:false, url:https://lh5.googleusercontent.com/-ozemnElunF0/AAAAAAAAAAI/AAAAAAAACGw/oyQfa2rA1YM/s50/photo.jpg], kind:plus#person, language:en, name:[familyName:Libbrecht, givenName:Paul]]
         if (user==null) {
             return null;
-        } else if (DOMAIN!="" && (!user.domain || user.domain!=DOMAIN)) {
-            def userId = context.user + "-" + request.getSession().hashCode();
-            storedCredentials.remove(userId);
-            addDebug("Wrong domain: Removed credentials for userid " + userId)
-            return -1;
+        } else if (DOMAIN!="") {
+
+            boolean foundCompatibleDomain = false;
+            if(user.getEmailAddresses() != null) {
+                for(EmailAddress address: user.getEmailAddresses()) {
+                    String email = address.getValue();
+                    if(email.endsWith(DOMAIN)) {
+                        foundCompatibleDomain = true;
+                        break;
+                    }
+                }
+            }
+            if(!foundCompatibleDomain) {
+                def userId = context.user + "-" + request.getSession().hashCode();
+                storedCredentials.remove(userId);
+                addDebug("Wrong domain: Removed credentials for userid " + userId)
+                return -1;
+            }
         } else {
-            def id = user.id
-            def email = "";
+            String id = user.get("resourceName");
+            if(id.startsWith("people/") && id.length()>7) id = id.substring(7);
+            String email = "";
             def db = context.getDatabase()
             try {
                 // Force main wiki database to create the user as global
                 context.setDatabase("xwiki")
-                email = (user.emails!=null && user.emails.size()>0) ? user.emails.getAt(0).value : "";
+                email = (user.emailAddresses!=null && user.emailAddresses.size()>0) ? user.emailAddresses[0].value : "";
                 def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
                 if ((wikiUserList==null) || (wikiUserList.size()==0))
                     wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", email).execute()
@@ -380,20 +382,19 @@ public class GoogleAppsGroovy {
                     // create user
                     def parentref = xwiki.getDocumentAsAuthor("Main.UserDirectory").getDocumentReference()
                     def randomPassword = RandomStringUtils.randomAlphanumeric(8)
-                    def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.name.givenName, "last_name" : user.name.familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context)
+                    if(user.names==null || user.names.size()==0) throw new NullPointerException("Sorry, users without names are not supported.");
+                    def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.names[0].givenName, "last_name" : user.names[0].familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context)
                     // Add google apps id to the user
                     if (isCreated) {
                         addDebug("Creating user " + xwikiUser);
                         xwikiUser = "XWiki." + xwikiUser
                         def userDoc = xwiki.getDocumentAsAuthor(xwikiUser)
                         userDoc.use("XWiki.XWikiUsers")
-                        if(user.name) {
-                            userDoc.set("first_name", user.name.givenName);
-                            userDoc.set("last_name",  user.name.familyName)
-                        }
-                        if(useAvatar && user.image && user.image.url) {
-                            addDebug("Adding avatar " + user.image.url);
-                            def u = new URL(user.image.url);
+                        userDoc.set("first_name", user.names[0].givenName);
+                        userDoc.set("last_name",  user.names[0].familyName)
+                        if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
+                            addDebug("Adding avatar " + user.photos[0].url);
+                            def u = new URL(user.photos[0].url);
                             def b = u.openStream();
 
                             def fileName = u.file.substring(u.file.lastIndexOf('/')+1);
@@ -424,17 +425,17 @@ public class GoogleAppsGroovy {
                             userDoc.set("email", email)
                             changed = true;
                         }
-                        if (userDoc.getValue("first_name") != user.name.givenName) {
-                            userDoc.set("first_name", user.name.givenName)
+                        if (userDoc.getValue("first_name") != user.names[0].givenName) {
+                            userDoc.set("first_name", user.names[0].givenName)
                             changed = true;
                         }
-                        if (userDoc.getValue("last_name") != user.name.familyName) {
-                            userDoc.set("last_name", user.name.familyName)
+                        if (userDoc.getValue("last_name") != user.names[0].familyName) {
+                            userDoc.set("last_name", user.names[0].familyName)
                             changed = true;
                         }
-                        if(useAvatar && user.image && user.image.url) {
-                            addDebug("Pulling avatar " + user.image.url);
-                            def u = new URL(user.image.url);
+                        if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
+                            addDebug("Pulling avatar " + user.photos[0].url);
+                            def u = new URL(user.photos[0].url);
                             def bytesFromGoogle = u.getBytes();
                             def attachment = userDoc.get("avatar")==null ? null : userDoc.getAttachment(userDoc.get("avatar"));
                             def fileChanged = attachment==null || attachment.getFilesize()!=bytesFromGoogle.length;
