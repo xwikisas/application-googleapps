@@ -53,7 +53,7 @@ import com.xpn.xwiki.XWikiException;
  *   /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
  *   /internal/CookieAuthenticationPersistenceStore.java.
  * @version $Id$
- * @since 2.5
+ * @since 3.0
  */
 @Component
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)

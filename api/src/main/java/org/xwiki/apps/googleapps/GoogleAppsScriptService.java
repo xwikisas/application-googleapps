@@ -57,6 +57,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.component.phase.Disposable;
 import org.xwiki.component.phase.Initializable;
 import org.xwiki.component.phase.InitializationException;
@@ -71,7 +73,6 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.inject.Inject;
-import javax.print.Doc;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -99,10 +100,10 @@ import java.util.jar.Manifest;
 /**
  * Set of methods accessible to the scripts using the GoogleApps functions.
  * @version $Id$
- * @since 2.5-RC1
+ * @since 3.0
  */
 @Component
-@Named("GAScriptService")
+@Named("googleApps")
 @Singleton
 public class GoogleAppsScriptService implements ScriptService, EventListener, Initializable, Disposable
 {
@@ -126,6 +127,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
     private Logger log;
 
 
+    @Inject
+    private ComponentManager componentManager;
 
 
     @Override
@@ -187,6 +190,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
 
     // internals
+
+    @Inject
     private GoogleAppsAuthService authService;
 
     private DocumentReference configDocRef;
@@ -215,17 +220,17 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
         return result;
     }
 
-    private Boolean configActiveFlag;
-    private Boolean useCookies;
-    private Boolean skipLoginPage;
-    private Boolean authWithCookies;
-    private String configAppName;
-    private String configClientId;
-    private String configClientSecret;
-    private String configDomain;
+    Boolean configActiveFlag;
+    Boolean useCookies;
+    Boolean skipLoginPage;
+    Boolean authWithCookies;
+    String configAppName;
+    String configClientId;
+    String configClientSecret;
+    String configDomain;
 
-    private Boolean configScopeUseAvatar, configScopeUseDrive;
-    private Long configCookiesTTL;
+    Boolean configScopeUseAvatar, configScopeUseDrive;
+    Long configCookiesTTL;
 
     /**
      * @return if the application is licensed and activated
@@ -322,9 +327,6 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
     private void setAuthService(XWiki xwiki)
     {
-        if (authService == null) {
-            authService = new GoogleAppsAuthService(this, log);
-        }
         xwiki.setAuthService(authService);
     }
 
@@ -506,9 +508,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
             if (userId.contains("XWikiGuest")) {
                 if (useCookies) {
                     // create a cookie
-                    CookieAuthenticationPersistenceStoreTools cookieTools =
-                            new CookieAuthenticationPersistenceStoreTools();
-                    cookieTools.initialize(xwikiContextProvider.get(), configCookiesTTL);
+                    CookieAuthenticationPersistence cookieTools =
+                            componentManager.getInstance(CookieAuthenticationPersistence.class);
                     cookieTools.store(userId);
                 }
             }
@@ -606,22 +607,26 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
                 .setAccessType("offline").setApprovalPrompt("auto");
         // Add user email to filter account if the user is logged with multiple account
         if (useCookies) {
-            CookieAuthenticationPersistenceStoreTools cookieTools =
-                    new CookieAuthenticationPersistenceStoreTools();
-            cookieTools.initialize(xwikiContextProvider.get(), configCookiesTTL);
-            String userId = cookieTools.retrieve();
-            if (userId != null) {
-                XWikiDocument userDoc = getXWiki().getDocument(createUserReference(userId), xwikiContextProvider.get());
-                String userEmail = null;
-                BaseObject userObj = userDoc.getXObject(getXWikiUserClassRef(), false, xwikiContextProvider.get());
-                // userclass "XWiki.XWikiUsers"
+            try {
+                CookieAuthenticationPersistence cookieTools =
+                        componentManager.getInstance(CookieAuthenticationPersistence.class);
+                String userId = cookieTools.retrieve();
+                if (userId != null) {
+                    XWikiDocument userDoc = getXWiki().getDocument(createUserReference(userId), xwikiContextProvider.get());
+                    String userEmail = null;
+                    BaseObject userObj = userDoc.getXObject(getXWikiUserClassRef(), false, xwikiContextProvider.get());
+                    // userclass "XWiki.XWikiUsers"
 
-                if (userObj != null) {
-                    userEmail = userDoc.getStringValue("email");
+                    if (userObj != null) {
+                        userEmail = userDoc.getStringValue("email");
+                    }
+                    if (userEmail != null) {
+                        urlBuilder = urlBuilder.set("login_hint", userEmail);
+                    }
                 }
-                if (userEmail != null) {
-                    urlBuilder = urlBuilder.set("login_hint", userEmail);
-                }
+            } catch (ComponentLookupException e) {
+                e.printStackTrace();
+                throw new XWikiException("Issue at accessing CookieAuthenticationPersistance", e);
             }
         }
         String authurl = urlBuilder.build();

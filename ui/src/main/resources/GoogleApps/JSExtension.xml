@@ -119,7 +119,7 @@
       <cache>short</cache>
     </property>
     <property>
-      <code>#set($gagroovy = $services.GAScriptService)
+      <code>#set($gagroovy = $services.googleApps)
         #if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
 var listener = function(event) {
   if (event.memo.id == 'Attachments') {

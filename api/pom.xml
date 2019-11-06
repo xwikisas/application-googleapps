@@ -48,15 +48,10 @@
       <version>1.47.1</version>
     </dependency>
     <dependency>
-  <groupId>com.google.apis</groupId>
-  <artifactId>google-api-services-people</artifactId>
-  <version>v1-rev442-1.24.1</version>
-</dependency>
-<!-- <dependency>
       <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-plus</artifactId>
-      <version>v1-rev585-1.23.0</version>
-    </dependency> -->
+      <artifactId>google-api-services-people</artifactId>
+      <version>v1-rev442-1.24.1</version>
+    </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-drive</artifactId>

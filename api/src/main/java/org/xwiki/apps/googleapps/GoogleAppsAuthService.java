@@ -34,11 +34,13 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
 
 import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.configuration.ConfigurationSource;
 import org.xwiki.container.servlet.filters.SavedRequestManager;
 import org.xwiki.model.reference.DocumentReference;
@@ -47,34 +49,30 @@ import org.xwiki.text.StringUtils;
 /**
  * An authenticator that can include a negotiation with the Google Cloud (e.g. Google Drive) services.
  * This authenticator is created, configured and maintained by the GoogleAppsScriptService.
- * @since 2.5-RC1
+ * @since 3.0
  * @version $Id$
  */
+@Component
+@Singleton
 public class GoogleAppsAuthService extends XWikiAuthServiceImpl
 {
 
-    GoogleAppsAuthService(GoogleAppsScriptService father, Logger log) {
-        if (this.log == null) {
-            this.log = log;
-        }
-        this.scriptService = father;
-        log.info("GoogleApps authentificator - constructed (" + father + ").");
-    }
-
-    @NotNull
+    @Inject
     private GoogleAppsScriptService scriptService;
 
+    @Inject
     private Logger log;
 
+    @Inject
+    private ComponentManager componentManager ;
 
     public XWikiUser checkAuth(XWikiContext context) throws XWikiException {
         try {
             log.info("GoogleApps authentificator - checkAuth");
             if (isLogoutRequest(context)) {
                 log.info("caught a logout request");
-                CookieAuthenticationPersistenceStoreTools cookieTools =
-                        new CookieAuthenticationPersistenceStoreTools();
-                cookieTools.initialize(context);
+                CookieAuthenticationPersistence cookieTools =
+                        componentManager.getInstance(CookieAuthenticationPersistence.class);
                 cookieTools.clear();
                 log.info("cleared cookie");
             }
@@ -105,13 +103,12 @@ public class GoogleAppsAuthService extends XWikiAuthServiceImpl
         }
         boolean redirected = false;
         try {
-            String url = context.getWiki().getURL("GoogleApps.Login", "view", context);
+            String url = context.getWiki().getExternalURL("GoogleApps.Login", "view", context);
             if (scriptService.isUseCookies() && scriptService.isSkipLoginPage()) {
                 log.info("skip the login page ");
                 XWikiRequest request = context.getRequest();
-                CookieAuthenticationPersistenceStoreTools cookieTools =
-                        new CookieAuthenticationPersistenceStoreTools();
-                cookieTools.initialize(context);
+                CookieAuthenticationPersistence cookieTools =
+                        new CookieAuthenticationPersistence();
                 String userCookie = cookieTools.retrieve();
                 log.info("retrieved user from cookie : " + userCookie);
                 String savedRequestId = request.getParameter(
@@ -167,9 +164,8 @@ public class GoogleAppsAuthService extends XWikiAuthServiceImpl
             // authenticate user from cookie value
             if (xwikiUser == null && scriptService.isUseCookies() && scriptService.isAuthWithCookies()) {
                 log.info("Authenticate with cookie");
-                CookieAuthenticationPersistenceStoreTools cookieTools =
-                        new CookieAuthenticationPersistenceStoreTools();
-                cookieTools.initialize(context);
+                CookieAuthenticationPersistence cookieTools =
+                        new CookieAuthenticationPersistence();
                 String userCookie = cookieTools.retrieve();
                 if (userCookie != null) {
                     log.info("retrieved user from cookie : " + userCookie);

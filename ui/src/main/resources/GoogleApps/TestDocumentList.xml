@@ -51,7 +51,7 @@
   <content>{{velocity}}
 {{translation key='googleapps.testDocList.about'/}}
 
-#set($gagroovy = $services.GAScriptService)
+#set($gagroovy = $services.googleApps)
 #set($doclist = $gagroovy.getDocumentList())
 #foreach($item in $doclist)
   * [[$item.title $item.id>>$item.alternateLink]]

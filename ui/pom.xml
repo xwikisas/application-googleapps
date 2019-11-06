@@ -92,8 +92,6 @@
               <content>src/main/resources/GoogleApps/GoogleAppsConfigClass.js</content>
             </transformation>
 
-
-
             <!-- attachment -->
             <transformation>
               <file>GoogleApps/TestDocumentList.xml</file>

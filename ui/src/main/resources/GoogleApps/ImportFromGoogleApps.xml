@@ -55,7 +55,7 @@
 {{/html}}
 
 #if($request.query)
-#set($gagroovy = $services.GAScriptService)
+#set($gagroovy = $services.googleApps)
 #set($squery = "'" + $request.query + "'")
 #set($result = $gagroovy.listDriveDocumentsWithTypes("fullText contains ${squery}", 20))
 #if(!$result.empty)

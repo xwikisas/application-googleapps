@@ -43,7 +43,7 @@
 {{velocity}}
 $services.localization.render("googleapps.login.oauth.message")
 
-#set($gagroovy = $services.GAScriptService)
+#set($gagroovy = $services.googleApps)
 #set($creds = $gagroovy.authorize())
 #if($creds)
 #if($request.state)
