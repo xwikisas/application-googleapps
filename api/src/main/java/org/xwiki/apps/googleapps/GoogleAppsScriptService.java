@@ -45,6 +45,7 @@ import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
+import com.xpn.xwiki.user.api.XWikiAuthService;
 import com.xpn.xwiki.web.XWikiRequest;
 import com.xpn.xwiki.web.XWikiResponse;
 
@@ -55,6 +56,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -126,19 +128,14 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
     @Inject
     private Logger log;
 
-
     @Inject
     private ComponentManager componentManager;
-
 
     @Override
     public String getName()
     {
         return "googleapps.scriptservice";
     }
-
-
-
 
 
     @Override
@@ -149,6 +146,8 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
         // We do not verify with the context if the plugin is active and if the license is active
         // this will be done by the GoogleAppsAuthService and UI pages later on, when it is called within a request
+        authService = new GoogleAppsAuthService(this, log, componentManager);
+
         if (xwiki != null) {
             setAuthService(xwiki);
         }
@@ -191,8 +190,7 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
 
     // internals
 
-    @Inject
-    private GoogleAppsAuthService authService;
+    private XWikiAuthService authService;
 
     private DocumentReference configDocRef;
     private ObjectReference configObjRef;
@@ -433,6 +431,10 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
         return configDocRef;
     }
 
+    public long getConfigCookiesTTL() {
+        return configCookiesTTL;
+    }
+
     /**
      * Build flow and trigger user authorization request.
      * @return the configured flow
@@ -510,6 +512,7 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
                     // create a cookie
                     CookieAuthenticationPersistence cookieTools =
                             componentManager.getInstance(CookieAuthenticationPersistence.class);
+                    cookieTools.initialize(xwikiContextProvider.get(), configCookiesTTL);
                     cookieTools.store(userId);
                 }
             }
@@ -610,6 +613,7 @@ public class GoogleAppsScriptService implements ScriptService, EventListener, In
             try {
                 CookieAuthenticationPersistence cookieTools =
                         componentManager.getInstance(CookieAuthenticationPersistence.class);
+                cookieTools.initialize(context, configCookiesTTL);
                 String userId = cookieTools.retrieve();
                 if (userId != null) {
                     XWikiDocument userDoc = getXWiki().getDocument(createUserReference(userId), xwikiContextProvider.get());

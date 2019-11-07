@@ -34,12 +34,11 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.servlet.http.HttpSession;
 
 import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
-import org.xwiki.component.annotation.Component;
+import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.configuration.ConfigurationSource;
 import org.xwiki.container.servlet.filters.SavedRequestManager;
@@ -52,19 +51,20 @@ import org.xwiki.text.StringUtils;
  * @since 3.0
  * @version $Id$
  */
-@Component
-@Singleton
 public class GoogleAppsAuthService extends XWikiAuthServiceImpl
 {
 
-    @Inject
     private GoogleAppsScriptService scriptService;
 
-    @Inject
     private Logger log;
 
-    @Inject
     private ComponentManager componentManager ;
+
+    GoogleAppsAuthService(GoogleAppsScriptService father, Logger log, ComponentManager cm) {
+        this.scriptService = father;
+        this.log = log;
+        this.componentManager = cm;
+    }
 
     public XWikiUser checkAuth(XWikiContext context) throws XWikiException {
         try {
@@ -108,7 +108,8 @@ public class GoogleAppsAuthService extends XWikiAuthServiceImpl
                 log.info("skip the login page ");
                 XWikiRequest request = context.getRequest();
                 CookieAuthenticationPersistence cookieTools =
-                        new CookieAuthenticationPersistence();
+                        componentManager.getInstance(CookieAuthenticationPersistence.class);
+                cookieTools.initialize(context, scriptService.getConfigCookiesTTL());
                 String userCookie = cookieTools.retrieve();
                 log.info("retrieved user from cookie : " + userCookie);
                 String savedRequestId = request.getParameter(
@@ -165,7 +166,8 @@ public class GoogleAppsAuthService extends XWikiAuthServiceImpl
             if (xwikiUser == null && scriptService.isUseCookies() && scriptService.isAuthWithCookies()) {
                 log.info("Authenticate with cookie");
                 CookieAuthenticationPersistence cookieTools =
-                        new CookieAuthenticationPersistence();
+                        componentManager.getInstance(CookieAuthenticationPersistence.class);
+                cookieTools.initialize(context, scriptService.getConfigCookiesTTL());
                 String userCookie = cookieTools.retrieve();
                 if (userCookie != null) {
                     log.info("retrieved user from cookie : " + userCookie);
