@@ -24,40 +24,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import org.xwiki.component.annotation.Component;
-import org.xwiki.script.service.ScriptService;
+import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
-import com.xpn.xwiki.api.Document;
-import com.xpn.xwiki.api.Object;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.objects.BaseObject;
 
 /**
- * Script service containing the methods used by the view files contained in the ui module.
+ * The specification of the methods that the manager of the GoogleApps application
+ * is doing. Methods of this interface are mostly called by the script-service (itself
+ * called by the views).
  *
- * @since 3.0
  * @version $Id$
+ * @since 3.0
  */
-@Component
-@Named("googleApps")
-@Singleton
-public class GoogleAppsScriptService implements ScriptService
+@Role
+public interface GoogleAppsManager
 {
 
-    @Inject
-    private GoogleAppsManager manager;
-
-    @Inject
-    private Provider<XWikiContext> contextProvider;
 
     /**
      * @return if the application is licensed and activated
@@ -65,18 +53,15 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public boolean isActive() throws XWikiException {
-        return manager.isActive();
-    }
+    boolean isActive() throws XWikiException;
 
     /**
+     *
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
      */
     @Unstable
-    public boolean isUseDrive() {
-        return manager.isUseDrive();
-    }
+    boolean isUseDrive();
 
 
     /**
@@ -85,9 +70,8 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Date getBuildTime() {
-        return manager.getBuildTime();
-    }
+    Date getBuildTime();
+
 
     /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
@@ -97,9 +81,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Credential authorize() throws XWikiException, IOException {
-        return manager.authorize();
-    }
+    Credential authorize() throws XWikiException, IOException;
 
 
     /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
@@ -111,9 +93,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Credential authorize(boolean redirect) throws XWikiException, IOException {
-        return manager.authorize(redirect);
-    }
+    Credential authorize(boolean redirect) throws XWikiException, IOException;
 
     /**
      * Performs the necessary communication with Google-Services to fetch identity and
@@ -124,9 +104,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public String updateUser() {
-        return manager.updateUser();
-    }
+    String updateUser();
 
     /**
      *  Get the list of all documents in the user's associated account.
@@ -137,9 +115,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public List<File> getDocumentList() throws XWikiException, IOException {
-        return manager.getDocumentList();
-    }
+    List<File> getDocumentList() throws XWikiException, IOException;
 
     /** Fetches a list of Google Drive document matching a substring query in the filename.
      *
@@ -151,9 +127,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws XWikiException, IOException {
-        return manager.listDriveDocumentsWithTypes(query, nbResults);
-    }
+    List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws XWikiException, IOException;
 
     /** Fetches a list of Google Drive document matching a given query.
      *
@@ -165,9 +139,66 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public FileList listDocuments(String query, int nbResults) throws XWikiException, IOException {
-        return manager.listDocuments(query, nbResults);
+    FileList listDocuments(String query, int nbResults) throws XWikiException, IOException;
+
+    /**
+     * Fetches the google-drive document's representation and stores it as attachment.
+     * @param page attach to this page
+     * @param name attach using this file name
+     * @param id store object attached to this attachment using this id (for later sync)
+     * @param url fetch from this URL
+     * @return true if successful
+     * @throws XWikiException if an issue occurred in XWiki
+     * @throws IOException if an issue occurred in the communication with teh Google services
+     * @since 3.0
+     */
+    @Unstable
+    boolean retrieveFileFromGoogle(String page, String name, String id, String url) throws XWikiException, IOException;
+
+    /**
+     * Extracts metadata about the Google Drive document corresponding to the named attachment.
+     *
+     * @param pageName The XWiki page where the attachment is
+     * @param fileName The filename of the attachment
+     * @return information about the corresponding Google Drive document
+     * @throws XWikiException if something happened at XWiki side
+     * @since 3.0
+     */
+    @Unstable
+    GoogleAppsManager.GoogleDocMetadata getGoogleDocument(String pageName, String fileName) throws XWikiException;
+
+    /**
+     * Simple pojo for metadata about a google doc.
+     * @since 3.0
+     */
+    @Unstable
+    class GoogleDocMetadata
+    {
+        /**
+         * Google's internal id to find the document again.
+         */
+        public String id;
+
+        /**
+         * URL to direct the user to for editing.
+         */
+        public String editLink;
+
+        /**
+         * URL to pull from in order to fetch the document.
+         */
+        public String exportLink;
     }
+
+    /**
+     * Reads the extension and document name.
+     * @param docName the raw docName
+     * @param elink the link where to read the extension name
+     * @return an array with extension and simplified document name
+     * @since 3.0
+     */
+    @Unstable
+    String[] getExportLink(String docName, String elink);
 
 
     /**
@@ -182,60 +213,10 @@ public class GoogleAppsScriptService implements ScriptService
      * @throws XWikiException If something at the XWiki side went wrong (e.g. saving)
      */
     @Unstable
-    public Object createOrUpdateEmbedObject(String docId, Document doc, Object obj, int nb) throws XWikiException, IOException {
-        return new Object(manager.createOrUpdateEmbedObject(docId, doc.getDocument(),
-                obj == null ? null : obj.getXWikiObject(), nb),
-                contextProvider.get());
-    }
-
-    /**
-     * Fetches the google-drive document's representation and stores it as attachment.
-     * @param page attach to this page
-     * @param name attach using this file name
-     * @param id store object attached to this attachment using this id (for later sync)
-     * @param url fetch from this URL
-     * @return true if successful
-     * @throws XWikiException if an issue occurred in XWiki
-     * @throws IOException if an issue occurred in the communication with teh Google services
-     * @since 3.0
-     */
-    @Unstable
-    public  boolean retrieveFileFromGoogle(String page, String name, String id, String url)
-            throws XWikiException, IOException  {
-        return manager.retrieveFileFromGoogle(page, name, id, url);
-    }
-
-    /**
-     * Extracts metadata about the Google Drive document corresponding to the named attachment.
-     *
-     * @param pageName The XWiki page where the attachment is
-     * @param fileName The filename of the attachment
-     * @return information about the corresponding Google Drive document
-     * @throws XWikiException if something happened at XWiki side
-     * @since 3.0
-     */
-    @Unstable
-    public GoogleAppsManager.GoogleDocMetadata getGoogleDocument(String pageName, String fileName)
-            throws XWikiException {
-        return manager.getGoogleDocument(pageName, fileName);
-    }
-
-
-    /**
-     * Reads the extension and document name.
-     * @param docName the raw docName
-     * @param elink the link where to read the extension name
-     * @return an array with extension and simplified document name
-     * @since 3.0
-     */
-    @Unstable
-    public String[] getExportLink(String docName, String elink) {
-        return manager.getExportLink(docName, elink);
-    }
+    public BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject obj, int nb) throws IOException, XWikiException;
 
     /**
      * Saves the attachment stored in XWiki to the Google drive of the user attached to the current logged-in user.
-     *
      * @param page the XWiki page name
      * @param name the attachment name
      * @return a record with the keys fileName, exportLink, version, editLink,  embedLink,
@@ -245,10 +226,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Map<String, java.lang.Object> saveAttachmentToGoogle(String page, String name)
-            throws XWikiException, IOException {
-        return manager.saveAttachmentToGoogle(page, name);
-    }
+    Map<String, Object> saveAttachmentToGoogle(String page, String name) throws XWikiException, IOException;
 
     /**
      * Reads the google user-info attached to the current user as stored in the request.
@@ -259,9 +237,6 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Map<String, java.lang.Object> getGoogleUser() {
-        return manager.getGoogleUser();
-    }
-
+    Map<String, Object> getGoogleUser();
 
 }

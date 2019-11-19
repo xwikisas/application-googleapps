@@ -289,17 +289,17 @@ def nb = Integer.parseInt(xcontext.macro.params.nb);
 def obj = doc.getObject("GoogleApps.SynchronizedDocumentClass", nb)
 def escapetool = new org.xwiki.velocity.tools.EscapeTool();
 def force = false;
-def gagroovy = services.googleApps
+def googleApps = services.googleApps
 
-if(!gagroovy.useDrive) {
+if(!googleApps.active || !googleApps.useDrive) {
   println services.localization.render('googleapps.error.driveDisabled')
 } else {
   // adding stylesheet
   xwiki.ssx.use("GoogleApps.DriveMacro");
 
   if (xcontext.macro.params.authentication) {
-    if (gagroovy.authorize(false)==null) {
-      def url = gagroovy.getAuthorizationURL()
+    if (googleApps.authorize(false)==null) {
+      def url = googleApps.getAuthorizationURL()
       println services.localization.render("googleapps.macro.maybeReqAuth", ["[[", "&gt;&gt;url:${url}]]"]);
     }
   }
@@ -314,26 +314,8 @@ if(!gagroovy.useDrive) {
 
   if (request.embed=="1") {
     if (embednb==nb) {
-     def drive = gagroovy.getDriveService();
-     def user = drive.about().get().execute().getUser().emailAddress;
-     def docData = drive.files().get(request.id).execute();
-     def embedLink = docData.embedLink;
-     if (embedLink==null)
-       embedLink = docData.alternateLink;
-
-     if (obj==null) {
-       obj = doc.newObject("GoogleApps.SynchronizedDocumentClass");
-       obj.getBaseObject().setNumber(nb);
-     }
-     doc.use(obj);
-     doc.set("id", request.id)
-     if (embedLink!=null)
-      doc.set("embedLink", embedLink)
-     doc.set("editLink", docData.alternateLink)
-     doc.set("version", docData.version.toString())
-     doc.set("fileName", docData.originalFilename ? docData.originalFilename : docData.title)
-     doc.set("user", user)
-     doc.save("Inserting Google Document")
+        obj = googleApps.createOrUpdateEmbedObject(request.id, doc, obj, nb);
+        doc.use(obj);
     }
   }
 
@@ -370,7 +352,7 @@ if(!gagroovy.useDrive) {
   """
   if (query &amp;&amp; embednb==nb) {
    def squery = "'" + query + "'"
-   def results = gagroovy.listDocuments("fullText contains ${squery}", 10)
+   def results = googleApps.listDocuments("fullText contains ${squery}", 10)
    def nbres = results.items.size();
 
    println "${nbres} documents found: "

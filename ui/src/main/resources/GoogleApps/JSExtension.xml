@@ -119,8 +119,8 @@
       <cache>short</cache>
     </property>
     <property>
-      <code>#set($gagroovy = $services.googleApps)
-        #if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
+      <code>#set($googleApps = $services.googleApps)
+        #if($googleApps.active &amp;&amp; $googleApps.useDrive)
 var listener = function(event) {
   if (event.memo.id == 'Attachments') {
      var buttons = $$(".xwikibuttonlinks")

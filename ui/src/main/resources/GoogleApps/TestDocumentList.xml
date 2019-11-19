@@ -51,10 +51,10 @@
   <content>{{velocity}}
 {{translation key='googleapps.testDocList.about'/}}
 
-#set($gagroovy = $services.googleApps)
-#set($doclist = $gagroovy.getDocumentList())
+#set($googleApps = $services.googleApps)
+#set($doclist = $googleApps.getDocumentList())
 #foreach($item in $doclist)
-  * [[$item.title $item.id>>$item.alternateLink]]
+  * [[$item.title $item.id>>$item.editLink]]
 #end
 {{/velocity}}</content>
 </xwikidoc>

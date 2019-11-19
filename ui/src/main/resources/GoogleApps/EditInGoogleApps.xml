@@ -40,12 +40,12 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($gagroovy = $services.googleApps)
-#if($gagroovy.active &amp;&amp; $gagroovy.useDrive)
-  #set($gdoc = $gagroovy.getGoogleDocument($request.page, $request.name))
+#set($googleApps = $services.googleApps)
+#if($googleApps.active &amp;&amp; $googleApps.useDrive)
+  #set($gdoc = $googleApps.getGoogleDocument($request.page, $request.name))
   #if($request.confirm)
   {{translation key='googleapps.editInGA.uploading'/}}
-   #set($gdoc = $gagroovy.saveAttachmentToGoogle($request.page, $request.name))
+   #set($gdoc = $googleApps.saveAttachmentToGoogle($request.page, $request.name))
   #end
 
   #if($gdoc)

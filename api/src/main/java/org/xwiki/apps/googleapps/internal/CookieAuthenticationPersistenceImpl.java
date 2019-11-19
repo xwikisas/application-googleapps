@@ -27,7 +27,6 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.codec.binary.Base64;
@@ -35,13 +34,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
-import org.xwiki.apps.googleapps.GoogleAppsScriptService;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 import org.xwiki.component.manager.ComponentManager;
-import org.xwiki.component.phase.Initializable;
-import org.xwiki.component.phase.InitializationException;
 import org.xwiki.stability.Unstable;
 
 import com.xpn.xwiki.XWikiContext;
@@ -60,7 +56,7 @@ import com.xpn.xwiki.XWikiException;
  */
 @Component
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
-public class CookieAuthenticationPersistenceImpl implements Initializable, CookieAuthenticationPersistence
+public class CookieAuthenticationPersistenceImpl implements CookieAuthenticationPersistence
 {
     private static final String AUTHENTICATION_CONFIG_PREFIX = "xwiki.authentication";
 
@@ -102,6 +98,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
      * @param context XWiki Context
      * @param cookieMaxAge Time To Live of the created cookies in scd
      * @throws XWikiException in case of trouble
+     * @since 3.0
      */
     @Unstable
     public void initialize(XWikiContext context, long cookieMaxAge) throws XWikiException
@@ -130,20 +127,9 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
         }
     }
 
-    public void initialize() throws InitializationException {
-        /* try {
-            this.initialize(xwikiContextProvider.get(),
-                    ((GoogleAppsScriptService) componentManager.getInstance(GoogleAppsScriptService.class))
-                            .getConfigCookiesTTL()
-                    );
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InitializationException("Trouble at initializing", e);
-        }*/
-    }
-
     /**
      * Erases the information stored.
+     * @since 3.0
      */
     @Unstable
     public void clear()
@@ -155,6 +141,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
     /**
      * Store the user-information within the cookie.
      * @param userUid the user-name (without xwiki. prefix)
+     * @since 3.0
      */
     @Unstable
     public void store(String userUid)
@@ -176,6 +163,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
      * Retrieving the login read from the cookie.
      *
      * @return the login name found, or null.
+     * @since 3.0
      */
     @Unstable
     public String retrieve()
@@ -235,6 +223,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
      * Retrieve given cookie null-safe.
      * @param cookieName name of the cookie
      * @return the cookie
+     * @since 3.0
      */
     private String getCookieValue(String cookieName)
     {
@@ -254,6 +243,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
      * valid only for the requested host.
      *
      * @return The configured domain generalization that matches the request, or null if no match is found.
+     * @since 3.0
      */
     private String getCookieDomain()
     {
@@ -279,6 +269,7 @@ public class CookieAuthenticationPersistenceImpl implements Initializable, Cooki
      *
      * @param domain a cookie domain.
      * @return a conform cookie domain.
+     * @since 3.0
      */
     private String conformCookieDomain(String domain)
     {

@@ -1,2 +1,4 @@
-org.xwiki.apps.googleapps.GoogleAppsScriptService
+org.xwiki.apps.googleapps.internal.GoogleAppsManagerImpl
 org.xwiki.apps.googleapps.internal.CookieAuthenticationPersistenceImpl
+org.xwiki.apps.googleapps.GoogleAppsScriptService
+org.xwiki.apps.googleapps.internal.GoogleAppsAuthServiceImpl

@@ -28,6 +28,7 @@ import com.xpn.xwiki.XWikiException;
  * Set of methods for the management of the cookies.
  *
  * @since 3.0
+ * @version $Id$
  */
 @Role
 public interface CookieAuthenticationPersistence
@@ -35,20 +36,31 @@ public interface CookieAuthenticationPersistence
     /**
      * Stores the user-id in an encryted fashion in the cookie.
      * @param userId the string to store
+     * @since 3.0
      */
-    public void store(String userId);
+    void store(String userId);
 
     /**
      * Reads the user-id from the cookie.
      * @return the decrypted user-id
+     * @since 3.0
      */
-    public String retrieve();
+    String retrieve();
 
     /**
      * Removes stored information from the cookie.
+     * @since 3.0
      */
-    public void clear();
+    void clear();
 
-    public void initialize(XWikiContext context, long cookieMaxAge) throws XWikiException;
+    /**
+     * Initialize with the local parameters.
+     *
+     * @param context Context of the request (e.g. for cookies)
+     * @param cookieMaxAge Configure maximum age of the cookie.
+     * @throws XWikiException if anything goes wrong
+     * @since 3.0
+     */
+    void initialize(XWikiContext context, long cookieMaxAge) throws XWikiException;
 
 }
