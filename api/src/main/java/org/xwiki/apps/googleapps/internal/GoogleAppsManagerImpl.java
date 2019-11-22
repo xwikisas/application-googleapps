@@ -144,9 +144,13 @@ public class GoogleAppsManagerImpl
     {
         log.info("GoogleAppsScriptService initting.");
         XWiki xwiki = getXWiki();
+        XWikiContext context = xwikiContextProvider.get();
 
+        if (context != null) {
+            readConfigDoc(context);
+        }
 
-        if (xwiki != null) {
+        if (xwiki != null && context != null) {
             log.info("Initting authService.");
             // We do not verify with the context if the plugin is active and if the license is active
             // this will be done by the GoogleAppsAuthService and UI pages later on, when it is called within a request
@@ -154,6 +158,7 @@ public class GoogleAppsManagerImpl
                 authService = componentManager.getInstance(GoogleAppsAuthService.class);
                 authService.setGoogleAppsManager(this);
                 xwiki.setAuthService(authService);
+                log.info("Succeeded initting authService,");
             } catch (ComponentLookupException e) {
                 log.info("Failed initting authService", e);
             }
@@ -753,7 +758,7 @@ public class GoogleAppsManagerImpl
     @Unstable
     public Credential authorize(boolean redirect) throws XWikiException, IOException {
         log.info("In authorize");
-        // useless? GoogleAuthorizationCodeFlow flow = getFlow();
+        GoogleAuthorizationCodeFlow flow = getFlow(); // useless?
         XWikiRequest request = xwikiContextProvider.get().getRequest();
         String state = request.getParameter("state");
         XWikiResponse response = xwikiContextProvider.get().getResponse();
