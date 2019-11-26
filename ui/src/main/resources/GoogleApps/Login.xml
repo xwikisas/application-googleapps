@@ -40,11 +40,11 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($gagroovy = $services.googleApps)
-#if($gagroovy.active)
-  #set($result = $gagroovy.updateUser())
+#set($googleApps = $services.googleApps)
+#if($googleApps.active)
+  #set($result = $googleApps.updateUser())
   #if($result=="failed login")
-    #set($user = $gagroovy.getGoogleUser())
+    #set($user = $googleApps.getGoogleUser())
     #set($email = $user.emails[0].value)
     ${services.localization.render("googleapps.login.domainerror1")}
 
