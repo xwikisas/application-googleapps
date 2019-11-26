@@ -130,7 +130,7 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
         boolean redirected = false;
         try {
             String url = context.getWiki().getExternalURL("GoogleApps.Login", "view", context);
-            if (googleAppsManager.isUseCookies() && googleAppsManager.isSkipLoginPage()) {
+            if (googleAppsManager.useCookies() && googleAppsManager.skipLoginPage()) {
                 log.info("skip the login page ");
                 XWikiRequest request = context.getRequest();
                 CookieAuthenticationPersistence cookieTools =
@@ -198,7 +198,7 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
             // get configuration for authentification with cookies
 
             // authenticate user from cookie value
-            if (xwikiUser == null && googleAppsManager.isUseCookies() && googleAppsManager.isAuthWithCookies()) {
+            if (xwikiUser == null && googleAppsManager.useCookies() && googleAppsManager.authWithCookies()) {
                 log.info("Authenticate with cookie");
                 CookieAuthenticationPersistence cookieTools =
                         componentManager.getInstance(CookieAuthenticationPersistence.class);

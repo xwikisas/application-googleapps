@@ -333,7 +333,7 @@ public class GoogleAppsManagerImpl
      * @since 3.0
      */
     @Unstable
-    public boolean isUseCookies() {
+    public boolean useCookies() {
         return useCookies;
     }
 
@@ -342,7 +342,7 @@ public class GoogleAppsManagerImpl
      * @since 3.0
      */
     @Unstable
-    public boolean isSkipLoginPage() {
+    public boolean skipLoginPage() {
         return skipLoginPage;
     }
 
@@ -351,7 +351,7 @@ public class GoogleAppsManagerImpl
      * @since 3.0
      */
     @Unstable
-    public boolean isAuthWithCookies() {
+    public boolean authWithCookies() {
         return authWithCookies;
     }
 
@@ -459,7 +459,7 @@ public class GoogleAppsManagerImpl
      * @since 3.0
      */
     @Unstable
-    public boolean isUseDrive() {
+    public boolean useDrive() {
         return configScopeUseDrive;
     }
 

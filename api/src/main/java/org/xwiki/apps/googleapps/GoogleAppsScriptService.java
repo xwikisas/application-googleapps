@@ -74,8 +74,8 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public boolean isUseDrive() {
-        return manager.isUseDrive();
+    public boolean useDrive() {
+        return manager.useDrive();
     }
 
 

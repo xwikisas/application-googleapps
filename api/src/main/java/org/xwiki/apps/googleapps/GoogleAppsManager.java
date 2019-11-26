@@ -61,7 +61,7 @@ public interface GoogleAppsManager
      * @since 3.0
      */
     @Unstable
-    boolean isUseDrive();
+    boolean useDrive();
 
 
     /**

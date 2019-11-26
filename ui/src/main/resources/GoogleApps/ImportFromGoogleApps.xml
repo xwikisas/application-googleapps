@@ -59,15 +59,15 @@
 #set($squery = "'" + $request.query + "'")
 #set($result = $googleApps.listDriveDocumentsWithTypes("fullText contains ${squery}", 20))
 #if(!$result.empty)
-#foreach($entry in $result)
- #set($docName = $entry.title)
+  #foreach($entry in $result)
+    #set($docName = $entry.title)
 * $docName #foreach($elink in $entry.exportLinks)
-  #set($exportData = $googleApps.getExportLink($docName, $elink))
-  #set($stype = $exportData[0])
-  #set($newDocName = $exportData[1])
- [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
+    #set($exportData = $googleApps.getExportLink($docName, $elink))
+    #set($stype = $exportData[0])
+    #set($newDocName = $exportData[1])
+    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
 
-#end
+  #end
 #else
     {{translation key='googleapps.importGA.empty'/}}
 #end
