@@ -143,15 +143,10 @@ public class GoogleAppsManagerImpl
     }
 
 
-    private String meToString = null;
-
     @Override
     public void initialize() throws InitializationException
     {
         log.info("GoogleAppsScriptService initting.");
-        meToString = this.toString();
-        log.info("meToString = " + meToString);
-        log.info("Callers: ", new Exception());
         XWiki xwiki = getXWiki();
         XWikiContext context = xwikiContextProvider.get();
 
