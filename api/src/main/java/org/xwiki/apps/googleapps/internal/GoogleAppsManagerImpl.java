@@ -127,6 +127,10 @@ public class GoogleAppsManagerImpl
     private DocumentReferenceResolver<String> documentResolver;
 
     @Inject
+    @Named("user")
+    private DocumentReferenceResolver<String> userResolver;
+
+    @Inject
     private Logger log;
 
     @Inject
@@ -139,10 +143,15 @@ public class GoogleAppsManagerImpl
     }
 
 
+    private String meToString = null;
+
     @Override
     public void initialize() throws InitializationException
     {
         log.info("GoogleAppsScriptService initting.");
+        meToString = this.toString();
+        log.info("meToString = " + meToString);
+        log.info("Callers: ", new Exception());
         XWiki xwiki = getXWiki();
         XWikiContext context = xwikiContextProvider.get();
 
@@ -312,7 +321,8 @@ public class GoogleAppsManagerImpl
     @Unstable
     public boolean isActive(XWikiContext context)
     {
-        if (configActiveFlag == null) {
+        log.info("Is active " + this.toString() + " with configClient non-null? " + (configClientId!=null));
+        if (configActiveFlag == null || configClientId == null || configClientId.length() == 0) {
             readConfigDoc(context);
         }
         if (authService == null) {
@@ -494,15 +504,8 @@ public class GoogleAppsManagerImpl
      * @since 3.0
      */
     @Unstable
-    public DocumentReference createUserReference(String userName) {
-        String uN = userName;
-        if (uN.startsWith(WIKINAME + ":")) {
-            uN = uN.substring(WIKINAME.length() + 1);
-        }
-        if (uN.startsWith(XWIKISPACE + '.')) {
-            uN = uN.substring(XWIKISPACE.length() + 1);
-        }
-        return new DocumentReference(WIKINAME, XWIKISPACE, uN);
+    DocumentReference createUserReference(String userName) {
+        return userResolver.resolve(userName);
     }
 
     private DocumentReference gauthClassRef;
@@ -928,6 +931,9 @@ public class GoogleAppsManagerImpl
                             if (configScopeUseAvatar && user.getPhotos() != null  && user.getPhotos().size() > 0
                                     && user.getPhotos().get(0).getUrl() != null) {
                                 String imageUrl = user.getPhotos().get(0).getUrl();
+                                imageUrl = imageUrl
+                                        + (imageUrl.contains("?") ? "&" : "?")
+                                        + "sz=256";
                                 log.debug("Pulling avatar " + imageUrl);
                                 HttpGet httpget = new HttpGet(imageUrl);
                                 // TODO: add an if-modified-since
