@@ -40,15 +40,14 @@
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc))
+#set($googleApps = $services.googleApps)
 #if($request.url)
- #set($ok = $gagroovy.retrieveFileFromGoogle($request.page, $request.name, $request.id, $request.url))
+ #set($ok = $googleApps.retrieveFileFromGoogle($request.page, $request.name, $request.id, $request.url))
  #if(!$ok)
 $services.localization.render("googleapps.retrieve.fail") $request.id
  #end
 #else
-$services.localization.render("googleapps.retrieve.nodocument") 
+$services.localization.render("googleapps.retrieve.nodocument")
 #end
 {{/velocity}}</content>
 </xwikidoc>

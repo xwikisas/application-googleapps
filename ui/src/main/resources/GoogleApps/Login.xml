@@ -22,7 +22,7 @@
 
 <xwikidoc>
   <web>GoogleApps</web>
-  <name>Groovy</name>
+  <name>Login</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
@@ -32,13 +32,40 @@
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title/>
+  <title>$services.localization.render("googleapps.login.title")</title>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>
-</content>
+  <content>{{velocity}}
+#set($googleApps = $services.googleApps)
+#if($googleApps.active)
+  #set($result = $googleApps.updateUser())
+  #if($result=="failed login")
+    #set($user = $googleApps.getGoogleUser())
+    #set($email = $user.emails[0].value)
+    ${services.localization.render("googleapps.login.domainerror1")}
+
+    ${services.localization.render("googleapps.login.domainerror2")} $!{email}.
+    ${services.localization.render("googleapps.login.domainerror3")}
+
+  #elseif($result=="ok")
+    ${services.localization.render("googleapps.login.redirectmessage")}
+
+    #if($request.xredirect &amp;&amp; $request.xredirect!="")
+      $response.sendRedirect($request.xredirect)
+    #else
+      $response.sendRedirect($xwiki.getURL("Main.WebHome"))
+    #end
+  #else ## $result is "no user"
+  ${services.localization.render("googleapps.login.message")}
+
+    ${services.localization.render("googleapps.login.error")}
+  #end
+#else
+    ${services.localization.render("googleapps.error.extensionDisabled")}
+#end
+{{/velocity}}</content>
 </xwikidoc>

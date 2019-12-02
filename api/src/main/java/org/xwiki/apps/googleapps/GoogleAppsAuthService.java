@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+/*
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -18,26 +16,20 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
--->
+ */
+package org.xwiki.apps.googleapps;
 
-<xwikidoc>
-  <web>GoogleApps</web>
-  <name>AuthService</name>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
-  <parent>GoogleApps.WebHome</parent>
-  <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <version>1.1</version>
-  <title/>
-  <defaultTemplate/>
-  <validationScript/>
-  <comment/>
-  <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>true</hidden>
-  <content/>
-</xwikidoc>
+import org.xwiki.component.annotation.Role;
+import com.xpn.xwiki.user.api.XWikiAuthService;
+
+/**
+ * A badge interface to denote the role of the component that will replace the
+ * default authentication-service.
+ *
+ * @since 3.0
+ * @version $Id$
+ */
+@Role
+public interface GoogleAppsAuthService extends XWikiAuthService
+{
+}

@@ -22,7 +22,7 @@
 
 <xwikidoc>
   <web>GoogleApps</web>
-  <name>TestDocumentList</name>
+  <name>OAuth</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
@@ -32,30 +32,28 @@
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>Document List</title>
+  <title>Google Apps Authentication</title>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
-  <attachment>
-    <filename>testcolors.xls</filename>
-    <filesize>7168</filesize>
-    <mimetype>application/vnd.ms-excel</mimetype>
-    <author>xwiki:XWiki.Admin</author>
-    <version>1.1</version>
-    <comment/>
-    <content/>
-  </attachment>
-  <content>{{velocity}}
-{{translation key='googleapps.testDocList.about'/}}
+  <content>
+{{velocity}}
+$services.localization.render("googleapps.login.oauth.message")
 
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc))
-#set($doclist = $gagroovy.getDocumentList())
-#foreach($item in $doclist.items)
-* $item.title $item.id $item.selfLink
+#set($googleApps = $services.googleApps)
+#set($creds = $googleApps.authorize())
+#if($creds)
+#if($request.state)
+$services.localization.render("googleapps.login.oauth.success")
+#else
+$services.localization.render("googleapps.login.oauth.successwithredirect")
 #end
+#else
+$services.localization.render("googleapps.login.oauth.notauthenticated")
+#end
+
 {{/velocity}}</content>
 </xwikidoc>

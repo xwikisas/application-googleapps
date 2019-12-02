@@ -22,7 +22,7 @@
 
 <xwikidoc>
   <web>GoogleApps</web>
-  <name>Login</name>
+  <name>TestDocumentList</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
@@ -32,37 +32,29 @@
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>$services.localization.render("googleapps.login.title")</title>
+  <title>Document List</title>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.1</syntaxId>
+  <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <attachment>
+    <filename>testcolors.xls</filename>
+    <filesize>7168</filesize>
+    <mimetype>application/vnd.ms-excel</mimetype>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content/>
+  </attachment>
   <content>{{velocity}}
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc, $services))
-#set($result = $gagroovy.updateUser())
-#if($result==-1)
-#set($user = $gagroovy.getGoogleUser())
-#set($email = $user.emails[0].value)
-${services.localization.render("googleapps.login.domainerror1")}
+{{translation key='googleapps.testDocList.about'/}}
 
-${services.localization.render("googleapps.login.domainerror2")} $!{email}.
-${services.localization.render("googleapps.login.domainerror3")}
-
-#elseif($result)
-${services.localization.render("googleapps.login.redirectmessage")}
-
-  #if($request.xredirect &amp;&amp; $request.xredirect!="")
-    $response.sendRedirect($request.xredirect)
-  #else
-    $response.sendRedirect($xwiki.getURL("Main.WebHome"))
-  #end
-#else
-${services.localization.render("googleapps.login.message")}
-
-  ${services.localization.render("googleapps.login.error")}
+#set($googleApps = $services.googleApps)
+#set($doclist = $googleApps.getDocumentList())
+#foreach($item in $doclist)
+  * [[$item.title $item.id>>$item.editLink]]
 #end
 {{/velocity}}</content>
 </xwikidoc>
