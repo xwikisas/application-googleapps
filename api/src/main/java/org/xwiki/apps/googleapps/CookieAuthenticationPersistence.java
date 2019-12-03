@@ -35,6 +35,7 @@ public interface CookieAuthenticationPersistence
 {
     /**
      * Stores the user-id in an encryted fashion in the cookie.
+     *
      * @param userId the string to store
      * @since 3.0
      */
@@ -42,6 +43,7 @@ public interface CookieAuthenticationPersistence
 
     /**
      * Reads the user-id from the cookie.
+     *
      * @return the decrypted user-id
      * @since 3.0
      */
@@ -49,6 +51,7 @@ public interface CookieAuthenticationPersistence
 
     /**
      * Removes stored information from the cookie.
+     *
      * @since 3.0
      */
     void clear();

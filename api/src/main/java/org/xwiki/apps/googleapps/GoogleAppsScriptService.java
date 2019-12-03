@@ -81,6 +81,7 @@ public class GoogleAppsScriptService implements ScriptService
 
     /**
      * Reads the manifest to find when the JAR file was assembled by maven.
+     *
      * @return the build date.
      * @since 3.0
      */
@@ -89,7 +90,8 @@ public class GoogleAppsScriptService implements ScriptService
         return manager.getBuildTime();
     }
 
-    /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+    /**
+     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @return found credential
      * @throws XWikiException if the interaction with xwiki failed
@@ -102,7 +104,8 @@ public class GoogleAppsScriptService implements ScriptService
     }
 
 
-    /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+    /**
+     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
      * @return found credential
@@ -141,7 +144,8 @@ public class GoogleAppsScriptService implements ScriptService
         return manager.getDocumentList();
     }
 
-    /** Fetches a list of Google Drive document matching a substring query in the filename.
+    /**
+     * Fetches a list of Google Drive document matching a substring query in the filename.
      *
      * @param query the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
@@ -155,7 +159,8 @@ public class GoogleAppsScriptService implements ScriptService
         return manager.listDriveDocumentsWithTypes(query, nbResults);
     }
 
-    /** Fetches a list of Google Drive document matching a given query.
+    /**
+     * Fetches a list of Google Drive document matching a given query.
      *
      * @param query the expected filename substring
      * @param nbResults max number of results
@@ -190,6 +195,7 @@ public class GoogleAppsScriptService implements ScriptService
 
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
+     *
      * @param page attach to this page
      * @param name attach using this file name
      * @param id store object attached to this attachment using this id (for later sync)
@@ -223,6 +229,7 @@ public class GoogleAppsScriptService implements ScriptService
 
     /**
      * Reads the extension and document name.
+     *
      * @param docName the raw docName
      * @param elink the link where to read the extension name
      * @return an array with extension and simplified document name

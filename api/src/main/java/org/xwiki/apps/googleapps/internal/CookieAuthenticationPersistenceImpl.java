@@ -95,6 +95,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
 
     /**
      * Initialize the tool.
+     *
      * @param context XWiki Context
      * @param cookieMaxAge Time To Live of the created cookies in scd
      * @throws XWikiException in case of trouble
@@ -129,6 +130,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
 
     /**
      * Erases the information stored.
+     *
      * @since 3.0
      */
     @Unstable
@@ -140,6 +142,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
 
     /**
      * Store the user-information within the cookie.
+     *
      * @param userUid the user-name (without xwiki. prefix)
      * @since 3.0
      */
@@ -221,6 +224,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
 
     /**
      * Retrieve given cookie null-safe.
+     *
      * @param cookieName name of the cookie
      * @return the cookie
      * @since 3.0

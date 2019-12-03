@@ -102,6 +102,7 @@ import java.util.jar.Manifest;
 
 /**
  * Set of methods accessible to the scripts using the GoogleApps functions.
+ *
  * @version $Id$
  * @since 3.0
  */
@@ -293,7 +294,8 @@ public class GoogleAppsManagerImpl
 
     // ----------------------------- APIs -------------------------------------------------
 
-    /** Evaluates weather the application is active and licensed by looking at the stored documents.
+    /**
+     * Evaluates weather the application is active and licensed by looking at the stored documents.
      * Within a request, this method should always be the first to be called so that the config-object
      * is read and other properties are cached if need be. The context is extracted from the thead-local.
      *
@@ -305,7 +307,8 @@ public class GoogleAppsManagerImpl
         return isActive(xwikiContextProvider.get());
     }
 
-    /** Evaluates weather the application is active and licensed by looking at the stored documents.
+    /**
+     * Evaluates weather the application is active and licensed by looking at the stored documents.
      * Within a request, this method should always be the first to be called so that the config-object
      * is read and other properties are cached if need be.
      *
@@ -401,6 +404,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Reads the manifest to find when the JAR file was assembled by maven.
+     *
      * @return the build date.
      * @since 3.0
      */
@@ -459,7 +463,6 @@ public class GoogleAppsManagerImpl
     // ------------------------- public API ---------------------------------------------
 
     /**
-     *
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
      */
@@ -530,6 +533,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Build flow and trigger user authorization request.
+     *
      * @return the configured flow
      * @throws IOException in case something can't be built
      */
@@ -1026,6 +1030,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Build and return an authorized Drive client service.
+     *
      * @return an authorized Drive client service
      * @throws IOException if a communication error occurred
      */
@@ -1051,7 +1056,8 @@ public class GoogleAppsManagerImpl
         return result.getItems();
     }
 
-    /** Fetches a list of Google Drive document matching a substring query in the filename.
+    /**
+     * Fetches a list of Google Drive document matching a substring query in the filename.
      *
      * @param query the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
@@ -1071,7 +1077,8 @@ public class GoogleAppsManagerImpl
         return result.getItems();
     }
 
-    /** Fetches a list of Google Drive document matching a given query.
+    /**
+     * Fetches a list of Google Drive document matching a given query.
      *
      * @param query the expected filename substring
      * @param nbResults max number of results
@@ -1090,6 +1097,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
+     *
      * @param page attach to this page
      * @param name attach using this file name
      * @param id store object attached to this attachment using this id (for later sync)
@@ -1256,6 +1264,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Reads the extension and document name.
+     *
      * @param docName the raw docName
      * @param elink the link where to read the extension name
      * @return an array with extension and simplified document name
@@ -1296,6 +1305,7 @@ public class GoogleAppsManagerImpl
 
     /**
      * Saves the attachment stored in XWiki to the Google drive of the user attached to the current logged-in user.
+     *
      * @param page the XWiki page name
      * @param name the attachment name
      * @return a record with the keys fileName, exportLink, version, editLink,  embedLink,

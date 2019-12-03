@@ -45,8 +45,6 @@ import com.xpn.xwiki.objects.BaseObject;
 @Role
 public interface GoogleAppsManager
 {
-
-
     /**
      * @return if the application is licensed and activated
      * @throws XWikiException in case a context cannot be read from thread.
@@ -56,13 +54,11 @@ public interface GoogleAppsManager
     boolean isActive() throws XWikiException;
 
     /**
-     *
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
      */
     @Unstable
     boolean useDrive();
-
 
     /**
      * Reads the manifest to find when the JAR file was assembled by maven.
@@ -72,8 +68,8 @@ public interface GoogleAppsManager
     @Unstable
     Date getBuildTime();
 
-
-    /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+    /**
+     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @return found credential
      * @throws XWikiException if the interaction with xwiki failed
@@ -83,8 +79,8 @@ public interface GoogleAppsManager
     @Unstable
     Credential authorize() throws XWikiException, IOException;
 
-
-    /** Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+    /**
+     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
      * @return found credential
@@ -143,6 +139,7 @@ public interface GoogleAppsManager
 
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
+     *
      * @param page attach to this page
      * @param name attach using this file name
      * @param id store object attached to this attachment using this id (for later sync)
@@ -169,6 +166,7 @@ public interface GoogleAppsManager
 
     /**
      * Simple pojo for metadata about a google doc.
+     *
      * @since 3.0
      */
     @Unstable
@@ -200,7 +198,6 @@ public interface GoogleAppsManager
     @Unstable
     String[] getExportLink(String docName, String elink);
 
-
     /**
      * Inserts the current information on the document to be embedded.
      *
@@ -217,6 +214,7 @@ public interface GoogleAppsManager
 
     /**
      * Saves the attachment stored in XWiki to the Google drive of the user attached to the current logged-in user.
+     *
      * @param page the XWiki page name
      * @param name the attachment name
      * @return a record with the keys fileName, exportLink, version, editLink,  embedLink,
