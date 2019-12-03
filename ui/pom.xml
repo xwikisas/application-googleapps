@@ -59,16 +59,6 @@
       <version>${licensing.version}</version>
     </dependency>
   </dependencies>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/xwikisas/application-googleapps/issues</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
-    <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
-    <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>HEAD</tag>
-  </scm>
   <build>
     <plugins>
       <plugin>
