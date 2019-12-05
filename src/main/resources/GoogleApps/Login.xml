@@ -45,7 +45,7 @@
 #set($result = $gagroovy.updateUser())
 #if($result==-1)
 #set($user = $gagroovy.getGoogleUser())
-#set($email = $user.emails[0].value)
+#set($email = $user.emailAddresses[0].value)
 ${services.localization.render("googleapps.login.domainerror1")}
 
 ${services.localization.render("googleapps.login.domainerror2")} $!{email}.
