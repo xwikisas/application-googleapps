@@ -131,7 +131,9 @@ public class GoogleAppsGroovy {
         SCOPES.add(PeopleServiceScopes.USERINFO_EMAIL);
         SCOPES.add(PeopleServiceScopes.USERINFO_PROFILE);
         addDebug("SCOPE config: ${SCOPE}.")
-        if(useDrive)  SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
+        if(useDrive)  {
+            SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
+        }
 
         addDebug("APPNAME: ${APPNAME}");
         addDebug("CLIENTID: ${CLIENTID}");
@@ -304,8 +306,9 @@ public class GoogleAppsGroovy {
                 userDoc.use("XWiki.XWikiUsers")
                 userEmail = userDoc.getValue("email")
             }
-            if(userEmail)
+            if(userEmail) {
                 urlBuilder = urlBuilder.set("login_hint", userEmail);
+            }
         }
         def authurl = urlBuilder.build();
         addDebug("google authentication url : " + authurl)
@@ -338,19 +341,21 @@ public class GoogleAppsGroovy {
                 JSON_FACTORY, credential).setApplicationName(APPNAME)
                 .build();
         def user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
-        this.googleUser = user
+        this.googleUser = user;
         addDebug("user: " + user);
+        String usersEmailAddress = "";
         // GOOGLEAPPS: User: [displayName:Paul Libbrecht, emails:[[type:account, value:paul.libbrecht@googlemail.com]], etag:"k-5ZH5-QJvSewqvyYHTE9ETORZg/EbrzZ-WXep7ocoOnw7mPH3ohUF0", id:108124822654357414762, image:[isDefault:false, url:https://lh5.googleusercontent.com/-ozemnElunF0/AAAAAAAAAAI/AAAAAAAACGw/oyQfa2rA1YM/s50/photo.jpg], kind:plus#person, language:en, name:[familyName:Libbrecht, givenName:Paul]]
         if (user==null) {
             return null;
-        } else if (DOMAIN!="") {
-
+        }
+        if (DOMAIN!="") {
             boolean foundCompatibleDomain = false;
             if(user.getEmailAddresses() != null) {
                 for(EmailAddress address: user.getEmailAddresses()) {
-                    String email = address.getValue();
-                    if(email.endsWith(DOMAIN)) {
+                    String addr = address.getValue();
+                    if(addr.endsWith(DOMAIN)) {
                         foundCompatibleDomain = true;
+                        usersEmailAddress = addr;
                         break;
                     }
                 }
@@ -361,129 +366,139 @@ public class GoogleAppsGroovy {
                 addDebug("Wrong domain: Removed credentials for userid " + userId)
                 return -1;
             }
-        } else {
-            String id = user.get("resourceName");
-            if(id.startsWith("people/") && id.length()>7) id = id.substring(7);
-            String email = "";
-            def db = context.getDatabase()
-            try {
-                // Force main wiki database to create the user as global
-                context.setDatabase("xwiki")
-                email = (user.emailAddresses!=null && user.emailAddresses.size()>0) ? user.emailAddresses[0].value : "";
-                def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
-                if ((wikiUserList==null) || (wikiUserList.size()==0))
-                    wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", email).execute()
+        }
+        String id = user.get("resourceName");
+        if(id.startsWith("people/") && id.length()>7) {
+            id = id.substring(7);
+        }
+        def db = context.getDatabase()
+        try {
+            // Force main wiki database to create the user as global
+            context.setDatabase("xwiki")
+            // take the first emailAddress if there was none selected for the domain earlier
+            if(usersEmailAddress == "" && user.emailAddresses!=null && user.emailAddresses.size()>0) {
+                usersEmailAddress = user.emailAddresses[0].value
+            }
+            def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
+            if ((wikiUserList==null) || (wikiUserList.size()==0))
+                wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", usersEmailAddress).execute()
 
-                if ((wikiUserList==null) || (wikiUserList.size()==0)) {
-                    // user not found.. need to create new user
-                    xwikiUser = email.substring(0, email.indexOf("@"));
-                    // make sure user is unique
-                    xwikiUser = xwiki.getUniquePageName("XWiki", xwikiUser);
-                    // create user
-                    def parentref = xwiki.getDocumentAsAuthor("Main.UserDirectory").getDocumentReference()
-                    def randomPassword = RandomStringUtils.randomAlphanumeric(8)
-                    if(user.names==null || user.names.size()==0) throw new NullPointerException("Sorry, users without names are not supported.");
-                    def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.names[0].givenName, "last_name" : user.names[0].familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context)
-                    // Add google apps id to the user
-                    if (isCreated) {
-                        addDebug("Creating user " + xwikiUser);
-                        xwikiUser = "XWiki." + xwikiUser
-                        def userDoc = xwiki.getDocumentAsAuthor(xwikiUser)
-                        userDoc.use("XWiki.XWikiUsers")
-                        userDoc.set("first_name", user.names[0].givenName);
-                        userDoc.set("last_name",  user.names[0].familyName)
-                        if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
-                            addDebug("Adding avatar " + user.photos[0].url);
-                            def u = new URL(user.photos[0].url);
-                            def b = u.openStream();
+            if ((wikiUserList==null) || (wikiUserList.size()==0)) {
+                // user not found.. need to create new user
+                xwikiUser = usersEmailAddress.substring(0, usersEmailAddress.indexOf("@"));
+                // make sure user is unique
+                xwikiUser = xwiki.getUniquePageName("XWiki", xwikiUser);
+                // create user
+                def parentref = xwiki.getDocumentAsAuthor("Main.UserDirectory").getDocumentReference()
+                def randomPassword = RandomStringUtils.randomAlphanumeric(8)
+                if(user.names==null || user.names.size()==0) {
+                    throw new NullPointerException("Sorry, users without names are not supported.");
+                }
+                def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.names[0].givenName, "last_name" : user.names[0].familyName, "email" : usersEmailAddress,  "password" : randomPassword], parentref, null, null, "edit", context.context)
+                // Add google apps id to the user
+                if (isCreated) {
+                    addDebug("Creating user " + xwikiUser);
+                    xwikiUser = "XWiki." + xwikiUser
+                    def userDoc = xwiki.getDocumentAsAuthor(xwikiUser)
+                    userDoc.use("XWiki.XWikiUsers")
+                    userDoc.set("first_name", user.names[0].givenName);
+                    userDoc.set("last_name",  user.names[0].familyName)
+                    userDoc.set("active", 1);
+                    if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
+                        addDebug("Adding avatar " + user.photos[0].url);
+                        def u = new URL(user.photos[0].url);
+                        def b = u.openStream();
 
-                            def fileName = u.file.substring(u.file.lastIndexOf('/')+1);
-                            userDoc.addAttachment(fileName, b);
-                            userDoc.set("avatar", fileName );
-                            b.close()
-                        }
-                        userDoc.getObject("GoogleApps.GoogleAppsAuthClass", true)
-                        userDoc.use("GoogleApps.GoogleAppsAuthClass")
-                        userDoc.set("id", id)
-                        userDoc.saveWithProgrammingRights("Google Apps login user creation")
-                    } else {
-                        addDebug("User creation failed");
-                        return null;
+                        def fileName = u.file.substring(u.file.lastIndexOf('/')+1);
+                        userDoc.addAttachment(fileName, b);
+                        userDoc.set("avatar", fileName );
+                        b.close()
                     }
+                    userDoc.getObject("GoogleApps.GoogleAppsAuthClass", true)
+                    userDoc.use("GoogleApps.GoogleAppsAuthClass")
+                    userDoc.set("id", id)
+                    userDoc.saveWithProgrammingRights("Google Apps login user creation")
                 } else {
-                    // user found.. we should update it if needed
-                    xwikiUser = wikiUserList.get(0);
-                    addDebug("Found user " + xwikiUser);
-                    boolean changed = false;
-                    def userDoc = xwiki.getDocumentAsAuthor(xwikiUser);
-                    if (!userDoc.getObject("XWiki.XWikiUsers")) {
-                        addDebug("User found is not a user");
-                        return null;
+                    addDebug("User creation failed");
+                    return null;
+                }
+            } else {
+                // user found.. we should update it if needed
+                xwikiUser = wikiUserList.get(0);
+                addDebug("Found user " + xwikiUser);
+                boolean changed = false;
+                def userDoc = xwiki.getDocumentAsAuthor(xwikiUser);
+                if (!userDoc.getObject("XWiki.XWikiUsers")) {
+                    addDebug("User found is not a user");
+                    return null;
+                } else {
+                    userDoc.use("XWiki.XWikiUsers")
+                    if (userDoc.getValue("email") != usersEmailAddress) {
+                        userDoc.set("email", usersEmailAddress)
+                        changed = true;
+                    }
+                    if (userDoc.getValue("first_name") != user.names[0].givenName) {
+                        userDoc.set("first_name", user.names[0].givenName)
+                        changed = true;
+                    }
+                    if (userDoc.getValue("last_name") != user.names[0].familyName) {
+                        userDoc.set("last_name", user.names[0].familyName)
+                        changed = true;
+                    }
+                    if (userDoc.getValue("active") != 1) {
+                        userDoc.set("active", 1);
+                        changed = true;
+                    }
+                    if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
+                        addDebug("Pulling avatar " + user.photos[0].url);
+                        def u = new URL(user.photos[0].url);
+                        def bytesFromGoogle = u.getBytes();
+                        def attachment = userDoc.get("avatar")==null ? null : userDoc.getAttachment(userDoc.get("avatar"));
+                        def fileChanged = attachment==null || attachment.getFilesize()!=bytesFromGoogle.length;
+                        if(!fileChanged) {
+                            def b = attachment.getContentAsBytes();
+                            for(int i=0; i<b.length; i++) if(b[i]!=bytesFromGoogle[i]) {fileChanged = true; break;}
+                        }
+
+                        if(fileChanged) {
+                            def fileName = u.file.substring(u.file.lastIndexOf('/')+1);
+                            addDebug("Avatar changed " + fileName);
+                            userDoc.set("avatar", fileName );
+                            userDoc.addAttachment(fileName, bytesFromGoogle);
+                            changed = true;
+                        }
+                    }
+
+                    if (userDoc.getObject("GoogleApps.GoogleAppsAuthClass")==null) {
+                        userDoc.getObject("GoogleApps.GoogleAppsAuthClass", true)
+                        changed = true;
+                    }
+                    userDoc.use("GoogleApps.GoogleAppsAuthClass")
+                    if (userDoc.getValue("id") != id) {
+                        userDoc.set("id", id)
+                        changed = true;
+                    }
+
+                    if (changed) {
+                        addDebug("User changed.");
+                        userDoc.saveWithProgrammingRights("Google Apps login user updated")
                     } else {
-                        userDoc.use("XWiki.XWikiUsers")
-                        if (userDoc.getValue("email") != email) {
-                            userDoc.set("email", email)
-                            changed = true;
-                        }
-                        if (userDoc.getValue("first_name") != user.names[0].givenName) {
-                            userDoc.set("first_name", user.names[0].givenName)
-                            changed = true;
-                        }
-                        if (userDoc.getValue("last_name") != user.names[0].familyName) {
-                            userDoc.set("last_name", user.names[0].familyName)
-                            changed = true;
-                        }
-                        if(useAvatar && user.photos && user.photos.size()>0 && user.photos[0].url) {
-                            addDebug("Pulling avatar " + user.photos[0].url);
-                            def u = new URL(user.photos[0].url);
-                            def bytesFromGoogle = u.getBytes();
-                            def attachment = userDoc.get("avatar")==null ? null : userDoc.getAttachment(userDoc.get("avatar"));
-                            def fileChanged = attachment==null || attachment.getFilesize()!=bytesFromGoogle.length;
-                            if(!fileChanged) {
-                                def b = attachment.getContentAsBytes();
-                                for(int i=0; i<b.length; i++) if(b[i]!=bytesFromGoogle[i]) {fileChanged = true; break;}
-                            }
-
-                            if(fileChanged) {
-                                def fileName = u.file.substring(u.file.lastIndexOf('/')+1);
-                                addDebug("Avatar changed " + fileName);
-                                userDoc.set("avatar", fileName );
-                                userDoc.addAttachment(fileName, bytesFromGoogle);
-                                changed = true;
-                            }
-                        }
-
-                        if (userDoc.getObject("GoogleApps.GoogleAppsAuthClass")==null) {
-                            userDoc.getObject("GoogleApps.GoogleAppsAuthClass", true)
-                            changed = true;
-                        }
-                        userDoc.use("GoogleApps.GoogleAppsAuthClass")
-                        if (userDoc.getValue("id") != id) {
-                            userDoc.set("id", id)
-                            changed = true;
-                        }
-
-                        if (changed) {
-                            addDebug("User changed.");
-                            userDoc.saveWithProgrammingRights("Google Apps login user updated")
-                        } else {
-                            addDebug("User unchanged.");
-                        }
+                        addDebug("User unchanged.");
                     }
                 }
-            } finally {
-                // Restore database
-                context.setDatabase(db)
             }
-
-            // we need to restore the credentials as the user will now be logged-in
-            storeCredentials(xwikiUser, credential);
-
-            // store the validated xwiki user for the authentication module
-            request.getSession().setAttribute("googleappslogin", "xwiki:" + xwikiUser);
-
-            return xwikiUser;
+        } finally {
+            // Restore database
+            context.setDatabase(db)
         }
+
+        // we need to restore the credentials as the user will now be logged-in
+        storeCredentials(xwikiUser, credential);
+
+        // store the validated xwiki user for the authentication module
+        request.getSession().setAttribute("googleappslogin", "xwiki:" + xwikiUser);
+
+        return xwikiUser;
     }
 
     /**
@@ -739,7 +754,9 @@ public class GoogleAppsGroovy {
          */
         def xwikicfg = services.component.getInstance(
           Class.forName("org.xwiki.configuration.ConfigurationSource"), "xwikicfg");
-        if(xwikicfg==null) return false;
+        if(xwikicfg==null) {
+            return false;
+        }
         return !(
           xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &&
           xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
