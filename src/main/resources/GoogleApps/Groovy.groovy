@@ -131,7 +131,9 @@ public class GoogleAppsGroovy {
         SCOPES.add(PeopleServiceScopes.USERINFO_EMAIL);
         SCOPES.add(PeopleServiceScopes.USERINFO_PROFILE);
         addDebug("SCOPE config: ${SCOPE}.")
-        if(useDrive)  SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
+        if(useDrive)  {
+            SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
+        }
 
         addDebug("APPNAME: ${APPNAME}");
         addDebug("CLIENTID: ${CLIENTID}");
@@ -304,8 +306,9 @@ public class GoogleAppsGroovy {
                 userDoc.use("XWiki.XWikiUsers")
                 userEmail = userDoc.getValue("email")
             }
-            if(userEmail)
+            if(userEmail) {
                 urlBuilder = urlBuilder.set("login_hint", userEmail);
+            }
         }
         def authurl = urlBuilder.build();
         addDebug("google authentication url : " + authurl)
@@ -340,7 +343,7 @@ public class GoogleAppsGroovy {
         def user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
         this.googleUser = user;
         addDebug("user: " + user);
-        String email = "";
+        String usersEmailAddress = "";
         // GOOGLEAPPS: User: [displayName:Paul Libbrecht, emails:[[type:account, value:paul.libbrecht@googlemail.com]], etag:"k-5ZH5-QJvSewqvyYHTE9ETORZg/EbrzZ-WXep7ocoOnw7mPH3ohUF0", id:108124822654357414762, image:[isDefault:false, url:https://lh5.googleusercontent.com/-ozemnElunF0/AAAAAAAAAAI/AAAAAAAACGw/oyQfa2rA1YM/s50/photo.jpg], kind:plus#person, language:en, name:[familyName:Libbrecht, givenName:Paul]]
         if (user==null) {
             return null;
@@ -352,7 +355,7 @@ public class GoogleAppsGroovy {
                     String emailA = address.getValue();
                     if(emailA.endsWith(DOMAIN)) {
                         foundCompatibleDomain = true;
-                        email = emailA;
+                        usersEmailAddress = emailA;
                         break;
                     }
                 }
@@ -365,27 +368,32 @@ public class GoogleAppsGroovy {
             }
         }
         String id = user.get("resourceName");
-        if(id.startsWith("people/") && id.length()>7) id = id.substring(7);
+        if(id.startsWith("people/") && id.length()>7) {
+            id = id.substring(7);
+        }
         def db = context.getDatabase()
         try {
             // Force main wiki database to create the user as global
             context.setDatabase("xwiki")
-            if(email == "")
-                email = (user.emailAddresses!=null && user.emailAddresses.size()>0) ? user.emailAddresses[0].value : "";
+            if(usersEmailAddress == "") {
+                usersEmailAddress = (user.emailAddresses!=null && user.emailAddresses.size()>0) ? user.emailAddresses[0].value : "";
+            }
             def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
             if ((wikiUserList==null) || (wikiUserList.size()==0))
-                wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", email).execute()
+                wikiUserList = services.query.xwql("from doc.object(XWiki.XWikiUsers) as user where user.email=:email").bindValue("email", usersEmailAddress).execute()
 
             if ((wikiUserList==null) || (wikiUserList.size()==0)) {
                 // user not found.. need to create new user
-                xwikiUser = email.substring(0, email.indexOf("@"));
+                xwikiUser = usersEmailAddress.substring(0, usersEmailAddress.indexOf("@"));
                 // make sure user is unique
                 xwikiUser = xwiki.getUniquePageName("XWiki", xwikiUser);
                 // create user
                 def parentref = xwiki.getDocumentAsAuthor("Main.UserDirectory").getDocumentReference()
                 def randomPassword = RandomStringUtils.randomAlphanumeric(8)
-                if(user.names==null || user.names.size()==0) throw new NullPointerException("Sorry, users without names are not supported.");
-                def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.names[0].givenName, "last_name" : user.names[0].familyName, "email" : email,  "password" : randomPassword], parentref, null, null, "edit", context.context)
+                if(user.names==null || user.names.size()==0) {
+                    throw new NullPointerException("Sorry, users without names are not supported.");
+                }
+                def isCreated = xwiki.getXWiki().createUser(xwikiUser, ["first_name" : user.names[0].givenName, "last_name" : user.names[0].familyName, "email" : usersEmailAddress,  "password" : randomPassword], parentref, null, null, "edit", context.context)
                 // Add google apps id to the user
                 if (isCreated) {
                     addDebug("Creating user " + xwikiUser);
@@ -424,8 +432,8 @@ public class GoogleAppsGroovy {
                     return null;
                 } else {
                     userDoc.use("XWiki.XWikiUsers")
-                    if (userDoc.getValue("email") != email) {
-                        userDoc.set("email", email)
+                    if (userDoc.getValue("email") != usersEmailAddress) {
+                        userDoc.set("email", usersEmailAddress)
                         changed = true;
                     }
                     if (userDoc.getValue("first_name") != user.names[0].givenName) {
@@ -745,7 +753,9 @@ public class GoogleAppsGroovy {
          */
         def xwikicfg = services.component.getInstance(
           Class.forName("org.xwiki.configuration.ConfigurationSource"), "xwikicfg");
-        if(xwikicfg==null) return false;
+        if(xwikicfg==null) {
+            return false;
+        }
         return !(
           xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &&
           xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
