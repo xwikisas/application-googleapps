@@ -352,10 +352,10 @@ public class GoogleAppsGroovy {
             boolean foundCompatibleDomain = false;
             if(user.getEmailAddresses() != null) {
                 for(EmailAddress address: user.getEmailAddresses()) {
-                    String emailA = address.getValue();
-                    if(emailA.endsWith(DOMAIN)) {
+                    String addr = address.getValue();
+                    if(addr.endsWith(DOMAIN)) {
                         foundCompatibleDomain = true;
-                        usersEmailAddress = emailA;
+                        usersEmailAddress = addr;
                         break;
                     }
                 }
