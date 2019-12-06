@@ -347,8 +347,8 @@ public class GoogleAppsGroovy {
         // GOOGLEAPPS: User: [displayName:Paul Libbrecht, emails:[[type:account, value:paul.libbrecht@googlemail.com]], etag:"k-5ZH5-QJvSewqvyYHTE9ETORZg/EbrzZ-WXep7ocoOnw7mPH3ohUF0", id:108124822654357414762, image:[isDefault:false, url:https://lh5.googleusercontent.com/-ozemnElunF0/AAAAAAAAAAI/AAAAAAAACGw/oyQfa2rA1YM/s50/photo.jpg], kind:plus#person, language:en, name:[familyName:Libbrecht, givenName:Paul]]
         if (user==null) {
             return null;
-        } else if (DOMAIN!="") {
-
+        }
+        if (DOMAIN!="") {
             boolean foundCompatibleDomain = false;
             if(user.getEmailAddresses() != null) {
                 for(EmailAddress address: user.getEmailAddresses()) {
