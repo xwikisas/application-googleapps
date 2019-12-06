@@ -375,8 +375,9 @@ public class GoogleAppsGroovy {
         try {
             // Force main wiki database to create the user as global
             context.setDatabase("xwiki")
-            if(usersEmailAddress == "") {
-                usersEmailAddress = (user.emailAddresses!=null && user.emailAddresses.size()>0) ? user.emailAddresses[0].value : "";
+            // take the first emailAddress if there was none selected for the domain earlier
+            if(usersEmailAddress == "" && user.emailAddresses!=null && user.emailAddresses.size()>0) {
+                usersEmailAddress = user.emailAddresses[0].value
             }
             def wikiUserList = services.query.xwql("from doc.object(GoogleApps.GoogleAppsAuthClass) as auth where auth.id=:id").bindValue("id", id).execute()
             if ((wikiUserList==null) || (wikiUserList.size()==0))
