@@ -19,14 +19,6 @@
  */
 package org.xwiki.apps.googleapps.internal;
 
-
-import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.XWikiException;
-import com.xpn.xwiki.doc.XWikiDocument;
-import com.xpn.xwiki.user.api.XWikiUser;
-import com.xpn.xwiki.user.impl.xwiki.XWikiAuthServiceImpl;
-import com.xpn.xwiki.web.XWikiRequest;
-
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.regex.Pattern;
@@ -49,19 +41,25 @@ import org.xwiki.container.servlet.filters.SavedRequestManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.text.StringUtils;
 
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.XWikiException;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.user.api.XWikiUser;
+import com.xpn.xwiki.user.impl.xwiki.XWikiAuthServiceImpl;
+import com.xpn.xwiki.web.XWikiRequest;
+
 /**
- * An authenticator that can include a negotiation with the Google Cloud (e.g. Google Drive) services.
- * This authenticator is created, configured and maintained by the GoogleAppsScriptService.
+ * An authenticator that can include a negotiation with the Google Cloud (e.g. Google Drive) services. This
+ * authenticator is created, configured and maintained by the GoogleAppsScriptService.
  *
- * @since 3.0
  * @version $Id$
+ * @since 3.0
  */
 @Component
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
         implements GoogleAppsAuthService
 {
-
     private static final String XWIKISPACE = "XWiki.";
 
     @Inject
@@ -72,7 +70,12 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
 
     private GoogleAppsManagerImpl googleAppsManager;
 
-    void setGoogleAppsManager(GoogleAppsManagerImpl m) {
+    @Inject
+    @Named("xwikicfg")
+    private Provider<ConfigurationSource> xwikicfgProvider;
+
+    void setGoogleAppsManager(GoogleAppsManagerImpl m)
+    {
         this.googleAppsManager = m;
     }
 
@@ -83,7 +86,8 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
      * @return a valid user, if found.
      * @throws XWikiException if anything went wrong
      */
-    public XWikiUser checkAuth(XWikiContext context) throws XWikiException {
+    public XWikiUser checkAuth(XWikiContext context) throws XWikiException
+    {
         try {
             log.info("GoogleApps authentificator - checkAuth");
             if (isLogoutRequest(context)) {
@@ -103,19 +107,18 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
     /**
      * Checks authentication.
      *
-     * @param username the name of the user to verify against
-     * @param password the password of the user to verify against
+     * @param username   the name of the user to verify against
+     * @param password   the password of the user to verify against
      * @param rememberme insert-cookies to remember the login
-     * @param context the context containing the request
+     * @param context    the context containing the request
      * @return an XWikiUser is it succeded.
      * @throws XWikiException in case something goes wrong
      */
     public XWikiUser checkAuth(String username, String password,
-            String rememberme, XWikiContext context) throws XWikiException  {
+            String rememberme, XWikiContext context) throws XWikiException
+    {
         return super.checkAuth(username, password, rememberme, context);
     }
-
-
 
     /**
      * Redirect user to the login.
@@ -123,7 +126,8 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
      * @param context the xwiki-context of the request
      * @throws XWikiException a wrapped exception
      */
-    public void showLogin(XWikiContext context) throws XWikiException {
+    public void showLogin(XWikiContext context) throws XWikiException
+    {
         log.info("GoogleApps authentificator - showLogin");
         if (!googleAppsManager.isActive(context)) {
             return;
@@ -136,8 +140,7 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
                 XWikiRequest request = context.getRequest();
                 CookieAuthenticationPersistence cookieTools =
                         componentManager.getInstance(CookieAuthenticationPersistence.class);
-                cookieTools.initialize(context, googleAppsManager.getConfigCookiesTTL());
-                String userCookie = cookieTools.retrieve();
+                String userCookie = cookieTools.getUserId();
                 log.info("retrieved user from cookie : " + userCookie);
                 String savedRequestId = request.getParameter(
                         SavedRequestManager.getSavedRequestIdentifier());
@@ -161,7 +164,7 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
 
                 String finalURL = url + "?" + sridParameter + "&xredirect="
                         + URLEncoder.encode(redirectBack.toString(), "UTF-8");
-                log.info("Redirecting to "  + finalURL);
+                log.info("Redirecting to " + finalURL);
                 redirected = true;
                 context.getResponse().sendRedirect(finalURL);
             }
@@ -180,12 +183,13 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
      *
      * @param username the provided user-name
      * @param password the provided password
-     * @param context the context describing the request
+     * @param context  the context describing the request
      * @return a null Principal Object if the user hasn't been authenticated or a valid Principal Object if the user is
-     *         correctly authenticated
+     * correctly authenticated
      * @throws XWikiException if something goes wrong.
      */
-    public Principal authenticate(String username, String password, XWikiContext context) throws XWikiException {
+    public Principal authenticate(String username, String password, XWikiContext context) throws XWikiException
+    {
         try {
             log.info("GoogleApps authentificator - authenticate");
 
@@ -204,13 +208,12 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
                 log.info("Authenticate with cookie");
                 CookieAuthenticationPersistence cookieTools =
                         componentManager.getInstance(CookieAuthenticationPersistence.class);
-                cookieTools.initialize(context, googleAppsManager.getConfigCookiesTTL());
-                String userCookie = cookieTools.retrieve();
+                String userCookie = cookieTools.getUserId();
                 if (userCookie != null) {
                     log.info("Found user from cookie : " + userCookie);
                     DocumentReference userDocRef = googleAppsManager.createUserReference(username);
                     XWikiDocument userDoc = context.getWiki().getDocument(userDocRef, context);
-                    if (!userDoc.isNew())  {
+                    if (!userDoc.isNew()) {
                         xwikiUser = userDocRef.getName();
                     }
                     log.info("xwikiUser from cookie : " + xwikiUser);
@@ -234,14 +237,11 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
 
     private Pattern logoutRequestMatcher;
 
-    @Inject
-    @Named("xwikicfg")
-    private Provider<ConfigurationSource> xwikicfgProvider;
-
     /**
      * @return true if the current request match the configured logout page pattern.
      */
-    private boolean isLogoutRequest(XWikiContext context) {
+    private boolean isLogoutRequest(XWikiContext context)
+    {
         if (logoutRequestMatcher == null) {
             if (xwikicfgProvider == null) {
                 return false;

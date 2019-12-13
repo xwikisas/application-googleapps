@@ -41,7 +41,7 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #set($googleApps = $services.googleApps)
-#if($googleApps.active &amp;&amp; $googleApps.useDrive)
+#if($googleApps.active &amp;&amp; $googleApps.driveEnabled)
   #set($gdoc = $googleApps.getGoogleDocument($request.page, $request.name))
   #if($request.confirm)
   {{translation key='googleapps.editInGA.uploading'/}}

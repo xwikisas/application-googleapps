@@ -66,12 +66,6 @@
             <configuration>
               <failOnViolation>false</failOnViolation>
             </configuration>
-            <executions>
-                <execution>
-                    <id>checkstyle-validation</id>
-                    <phase>none</phase>
-                </execution>
-            </executions>
         </plugin>
     </plugins>
   </build>

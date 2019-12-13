@@ -120,7 +120,7 @@
     </property>
     <property>
       <code>#set($googleApps = $services.googleApps)
-        #if($googleApps.active &amp;&amp; $googleApps.useDrive)
+        #if($googleApps.active &amp;&amp; $googleApps.driveEnabled)
 var listener = function(event) {
   if (event.memo.id == 'Attachments') {
      var buttons = $$(".xwikibuttonlinks")

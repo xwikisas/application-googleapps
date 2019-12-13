@@ -44,15 +44,14 @@ import com.xpn.xwiki.api.Object;
 /**
  * Script service containing the methods used by the view files contained in the ui module.
  *
- * @since 3.0
  * @version $Id$
+ * @since 3.0
  */
 @Component
 @Named("googleApps")
 @Singleton
 public class GoogleAppsScriptService implements ScriptService
 {
-
     @Inject
     private GoogleAppsManager manager;
 
@@ -65,7 +64,8 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public boolean isActive() throws XWikiException {
+    public boolean isActive() throws XWikiException
+    {
         return manager.isActive();
     }
 
@@ -74,10 +74,10 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public boolean useDrive() {
-        return manager.useDrive();
+    public boolean isDriveEnabled()
+    {
+        return manager.isDriveEnabled();
     }
-
 
     /**
      * Reads the manifest to find when the JAR file was assembled by maven.
@@ -86,7 +86,8 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Date getBuildTime() {
+    public Date getBuildTime()
+    {
         return manager.getBuildTime();
     }
 
@@ -95,14 +96,14 @@ public class GoogleAppsScriptService implements ScriptService
      *
      * @return found credential
      * @throws XWikiException if the interaction with xwiki failed
-     * @throws IOException if a communication problem to Google services occured
+     * @throws IOException    if a communication problem to Google services occured
      * @since 3.0
      */
     @Unstable
-    public Credential authorize() throws XWikiException, IOException {
+    public Credential authorize() throws XWikiException, IOException
+    {
         return manager.authorize();
     }
-
 
     /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
@@ -110,84 +111,89 @@ public class GoogleAppsScriptService implements ScriptService
      * @param redirect If a redirect can be done
      * @return found credential
      * @throws XWikiException if the interaction with xwiki failed
-     * @throws IOException if a communication problem to Google services occured
+     * @throws IOException    if a communication problem to Google services occured
      * @since 3.0
      */
     @Unstable
-    public Credential authorize(boolean redirect) throws XWikiException, IOException {
+    public Credential authorize(boolean redirect) throws XWikiException, IOException
+    {
         return manager.authorize(redirect);
     }
 
     /**
-     * Performs the necessary communication with Google-Services to fetch identity and
-     * update the XWiki-user object or possibly sends a redirect to a Google login screen.
+     * Performs the necessary communication with Google-Services to fetch identity and update the XWiki-user object or
+     * possibly sends a redirect to a Google login screen.
      *
-     * @return "failed login" if failed, "no user" (can be attempted to Google-OAuth),
-     *          or "ok" if successful
+     * @return "failed login" if failed, "no user" (can be attempted to Google-OAuth), or "ok" if successful
      * @since 3.0
      */
     @Unstable
-    public String updateUser() {
+    public String updateUser()
+    {
         return manager.updateUser();
     }
 
     /**
-     *  Get the list of all documents in the user's associated account.
+     * Get the list of all documents in the user's associated account.
      *
      * @return A list of max 10 documents.
      * @throws XWikiException if an authorization process failed.
-     * @throws IOException if a communication process to Google services occurred.
+     * @throws IOException    if a communication process to Google services occurred.
      * @since 3.0
      */
     @Unstable
-    public List<File> getDocumentList() throws XWikiException, IOException {
+    public List<File> getDocumentList() throws XWikiException, IOException
+    {
         return manager.getDocumentList();
     }
 
     /**
      * Fetches a list of Google Drive document matching a substring query in the filename.
      *
-     * @param query the expected query (e.g. fullText contains winter ski)
+     * @param query     the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
      * @throws XWikiException if an XWiki issue occurs
-     * @throws IOException if an error interacting with Google services occurred
+     * @throws IOException    if an error interacting with Google services occurred
      * @since 3.0
      */
     @Unstable
-    public List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws XWikiException, IOException {
+    public List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws XWikiException, IOException
+    {
         return manager.listDriveDocumentsWithTypes(query, nbResults);
     }
 
     /**
      * Fetches a list of Google Drive document matching a given query.
      *
-     * @param query the expected filename substring
+     * @param query     the expected filename substring
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
      * @throws XWikiException if an XWiki issue occurs
-     * @throws IOException if an error interacting with Google services occurred
+     * @throws IOException    if an error interacting with Google services occurred
      * @since 3.0
      */
     @Unstable
-    public FileList listDocuments(String query, int nbResults) throws XWikiException, IOException {
+    public FileList listDocuments(String query, int nbResults) throws XWikiException, IOException
+    {
         return manager.listDocuments(query, nbResults);
     }
-
 
     /**
      * Inserts the current information on the document to be embedded.
      *
      * @param docId the identifier of the Google Docs document to be embedded
-     * @param doc the XWiki document where to attach the embedding
-     * @param obj the XWiki object where this embedding is to be updated (or null if it is to be created)
-     * @param nb the number of the embedding across all the page's embeddings
+     * @param doc   the XWiki document where to attach the embedding
+     * @param obj   the XWiki object where this embedding is to be updated (or null if it is to be created)
+     * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
-     * @throws IOException If the communication with Google went wrong
+     * @throws IOException    If the communication with Google went wrong
      * @throws XWikiException If something at the XWiki side went wrong (e.g. saving)
      */
     @Unstable
-    public Object createOrUpdateEmbedObject(String docId, Document doc, Object obj, int nb) throws XWikiException, IOException {
+    public Object createOrUpdateEmbedObject(String docId, Document doc, Object obj, int nb)
+            throws XWikiException, IOException
+    {
         return new Object(manager.createOrUpdateEmbedObject(docId, doc.getDocument(),
                 obj == null ? null : obj.getXWikiObject(), nb),
                 contextProvider.get());
@@ -198,16 +204,17 @@ public class GoogleAppsScriptService implements ScriptService
      *
      * @param page attach to this page
      * @param name attach using this file name
-     * @param id store object attached to this attachment using this id (for later sync)
-     * @param url fetch from this URL
+     * @param id   store object attached to this attachment using this id (for later sync)
+     * @param url  fetch from this URL
      * @return true if successful
      * @throws XWikiException if an issue occurred in XWiki
-     * @throws IOException if an issue occurred in the communication with teh Google services
+     * @throws IOException    if an issue occurred in the communication with teh Google services
      * @since 3.0
      */
     @Unstable
-    public  boolean retrieveFileFromGoogle(String page, String name, String id, String url)
-            throws XWikiException, IOException  {
+    public boolean retrieveFileFromGoogle(String page, String name, String id, String url)
+            throws XWikiException, IOException
+    {
         return manager.retrieveFileFromGoogle(page, name, id, url);
     }
 
@@ -221,22 +228,23 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public GoogleAppsManager.GoogleDocMetadata getGoogleDocument(String pageName, String fileName)
-            throws XWikiException {
+    public DriveDocMetadata getGoogleDocument(String pageName, String fileName)
+            throws XWikiException
+    {
         return manager.getGoogleDocument(pageName, fileName);
     }
-
 
     /**
      * Reads the extension and document name.
      *
      * @param docName the raw docName
-     * @param elink the link where to read the extension name
+     * @param elink   the link where to read the extension name
      * @return an array with extension and simplified document name
      * @since 3.0
      */
     @Unstable
-    public String[] getExportLink(String docName, String elink) {
+    public String[] getExportLink(String docName, String elink)
+    {
         return manager.getExportLink(docName, elink);
     }
 
@@ -245,30 +253,29 @@ public class GoogleAppsScriptService implements ScriptService
      *
      * @param page the XWiki page name
      * @param name the attachment name
-     * @return a record with the keys fileName, exportLink, version, editLink,  embedLink,
-     *      and google-user's email-address
+     * @return a record with the keys fileName, exportLink, version, editLink,  embedLink, and google-user's
+     * email-address
      * @throws XWikiException if something went wrong at the XWiki side
-     * @throws IOException if something went wrong int he communication with Google drive.
+     * @throws IOException    if something went wrong int he communication with Google drive.
      * @since 3.0
      */
     @Unstable
     public Map<String, java.lang.Object> saveAttachmentToGoogle(String page, String name)
-            throws XWikiException, IOException {
+            throws XWikiException, IOException
+    {
         return manager.saveAttachmentToGoogle(page, name);
     }
 
     /**
      * Reads the google user-info attached to the current user as stored in the request.
      *
-     * @return the google user-info with keys displayName, emails (array of type,value pairs),
-     *    etag, id, image (map with keys isDefault and url), kind, language,
-     *    name (map with keys familyName and givenName).
+     * @return the google user-info with keys displayName, emails (array of type,value pairs), etag, id, image (map with
+     * keys isDefault and url), kind, language, name (map with keys familyName and givenName).
      * @since 3.0
      */
     @Unstable
-    public Map<String, java.lang.Object> getGoogleUser() {
+    public Map<String, java.lang.Object> getGoogleUser()
+    {
         return manager.getGoogleUser();
     }
-
-
 }

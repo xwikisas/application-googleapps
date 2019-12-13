@@ -27,42 +27,47 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-
 import org.slf4j.Logger;
 import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
+import org.xwiki.apps.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
-import org.xwiki.component.manager.ComponentManager;
+import org.xwiki.component.phase.Initializable;
+import org.xwiki.component.phase.InitializationException;
+import org.xwiki.configuration.ConfigurationSource;
 import org.xwiki.stability.Unstable;
 
 import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.XWikiException;
 
 /**
- * Tools to help storing and retrieving enriched information within cookies such as the
- * linked Google user profile.
+ * Tools to help storing and retrieving enriched information within cookies such as the linked Google user profile.
+ * <p>
+ * Copied code from xwiki-authenticator-trusted https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
+ * /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
+ * /internal/CookieAuthenticationPersistenceStore.java.
  *
- * Copied code from xwiki-authenticator-trusted
- * https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
- *   /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
- *   /internal/CookieAuthenticationPersistenceStore.java.
  * @version $Id$
  * @since 3.0
  */
 @Component
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
-public class CookieAuthenticationPersistenceImpl implements CookieAuthenticationPersistence
+public class CookieAuthenticationPersistenceImpl implements CookieAuthenticationPersistence, Initializable
 {
     private static final String AUTHENTICATION_CONFIG_PREFIX = "xwiki.authentication";
 
     private static final String COOKIE_PREFIX_PROPERTY = AUTHENTICATION_CONFIG_PREFIX + ".cookieprefix";
-    private static final String COOKIE_PATH_PROPERTY =  AUTHENTICATION_CONFIG_PREFIX + ".cookiepath";
+
+    private static final String COOKIE_PATH_PROPERTY = AUTHENTICATION_CONFIG_PREFIX + ".cookiepath";
+
     private static final String COOKIE_DOMAINS_PROPERTY = AUTHENTICATION_CONFIG_PREFIX + ".cookiedomains";
+
     private static final String ENCRYPTION_KEY_PROPERTY = AUTHENTICATION_CONFIG_PREFIX + ".encryptionKey";
 
     private static final String CIPHER_ALGORITHM = "TripleDES";
@@ -75,40 +80,41 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     private static final String COOKIE_DOT_PFX = ".";
 
     private static final String EQUAL_SIGN = "=";
+
     private static final String UNDERSCORE = "_";
 
     @Inject
     private Logger logger;
 
-    private XWikiContext context;
+    @Inject
+    private Provider<XWikiContext> contextProvider;
 
     @Inject
-    private ComponentManager componentManager;
+    private GoogleAppsManager manager;
 
     private String cookiePfx;
+
     private String cookiePath;
+
     private String[] cookieDomains;
-    private long cookieMaxAge;
+
+    private int cookieMaxAge;
+
     private Cipher encryptionCipher;
+
     private Cipher decryptionCipher;
 
+    @Inject
+    @Named("xwikicfg")
+    private Provider<ConfigurationSource> xwikicfgProvider;
 
-    /**
-     * Initialize the tool.
-     *
-     * @param context XWiki Context
-     * @param cookieMaxAge Time To Live of the created cookies in scd
-     * @throws XWikiException in case of trouble
-     * @since 3.0
-     */
-    @Unstable
-    public void initialize(XWikiContext context, long cookieMaxAge) throws XWikiException
+    public void initialize() throws InitializationException
     {
-        this.context = context;
-        cookiePfx = this.context.getWiki().Param(COOKIE_PREFIX_PROPERTY, "");
-        cookiePath = this.context.getWiki().Param(COOKIE_PATH_PROPERTY, "/");
+        cookiePfx = xwikicfgProvider.get().getProperty(COOKIE_PREFIX_PROPERTY, "");
+        cookiePath = xwikicfgProvider.get().getProperty(COOKIE_PATH_PROPERTY, "/");
 
-        String[] cdlist = StringUtils.split(this.context.getWiki().Param(COOKIE_DOMAINS_PROPERTY), ',');
+        String[] cdlist = StringUtils.split(
+                xwikicfgProvider.get().getProperty(COOKIE_DOMAINS_PROPERTY), ',');
         if (cdlist != null && cdlist.length > 0) {
             this.cookieDomains = new String[cdlist.length];
             for (int i = 0; i < cdlist.length; ++i) {
@@ -118,13 +124,13 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             cookieDomains = null;
         }
 
-        this.cookieMaxAge = cookieMaxAge;
+        this.cookieMaxAge = manager.getConfigCookiesTTL();
 
         try {
             encryptionCipher = getCipher(true);
             decryptionCipher = getCipher(false);
         } catch (Exception e) {
-            throw new XWikiException("Unable to initialize ciphers", e);
+            throw new InitializationException("Unable to initialize ciphers", e);
         }
     }
 
@@ -137,7 +143,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     public void clear()
     {
         cookieMaxAge = 0;
-        this.store(this.retrieve());
+        this.setUserId(this.getUserId());
     }
 
     /**
@@ -147,19 +153,19 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
      * @since 3.0
      */
     @Unstable
-    public void store(String userUid)
+    public void setUserId(String userUid)
     {
         Cookie cookie = new Cookie(cookiePfx + AUTHENTICATION_COOKIE, encryptText(userUid));
-        cookie.setMaxAge((int) cookieMaxAge);
+        cookie.setMaxAge(cookieMaxAge);
         cookie.setPath(cookiePath);
         String cookieDomain = getCookieDomain();
         if (cookieDomain != null) {
             cookie.setDomain(cookieDomain);
         }
-        if (context.getRequest().isSecure()) {
+        if (contextProvider.get().getRequest().isSecure()) {
             cookie.setSecure(true);
         }
-        context.getResponse().addCookie(cookie);
+        contextProvider.get().getResponse().addCookie(cookie);
     }
 
     /**
@@ -169,7 +175,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
      * @since 3.0
      */
     @Unstable
-    public String retrieve()
+    public String getUserId()
     {
         logger.info("retrieve cookie " + cookiePfx + AUTHENTICATION_COOKIE);
         String cookie = getCookieValue(cookiePfx + AUTHENTICATION_COOKIE);
@@ -183,7 +189,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException
     {
         Cipher cipher = null;
-        String secretKey = context.getWiki().Param(ENCRYPTION_KEY_PROPERTY);
+        String secretKey = xwikicfgProvider.get().getProperty(ENCRYPTION_KEY_PROPERTY);
         if (secretKey != null) {
             secretKey = secretKey.substring(0, 24);
             SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), CIPHER_ALGORITHM);
@@ -213,7 +219,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             logger.info("text to decrypt : " + text);
             String decryptedText = new String(decryptionCipher.doFinal(
                     Base64.decodeBase64(text.replaceAll(UNDERSCORE, EQUAL_SIGN).getBytes(
-                    StandardCharsets.ISO_8859_1))));
+                            StandardCharsets.ISO_8859_1))));
             logger.info("decrypted text : " + decryptedText);
             return decryptedText;
         } catch (Exception e) {
@@ -231,8 +237,8 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
      */
     private String getCookieValue(String cookieName)
     {
-        if (context.getRequest() != null) {
-            Cookie cookie = context.getRequest().getCookie(cookieName);
+        if (contextProvider.get().getRequest() != null) {
+            Cookie cookie = contextProvider.get().getRequest().getCookie(cookieName);
             if (cookie != null) {
                 logger.info("cookie : " + cookie);
                 return cookie.getValue();
@@ -256,7 +262,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             // Conform the server name like we conform cookie domain by prefixing with a dot.
             // This will ensure both localhost.localdomain and any.localhost.localdomain will match
             // the same cookie domain.
-            String servername = conformCookieDomain(context.getRequest().getServerName());
+            String servername = conformCookieDomain(contextProvider.get().getRequest().getServerName());
             for (String domain : this.cookieDomains) {
                 if (servername.endsWith(domain)) {
                     cookieDomain = domain;

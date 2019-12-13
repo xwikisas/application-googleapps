@@ -20,14 +20,14 @@
 package org.xwiki.apps.googleapps;
 
 import org.xwiki.component.annotation.Role;
+
 import com.xpn.xwiki.user.api.XWikiAuthService;
 
 /**
- * A badge interface to denote the role of the component that will replace the
- * default authentication-service.
+ * A badge interface to denote the role of the component that will replace the default authentication-service.
  *
- * @since 3.0
  * @version $Id$
+ * @since 3.0
  */
 @Role
 public interface GoogleAppsAuthService extends XWikiAuthService

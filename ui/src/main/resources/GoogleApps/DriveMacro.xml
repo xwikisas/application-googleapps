@@ -291,7 +291,7 @@ def escapetool = new org.xwiki.velocity.tools.EscapeTool();
 def force = false;
 def googleApps = services.googleApps
 
-if(!googleApps.active || !googleApps.useDrive) {
+if(!googleApps.active || !googleApps.driveEnabled) {
   println services.localization.render('googleapps.error.driveDisabled')
 } else {
   // adding stylesheet
