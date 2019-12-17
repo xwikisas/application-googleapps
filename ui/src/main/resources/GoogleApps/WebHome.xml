@@ -59,6 +59,8 @@ $services.localization.render('googleapps.webHome.4', ["[[","&gt;&gt;path:$url]]
 $services.localization.render('googleapps.webHome.5', ["[[","&gt;&gt;DriveMacroTest]]"])
 #end
 #end
+
+[[GoogleApps Application version ${services.googleApps.buildVersion} built on ${services.googleApps.buildTime}>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration]].
 {{/velocity}}
 </content>
 </xwikidoc>

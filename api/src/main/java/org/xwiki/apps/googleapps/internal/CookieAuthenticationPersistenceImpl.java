@@ -209,8 +209,8 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             return encryptedText;
         } catch (Exception e) {
             logger.error("Failed to encrypt text", e);
+            return null;
         }
-        return null;
     }
 
     private String decryptText(String text)
@@ -224,8 +224,8 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             return decryptedText;
         } catch (Exception e) {
             logger.error("Failed to decrypt text", e);
+            return null;
         }
-        return null;
     }
 
     /**

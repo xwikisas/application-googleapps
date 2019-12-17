@@ -19,7 +19,6 @@
  */
 package org.xwiki.apps.googleapps;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import org.xwiki.stability.Unstable;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 
@@ -46,11 +44,11 @@ public interface GoogleAppsManager
 {
     /**
      * @return if the application is licensed and activated
-     * @throws XWikiException in case a context cannot be read from thread.
+     * @throws GoogleAppsException in case a context cannot be read from thread.
      * @since 3.0
      */
     @Unstable
-    boolean isActive() throws XWikiException;
+    boolean isActive() throws GoogleAppsException;
 
     /**
      * @return if the app is configured to use the Google Drive integration (default: yes).
@@ -67,7 +65,7 @@ public interface GoogleAppsManager
     int getConfigCookiesTTL();
 
     /**
-     * Reads the manifest to find when the JAR file was assembled by maven.
+     * Finds when the JAR file was assembled by maven.
      *
      * @return the build date.
      * @since 3.0
@@ -76,27 +74,34 @@ public interface GoogleAppsManager
     Date getBuildTime();
 
     /**
-     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+     * Finds the version of the JAR file.
      *
-     * @return found credential
-     * @throws XWikiException if the interaction with xwiki failed
-     * @throws IOException    if a communication problem to Google services occured
+     * @return the build version.
      * @since 3.0
      */
     @Unstable
-    Credential authorize() throws XWikiException, IOException;
+    String getBuildVersion();
+
+    /**
+     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
+     *
+     * @return found credential
+     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @since 3.0
+     */
+    @Unstable
+    Credential authorize() throws GoogleAppsException;
 
     /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
      * @return found credential
-     * @throws XWikiException if the interaction with xwiki failed
-     * @throws IOException    if a communication problem to Google services occured
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    Credential authorize(boolean redirect) throws XWikiException, IOException;
+    Credential authorize(boolean redirect) throws GoogleAppsException;
 
     /**
      * Performs the necessary communication with Google-Services to fetch identity and update the XWiki-user object or
@@ -112,12 +117,11 @@ public interface GoogleAppsManager
      * Get the list of all documents in the user's associated account.
      *
      * @return A list of max 10 documents.
-     * @throws XWikiException if an authorization process failed.
-     * @throws IOException    if a communication process to Google services occurred.
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    List<File> getDocumentList() throws XWikiException, IOException;
+    List<File> getDocumentList() throws GoogleAppsException;
 
     /**
      * Fetches a list of Google Drive document matching a substring query in the filename.
@@ -125,12 +129,11 @@ public interface GoogleAppsManager
      * @param query     the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
-     * @throws XWikiException if an XWiki issue occurs
-     * @throws IOException    if an error interacting with Google services occurred
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws XWikiException, IOException;
+    List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws GoogleAppsException;
 
     /**
      * Fetches a list of Google Drive document matching a given query.
@@ -138,12 +141,11 @@ public interface GoogleAppsManager
      * @param query     the expected filename substring
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
-     * @throws XWikiException if an XWiki issue occurs
-     * @throws IOException    if an error interacting with Google services occurred
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    FileList listDocuments(String query, int nbResults) throws XWikiException, IOException;
+    FileList listDocuments(String query, int nbResults) throws GoogleAppsException;
 
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
@@ -153,12 +155,11 @@ public interface GoogleAppsManager
      * @param id   store object attached to this attachment using this id (for later sync)
      * @param url  fetch from this URL
      * @return true if successful
-     * @throws XWikiException if an issue occurred in XWiki
-     * @throws IOException    if an issue occurred in the communication with teh Google services
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    boolean retrieveFileFromGoogle(String page, String name, String id, String url) throws XWikiException, IOException;
+    boolean retrieveFileFromGoogle(String page, String name, String id, String url) throws GoogleAppsException;
 
     /**
      * Extracts metadata about the Google Drive document corresponding to the named attachment.
@@ -166,11 +167,11 @@ public interface GoogleAppsManager
      * @param pageName The XWiki page where the attachment is
      * @param fileName The filename of the attachment
      * @return information about the corresponding Google Drive document
-     * @throws XWikiException if something happened at XWiki side
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    DriveDocMetadata getGoogleDocument(String pageName, String fileName) throws XWikiException;
+    DriveDocMetadata getGoogleDocument(String pageName, String fileName) throws GoogleAppsException;
 
     /**
      * Reads the extension and document name.
@@ -191,12 +192,11 @@ public interface GoogleAppsManager
      * @param obj   the XWiki object where this embedding is to be updated (or null if it is to be created)
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
-     * @throws IOException    If the communication with Google went wrong
-     * @throws XWikiException If something at the XWiki side went wrong (e.g. saving)
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      */
     @Unstable
-    public BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject obj, int nb)
-            throws IOException, XWikiException;
+    BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject obj, int nb)
+            throws GoogleAppsException;
 
     /**
      * Saves the attachment stored in XWiki to the Google drive of the user attached to the current logged-in user.
@@ -205,12 +205,11 @@ public interface GoogleAppsManager
      * @param name the attachment name
      * @return a record with the keys fileName, exportLink, version, editLink,  embedLink, and google-user's
      * email-address
-     * @throws XWikiException if something went wrong at the XWiki side
-     * @throws IOException    if something went wrong int he communication with Google drive.
+     * @throws GoogleAppsException    if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    Map<String, Object> saveAttachmentToGoogle(String page, String name) throws XWikiException, IOException;
+    Map<String, Object> saveAttachmentToGoogle(String page, String name) throws GoogleAppsException;
 
     /**
      * Reads the google user-info attached to the current user as stored in the request.

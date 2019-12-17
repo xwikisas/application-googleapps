@@ -32,6 +32,7 @@ import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
 import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
 import org.xwiki.apps.googleapps.GoogleAppsAuthService;
+import org.xwiki.apps.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
@@ -68,16 +69,12 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
     @Inject
     private ComponentManager componentManager;
 
-    private GoogleAppsManagerImpl googleAppsManager;
+    @Inject
+    private Provider<GoogleAppsManager> googleAppsManagerProvider;
 
     @Inject
     @Named("xwikicfg")
     private Provider<ConfigurationSource> xwikicfgProvider;
-
-    void setGoogleAppsManager(GoogleAppsManagerImpl m)
-    {
-        this.googleAppsManager = m;
-    }
 
     /**
      * Evaluates if the user can be authenticated based on request info such as cookies.
@@ -129,13 +126,14 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
     public void showLogin(XWikiContext context) throws XWikiException
     {
         log.info("GoogleApps authentificator - showLogin");
-        if (!googleAppsManager.isActive(context)) {
+        if (!googleAppsManagerProvider.get().isActive()) {
             return;
         }
         boolean redirected = false;
         try {
             String url = context.getWiki().getExternalURL("GoogleApps.Login", "view", context);
-            if (googleAppsManager.useCookies() && googleAppsManager.skipLoginPage()) {
+            GoogleAppsManagerImpl manager = (GoogleAppsManagerImpl) googleAppsManagerProvider.get();
+            if (manager.useCookies() && manager.skipLoginPage()) {
                 log.info("skip the login page ");
                 XWikiRequest request = context.getRequest();
                 CookieAuthenticationPersistence cookieTools =
@@ -194,7 +192,8 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
             log.info("GoogleApps authentificator - authenticate");
 
             // case of a too early call or deactivated... can only count on local users
-            if (googleAppsManager == null || !googleAppsManager.isActive(context)) {
+            GoogleAppsManagerImpl googleAppsManager = (GoogleAppsManagerImpl) googleAppsManagerProvider.get();
+            if (googleAppsManager == null || !googleAppsManager.isActive()) {
                 return super.authenticate(username, password, context);
             }
 

@@ -55,7 +55,8 @@ public class GoogleAppsEventListener implements EventListener
     @Override
     public void onEvent(Event event, Object source, Object data)
     {
-        boolean applicationStarted = false, configChanged = false;
+        boolean applicationStarted = false;
+        boolean configChanged = false;
         if (event instanceof ApplicationReadyEvent) {
             applicationStarted = true;
         }
