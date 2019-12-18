@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.apps.googleapps.internal;
+package com.xwiki.googleapps.internal;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -34,8 +34,8 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
-import org.xwiki.apps.googleapps.GoogleAppsManager;
+import com.xwiki.googleapps.CookieAuthenticationPersistence;
+import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;

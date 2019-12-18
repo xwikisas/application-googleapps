@@ -17,39 +17,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.apps.googleapps;
+package com.xwiki.googleapps;
 
-import org.xwiki.component.annotation.Role;
+import org.xwiki.stability.Unstable;
 
 /**
- * Set of methods for the management of the cookies.
+ * Simple pojo for metadata about a doc in Google Drive.
  *
- * @version $Id$
  * @since 3.0
  */
-@Role
-public interface CookieAuthenticationPersistence
+@Unstable
+public class DriveDocMetadata
 {
     /**
-     * Stores the user-id in an encryted fashion in the cookie.
-     *
-     * @param userId the string to store
-     * @since 3.0
+     * Google's internal id to find the document again.
      */
-    void setUserId(String userId);
+    public String id;
 
     /**
-     * Reads the user-id from the cookie.
-     *
-     * @return the decrypted user-id
-     * @since 3.0
+     * URL to direct the user to for editing.
      */
-    String getUserId();
+    public String editLink;
 
     /**
-     * Removes stored information from the cookie.
-     *
-     * @since 3.0
+     * URL to pull from in order to fetch the document.
      */
-    void clear();
+    public String exportLink;
 }

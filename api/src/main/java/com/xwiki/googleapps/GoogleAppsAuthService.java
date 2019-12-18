@@ -17,30 +17,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.apps.googleapps;
+package com.xwiki.googleapps;
 
-import org.xwiki.stability.Unstable;
+import org.xwiki.component.annotation.Role;
+
+import com.xpn.xwiki.user.api.XWikiAuthService;
 
 /**
- * Simple pojo for metadata about a doc in Google Drive.
+ * A badge interface to denote the role of the component that will replace the default authentication-service.
  *
+ * @version $Id$
  * @since 3.0
  */
-@Unstable
-public class DriveDocMetadata
+@Role
+public interface GoogleAppsAuthService extends XWikiAuthService
 {
-    /**
-     * Google's internal id to find the document again.
-     */
-    public String id;
-
-    /**
-     * URL to direct the user to for editing.
-     */
-    public String editLink;
-
-    /**
-     * URL to pull from in order to fetch the document.
-     */
-    public String exportLink;
 }

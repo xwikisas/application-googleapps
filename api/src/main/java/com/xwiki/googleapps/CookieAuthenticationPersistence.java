@@ -17,19 +17,39 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.apps.googleapps;
+package com.xwiki.googleapps;
 
 import org.xwiki.component.annotation.Role;
 
-import com.xpn.xwiki.user.api.XWikiAuthService;
-
 /**
- * A badge interface to denote the role of the component that will replace the default authentication-service.
+ * Set of methods for the management of the cookies.
  *
  * @version $Id$
  * @since 3.0
  */
 @Role
-public interface GoogleAppsAuthService extends XWikiAuthService
+public interface CookieAuthenticationPersistence
 {
+    /**
+     * Stores the user-id in an encryted fashion in the cookie.
+     *
+     * @param userId the string to store
+     * @since 3.0
+     */
+    void setUserId(String userId);
+
+    /**
+     * Reads the user-id from the cookie.
+     *
+     * @return the decrypted user-id
+     * @since 3.0
+     */
+    String getUserId();
+
+    /**
+     * Removes stored information from the cookie.
+     *
+     * @since 3.0
+     */
+    void clear();
 }

@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.apps.googleapps.internal;
+package com.xwiki.googleapps.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,11 +47,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
-import org.xwiki.apps.googleapps.CookieAuthenticationPersistence;
-import org.xwiki.apps.googleapps.DriveDocMetadata;
-import org.xwiki.apps.googleapps.GoogleAppsAuthService;
-import org.xwiki.apps.googleapps.GoogleAppsException;
-import org.xwiki.apps.googleapps.GoogleAppsManager;
+import com.xwiki.googleapps.CookieAuthenticationPersistence;
+import com.xwiki.googleapps.DriveDocMetadata;
+import com.xwiki.googleapps.GoogleAppsAuthService;
+import com.xwiki.googleapps.GoogleAppsException;
+import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
