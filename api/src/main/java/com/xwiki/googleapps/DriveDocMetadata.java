@@ -24,6 +24,7 @@ import org.xwiki.stability.Unstable;
 /**
  * Simple pojo for metadata about a doc in Google Drive.
  *
+ * @version $Id$
  * @since 3.0
  */
 @Unstable

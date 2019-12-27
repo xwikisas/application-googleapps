@@ -34,7 +34,6 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import com.xwiki.googleapps.CookieAuthenticationPersistence;
 import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
@@ -49,7 +48,8 @@ import com.xpn.xwiki.XWikiContext;
 /**
  * Tools to help storing and retrieving enriched information within cookies such as the linked Google user profile.
  * <p>
- * Copied code from xwiki-authenticator-trusted https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
+ * This code is inspired by  from xwiki-authenticator-trusted
+ * https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
  * /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
  * /internal/CookieAuthenticationPersistenceStore.java.
  *
@@ -108,6 +108,11 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     @Named("xwikicfg")
     private Provider<ConfigurationSource> xwikicfgProvider;
 
+    /**
+     * Loads the configuration.
+     *
+     * @throws InitializationException if the configuration fails loading.
+     */
     public void initialize() throws InitializationException
     {
         cookiePfx = xwikicfgProvider.get().getProperty(COOKIE_PREFIX_PROPERTY, "");

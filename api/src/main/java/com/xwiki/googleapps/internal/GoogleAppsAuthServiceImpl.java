@@ -30,8 +30,6 @@ import javax.servlet.http.HttpSession;
 
 import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
-import com.xwiki.googleapps.CookieAuthenticationPersistence;
-import com.xwiki.googleapps.GoogleAppsAuthService;
 import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;

@@ -193,6 +193,7 @@ public interface GoogleAppsManager
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
      * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @since 3.0
      */
     @Unstable
     BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject obj, int nb)

@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.xwiki.googleapps;
+package com.xwiki.googleapps.internal;
 
 import org.xwiki.component.annotation.Role;
 
@@ -28,7 +28,7 @@ import org.xwiki.component.annotation.Role;
  * @since 3.0
  */
 @Role
-public interface CookieAuthenticationPersistence
+interface CookieAuthenticationPersistence
 {
     /**
      * Stores the user-id in an encryted fashion in the cookie.

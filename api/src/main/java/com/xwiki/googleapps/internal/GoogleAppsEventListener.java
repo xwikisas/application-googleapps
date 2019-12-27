@@ -19,9 +19,7 @@
  */
 package com.xwiki.googleapps.internal;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.xpn.xwiki.doc.XWikiDocument;
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
 import org.xwiki.component.phase.InitializationException;
@@ -29,32 +27,53 @@ import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
 
-import com.xpn.xwiki.doc.XWikiDocument;
+import java.util.Arrays;
+import java.util.List;
 
-public class GoogleAppsEventListener implements EventListener
+/**
+ * Registered object to listen to document changes.
+ *
+ * @version $Id$
+ * @since 3.0
+ */
+class GoogleAppsEventListener implements EventListener
 {
-    void GoogleAppsEventListener(GoogleAppsManagerImpl manager)
-    {
+    private GoogleAppsManagerImpl manager;
+
+    GoogleAppsEventListener(GoogleAppsManagerImpl manager) {
         this.manager = manager;
     }
 
-    GoogleAppsManagerImpl manager;
-
+    /**
+     * The name of the event listener.
+     *
+     * @return googleapps.scriptservice.
+     */
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "googleapps.scriptservice";
     }
 
+    /**
+     * The event-types listened to.
+     *
+     * @return ApplicationReadyEvent and DocumentUpdatedEvent
+     */
     @Override
-    public List<Event> getEvents()
-    {
+    public List<Event> getEvents() {
         return Arrays.asList(new ApplicationReadyEvent(), new DocumentUpdatedEvent());
     }
 
+    /**
+     * Triggers a configuration reload (if the configuration is changed or the app is started) or
+     * an initialization (if the app is started).
+     *
+     * @param event  The event listened to.
+     * @param source The object sending the event.
+     * @param data   Data about the event.
+     */
     @Override
-    public void onEvent(Event event, Object source, Object data)
-    {
+    public void onEvent(Event event, Object source, Object data) {
         boolean applicationStarted = false;
         boolean configChanged = false;
         if (event instanceof ApplicationReadyEvent) {

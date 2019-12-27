@@ -47,9 +47,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
-import com.xwiki.googleapps.CookieAuthenticationPersistence;
 import com.xwiki.googleapps.DriveDocMetadata;
-import com.xwiki.googleapps.GoogleAppsAuthService;
 import com.xwiki.googleapps.GoogleAppsException;
 import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
@@ -358,9 +356,9 @@ public class GoogleAppsManagerImpl
         return configCookiesTTL;
     }
 
-    void readConfigDoc(XWikiContext context)
+    void readConfigDoc(XWikiContext contextp)
     {
-
+        XWikiContext context = contextp;
         if (context == null) {
             context = xwikiContextProvider.get();
         }
@@ -402,21 +400,11 @@ public class GoogleAppsManagerImpl
     @Unstable
     public Date getBuildTime()
     {
-        try {
-            Class clazz = getClass();
-            String className = clazz.getSimpleName()
-                    + ".class";
-            String classPath = clazz.getResource(className).toString();
-            String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
-                    + "/META-INF/MANIFEST.MF";
-            Manifest manifest = new Manifest(new URL(manifestPath).openStream());
-            Attributes attr = manifest.getMainAttributes();
-            return new Date(Long.parseLong(attr.getValue("Bnd-LastModified")));
-        } catch (IOException e) {
-            String msg = "Can't read build time.";
-            log.warn(msg, e);
-            throw new RuntimeException(msg, e);
+        Attributes attr = getManifestMainAttributes();
+        if (attr == null) {
+            return null;
         }
+        return new Date(Long.parseLong(attr.getValue("Bnd-LastModified")));
     }
 
     /**
@@ -428,17 +416,25 @@ public class GoogleAppsManagerImpl
     @Unstable
     public String getBuildVersion()
     {
+        Attributes attr = getManifestMainAttributes();
+        if (attr == null) {
+            return null;
+        }
+        return attr.getValue("Specification-Version");
+    }
+
+    private Attributes getManifestMainAttributes() {
         try {
             Class clazz = getClass();
             String className = clazz.getSimpleName()
                     + ".class";
             String classPath = clazz.getResource(className).toString();
-            if(classPath!=null) {
+            if (classPath != null) {
                 String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
                         + "/META-INF/MANIFEST.MF";
                 Manifest manifest = new Manifest(new URL(manifestPath).openStream());
                 Attributes attr = manifest.getMainAttributes();
-                return attr.getValue("Specification-Version");
+                return attr;
             } else {
                 return null;
             }
@@ -787,7 +783,8 @@ public class GoogleAppsManagerImpl
     {
         try {
             log.info("In authorize");
-            GoogleAuthorizationCodeFlow flow = getFlow(); // useless?
+            // useless?
+            GoogleAuthorizationCodeFlow flow = getFlow();
             XWikiRequest request = xwikiContextProvider.get().getRequest();
             String state = request.getParameter("state");
             XWikiResponse response = xwikiContextProvider.get().getResponse();
@@ -971,8 +968,8 @@ public class GoogleAppsManagerImpl
                         {
                             String imageUrl = user.getPhotos().get(0).getUrl();
                             imageUrl = imageUrl
-                                    + (imageUrl.contains("?") ? "&" : "?")
-                                    + "sz=256";
+                                    + (imageUrl.contains("?") ? "&" : '?')
+                                    + "sz=512";
                             log.debug("Pulling avatar " + imageUrl);
                             HttpGet httpget = new HttpGet(imageUrl);
                             // TODO: add an if-modified-since
@@ -1280,14 +1277,16 @@ public class GoogleAppsManagerImpl
      *
      * @param docId the identifier of the Google Docs document to be embedded
      * @param doc   the XWiki document where to attach the embedding
-     * @param obj   the XWiki object where this embedding is to be updated (or null if it is to be created)
+     * @param objp   the XWiki object where this embedding is to be updated (or null if it is to be created)
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
+     * @since 3.0
      */
     @Unstable
-    public BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject obj, int nb)
+    public BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject objp, int nb)
     {
         try {
+            BaseObject obj = objp;
             Drive drive = getDriveService();
             XWikiContext context = xwikiContextProvider.get();
             String user = drive.about().get().execute().getUser().getEmailAddress();
@@ -1305,11 +1304,11 @@ public class GoogleAppsManagerImpl
             if (embedLink != null) {
                 obj.setStringValue("embedLink", embedLink);
             }
-            obj.setStringValue("editLink", docData.getAlternateLink());
-            obj.setStringValue("version", docData.getVersion().toString());
-            obj.setStringValue("fileName",
+            obj.setStringValue(EDITLINK, docData.getAlternateLink());
+            obj.setStringValue(VERSION, docData.getVersion().toString());
+            obj.setStringValue(FILENAME,
                     docData.getOriginalFilename() != null ? docData.getOriginalFilename() : docData.getTitle());
-            obj.setStringValue("user", user);
+            obj.setStringValue(USER, user);
             getXWiki().saveDocument(doc, "Inserting Google Document", context);
             return obj;
         } catch (Exception e) {

@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.xwiki.googleapps;
+package com.xwiki.googleapps.internal;
 
 import org.xwiki.component.annotation.Role;
 
@@ -30,6 +30,6 @@ import com.xpn.xwiki.user.api.XWikiAuthService;
  * @since 3.0
  */
 @Role
-public interface GoogleAppsAuthService extends XWikiAuthService
+interface GoogleAppsAuthService extends XWikiAuthService
 {
 }

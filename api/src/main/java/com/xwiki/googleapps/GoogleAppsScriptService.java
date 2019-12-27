@@ -185,6 +185,7 @@ public class GoogleAppsScriptService implements ScriptService
      * @param obj   the XWiki object where this embedding is to be updated (or null if it is to be created)
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
+     * @since 3.0
      */
     @Unstable
     public Object createOrUpdateEmbedObject(String docId, Document doc, Object obj, int nb)
