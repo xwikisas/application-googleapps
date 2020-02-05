@@ -57,6 +57,7 @@ import org.xwiki.environment.Environment;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.ObjectReference;
+import org.xwiki.observation.ObservationManager;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryException;
 import org.xwiki.query.QueryManager;
@@ -179,12 +180,16 @@ public class GoogleAppsManagerImpl
     @Inject
     private ComponentManager componentManager;
 
+    @Inject
+    private ObservationManager observationManager;
+
     private GoogleAppsAuthServiceImpl authService;
 
     private DocumentReference configDocRef;
 
     private ObjectReference configObjRef;
 
+    private GoogleAppsEventListener eventListener;
     /**
      * A map of hash to full redirects.
      */
@@ -245,6 +250,11 @@ public class GoogleAppsManagerImpl
         }
         if (authService == null) {
             log.info("Not yet initting authService.");
+        }
+
+        if (eventListener == null) {
+            eventListener = new GoogleAppsEventListener(this);
+            observationManager.addListener(eventListener);
         }
 
         try {
