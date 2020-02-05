@@ -19,7 +19,9 @@
  */
 package com.xwiki.googleapps.internal;
 
-import com.xpn.xwiki.doc.XWikiDocument;
+import java.util.Arrays;
+import java.util.List;
+
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
 import org.xwiki.component.phase.InitializationException;
@@ -27,8 +29,7 @@ import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
 
-import java.util.Arrays;
-import java.util.List;
+import com.xpn.xwiki.doc.XWikiDocument;
 
 /**
  * Registered object to listen to document changes.
@@ -40,7 +41,8 @@ class GoogleAppsEventListener implements EventListener
 {
     private GoogleAppsManagerImpl manager;
 
-    GoogleAppsEventListener(GoogleAppsManagerImpl manager) {
+    GoogleAppsEventListener(GoogleAppsManagerImpl manager)
+    {
         this.manager = manager;
     }
 
@@ -50,7 +52,8 @@ class GoogleAppsEventListener implements EventListener
      * @return googleapps.scriptservice.
      */
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "googleapps.scriptservice";
     }
 
@@ -60,20 +63,22 @@ class GoogleAppsEventListener implements EventListener
      * @return ApplicationReadyEvent and DocumentUpdatedEvent
      */
     @Override
-    public List<Event> getEvents() {
+    public List<Event> getEvents()
+    {
         return Arrays.asList(new ApplicationReadyEvent(), new DocumentUpdatedEvent());
     }
 
     /**
-     * Triggers a configuration reload (if the configuration is changed or the app is started) or
-     * an initialization (if the app is started).
+     * Triggers a configuration reload (if the configuration is changed or the app is started) or an initialization (if
+     * the app is started).
      *
      * @param event  The event listened to.
      * @param source The object sending the event.
      * @param data   Data about the event.
      */
     @Override
-    public void onEvent(Event event, Object source, Object data) {
+    public void onEvent(Event event, Object source, Object data)
+    {
         boolean applicationStarted = false;
         boolean configChanged = false;
         if (event instanceof ApplicationReadyEvent) {

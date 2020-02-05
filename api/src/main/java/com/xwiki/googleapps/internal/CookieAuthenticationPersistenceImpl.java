@@ -34,7 +34,9 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+
 import com.xwiki.googleapps.GoogleAppsManager;
+
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
@@ -48,8 +50,7 @@ import com.xpn.xwiki.XWikiContext;
 /**
  * Tools to help storing and retrieving enriched information within cookies such as the linked Google user profile.
  * <p>
- * This code is inspired by  from xwiki-authenticator-trusted
- * https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
+ * This code is inspired by  from xwiki-authenticator-trusted https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
  * /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
  * /internal/CookieAuthenticationPersistenceStore.java.
  *
@@ -92,7 +93,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     @Inject
     private GoogleAppsManager manager;
 
-    private String cookiePfx;
+    private String cookiePrefix;
 
     private String cookiePath;
 
@@ -115,7 +116,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
      */
     public void initialize() throws InitializationException
     {
-        cookiePfx = xwikicfgProvider.get().getProperty(COOKIE_PREFIX_PROPERTY, "");
+        cookiePrefix = xwikicfgProvider.get().getProperty(COOKIE_PREFIX_PROPERTY, "");
         cookiePath = xwikicfgProvider.get().getProperty(COOKIE_PATH_PROPERTY, "/");
 
         String[] cdlist = StringUtils.split(
@@ -152,6 +153,23 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     }
 
     /**
+     * Retrieving the login read from the cookie.
+     *
+     * @return the login name found, or null.
+     * @since 3.0
+     */
+    @Unstable
+    public String getUserId()
+    {
+        logger.info("retrieve cookie " + cookiePrefix + AUTHENTICATION_COOKIE);
+        String cookie = getCookieValue(cookiePrefix + AUTHENTICATION_COOKIE);
+        if (cookie != null) {
+            return decryptText(cookie);
+        }
+        return null;
+    }
+
+    /**
      * Store the user-information within the cookie.
      *
      * @param userUid the user-name (without xwiki. prefix)
@@ -160,7 +178,7 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
     @Unstable
     public void setUserId(String userUid)
     {
-        Cookie cookie = new Cookie(cookiePfx + AUTHENTICATION_COOKIE, encryptText(userUid));
+        Cookie cookie = new Cookie(cookiePrefix + AUTHENTICATION_COOKIE, encryptText(userUid));
         cookie.setMaxAge(cookieMaxAge);
         cookie.setPath(cookiePath);
         String cookieDomain = getCookieDomain();
@@ -171,23 +189,6 @@ public class CookieAuthenticationPersistenceImpl implements CookieAuthentication
             cookie.setSecure(true);
         }
         contextProvider.get().getResponse().addCookie(cookie);
-    }
-
-    /**
-     * Retrieving the login read from the cookie.
-     *
-     * @return the login name found, or null.
-     * @since 3.0
-     */
-    @Unstable
-    public String getUserId()
-    {
-        logger.info("retrieve cookie " + cookiePfx + AUTHENTICATION_COOKIE);
-        String cookie = getCookieValue(cookiePfx + AUTHENTICATION_COOKIE);
-        if (cookie != null) {
-            return decryptText(cookie);
-        }
-        return null;
     }
 
     private Cipher getCipher(boolean encrypt)

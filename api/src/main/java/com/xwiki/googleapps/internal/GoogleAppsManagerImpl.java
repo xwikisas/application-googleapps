@@ -47,9 +47,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
-import com.xwiki.googleapps.DriveDocMetadata;
-import com.xwiki.googleapps.GoogleAppsException;
-import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
@@ -93,6 +90,9 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.XWikiRequest;
 import com.xpn.xwiki.web.XWikiResponse;
+import com.xwiki.googleapps.DriveDocMetadata;
+import com.xwiki.googleapps.GoogleAppsException;
+import com.xwiki.googleapps.GoogleAppsManager;
 
 /**
  * Set of methods accessible to the scripts using the GoogleApps functions.
@@ -105,121 +105,6 @@ import com.xpn.xwiki.web.XWikiResponse;
 public class GoogleAppsManagerImpl
         implements GoogleAppsManager, Initializable, Disposable
 {
-
-    //  -----------------------------  Lifecycle ---------------------------
-
-    @Inject
-    private Provider<XWikiContext> xwikiContextProvider;
-
-    @Inject
-    private QueryManager queryManager;
-
-    @Inject
-    private Environment environment;
-
-    @Inject
-    @Named("current")
-    private DocumentReferenceResolver<String> documentResolver;
-
-    @Inject
-    @Named("user")
-    private DocumentReferenceResolver<String> userResolver;
-
-    @Inject
-    private Logger log;
-
-    @Inject
-    private ComponentManager componentManager;
-
-    @Override
-    public void initialize() throws InitializationException
-    {
-        log.info("GoogleAppsScriptService initializing.");
-        XWikiContext context = xwikiContextProvider.get();
-        XWiki xwiki = context.getWiki();
-
-        readConfigDoc(context);
-
-        if (xwiki != null) {
-            log.info("Initting authService.");
-            // We do not verify with the context if the plugin is active and if the license is active
-            // this will be done by the GoogleAppsAuthService and UI pages later on, when it is called within a request
-            try {
-                authService = componentManager.getInstance(GoogleAppsAuthService.class);
-                xwiki.setAuthService(authService);
-                log.info("Succeeded initting authService,");
-            } catch (ComponentLookupException e) {
-                log.info("Failed initting authService", e);
-            }
-        }
-        if (authService == null) {
-            log.info("Not yet initting authService.");
-        }
-
-        try {
-            jacksonFactory = JacksonFactory.getDefaultInstance();
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InitializationException("Trouble at initializing", e);
-        }
-    }
-
-    // internals
-
-    private GoogleAppsAuthServiceImpl authService;
-
-    private DocumentReference configDocRef;
-
-    private ObjectReference configObjRef;
-
-    /**
-     * A map of hash to full redirects.
-     */
-    private Map<String, String> storedStates = new HashMap<>();
-
-    private FileDataStoreFactory dsFactory;
-
-    private JacksonFactory jacksonFactory;
-
-    private NetHttpTransport httpTransport;
-
-    private CloseableHttpClient httpclient = HttpClients.createDefault();
-
-    private BaseObject getConfigDoc(XWikiContext context) throws XWikiException
-    {
-        configDocRef = getConfigDocRef();
-        XWikiDocument doc = context.getWiki().getDocument(configObjRef, context);
-        BaseObject result = doc.getXObject(configObjRef, false, context);
-        if (result == null) {
-            log.warn("Can't access Config document.");
-        }
-        return result;
-    }
-
-    private Boolean configActiveFlag;
-
-    private Boolean useCookies;
-
-    private Boolean skipLoginPage;
-
-    private Boolean authWithCookies;
-
-    private String configAppName;
-
-    private String configClientId;
-
-    private String configClientSecret;
-
-    private String configDomain;
-
-    private Boolean configScopeUseAvatar;
-
-    private Boolean configScopeUseDrive;
-
-    private Integer configCookiesTTL;
-
-    // ---------------------------- constants ---------------------------------------------
 
     private static final String AVATAR = "avatar";
 
@@ -271,7 +156,116 @@ public class GoogleAppsManagerImpl
 
     private static final String EXPORTFORMATEQ = "exportFormat=";
 
-    // ----------------------------- APIs -------------------------------------------------
+    @Inject
+    private Provider<XWikiContext> xwikiContextProvider;
+
+    @Inject
+    private QueryManager queryManager;
+
+    @Inject
+    private Environment environment;
+
+    @Inject
+    @Named("current")
+    private DocumentReferenceResolver<String> documentResolver;
+
+    @Inject
+    @Named("user")
+    private DocumentReferenceResolver<String> userResolver;
+
+    @Inject
+    private Logger log;
+
+    @Inject
+    private ComponentManager componentManager;
+
+    private GoogleAppsAuthServiceImpl authService;
+
+    private DocumentReference configDocRef;
+
+    private ObjectReference configObjRef;
+
+    /**
+     * A map of hash to full redirects.
+     */
+    private Map<String, String> storedStates = new HashMap<>();
+
+    private FileDataStoreFactory dsFactory;
+
+    private JacksonFactory jacksonFactory;
+
+    private NetHttpTransport httpTransport;
+
+    private CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    private Boolean configActiveFlag;
+
+    private Boolean useCookies;
+
+    private Boolean skipLoginPage;
+
+    private Boolean authWithCookies;
+
+    private String configAppName;
+
+    private String configClientId;
+
+    private String configClientSecret;
+
+    private String configDomain;
+
+    private Boolean configScopeUseAvatar;
+
+    private Boolean configScopeUseDrive;
+
+    private Integer configCookiesTTL;
+
+    private DocumentReference gauthClassRef;
+
+    @Override
+    public void initialize() throws InitializationException
+    {
+        log.info("GoogleAppsScriptService initializing.");
+        XWikiContext context = xwikiContextProvider.get();
+        XWiki xwiki = context.getWiki();
+
+        readConfigDoc(context);
+
+        if (xwiki != null) {
+            log.info("Initting authService.");
+            // We do not verify with the context if the plugin is active and if the license is active
+            // this will be done by the GoogleAppsAuthService and UI pages later on, when it is called within a request
+            try {
+                authService = componentManager.getInstance(GoogleAppsAuthService.class);
+                xwiki.setAuthService(authService);
+                log.info("Succeeded initting authService,");
+            } catch (ComponentLookupException e) {
+                log.info("Failed initting authService", e);
+            }
+        }
+        if (authService == null) {
+            log.info("Not yet initting authService.");
+        }
+
+        try {
+            jacksonFactory = JacksonFactory.getDefaultInstance();
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InitializationException("Trouble at initializing", e);
+        }
+    }
+
+    private BaseObject getConfigDoc(XWikiContext context) throws XWikiException
+    {
+        configDocRef = getConfigDocRef();
+        XWikiDocument doc = context.getWiki().getDocument(configObjRef, context);
+        BaseObject result = doc.getXObject(configObjRef, false, context);
+        if (result == null) {
+            log.warn("Can't access Config document.");
+        }
+        return result;
+    }
 
     /**
      * Evaluates weather the application is active and licensed by looking at the stored documents. Within a request,
@@ -423,7 +417,8 @@ public class GoogleAppsManagerImpl
         return attr.getValue("Specification-Version");
     }
 
-    private Attributes getManifestMainAttributes() {
+    private Attributes getManifestMainAttributes()
+    {
         try {
             Class clazz = getClass();
             String className = clazz.getSimpleName()
@@ -445,8 +440,6 @@ public class GoogleAppsManagerImpl
         }
     }
 
-    // from ActiveDirectorySetupListener
-
     /**
      * Note that this dispose() will get called when this Extension is uninstalled which is the use case we want to
      * serve. The fact that it'll also be called when XWiki stops is a side effect that is ok.
@@ -463,7 +456,6 @@ public class GoogleAppsManagerImpl
         }
     }
 
-    // -----------------------------------------------------------------------------------------
     private XWiki getXWiki()
     {
         XWiki result = null;
@@ -476,8 +468,6 @@ public class GoogleAppsManagerImpl
         return result;
     }
 
-    // ------------------------- public API ---------------------------------------------
-
     /**
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
@@ -487,8 +477,6 @@ public class GoogleAppsManagerImpl
     {
         return configScopeUseDrive;
     }
-
-    // ----------------------------- Google Apps Tool (mostly request specific) -----------------------------------
 
     private String getOAuthUrl()
     {
@@ -527,8 +515,6 @@ public class GoogleAppsManagerImpl
     {
         return userResolver.resolve(userName);
     }
-
-    private DocumentReference gauthClassRef;
 
     private DocumentReference getGoogleAuthClassReference()
     {
@@ -1277,7 +1263,7 @@ public class GoogleAppsManagerImpl
      *
      * @param docId the identifier of the Google Docs document to be embedded
      * @param doc   the XWiki document where to attach the embedding
-     * @param objp   the XWiki object where this embedding is to be updated (or null if it is to be created)
+     * @param objp  the XWiki object where this embedding is to be updated (or null if it is to be created)
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
      * @since 3.0

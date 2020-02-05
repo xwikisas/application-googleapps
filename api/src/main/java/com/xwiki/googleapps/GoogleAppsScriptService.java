@@ -97,7 +97,10 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public String getBuildVersion() { return manager.getBuildVersion(); }
+    public String getBuildVersion()
+    {
+        return manager.getBuildVersion();
+    }
 
     /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.

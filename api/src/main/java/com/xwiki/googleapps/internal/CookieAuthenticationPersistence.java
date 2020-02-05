@@ -31,20 +31,20 @@ import org.xwiki.component.annotation.Role;
 interface CookieAuthenticationPersistence
 {
     /**
-     * Stores the user-id in an encryted fashion in the cookie.
-     *
-     * @param userId the string to store
-     * @since 3.0
-     */
-    void setUserId(String userId);
-
-    /**
      * Reads the user-id from the cookie.
      *
      * @return the decrypted user-id
      * @since 3.0
      */
     String getUserId();
+
+    /**
+     * Stores the user-id in an encryted fashion in the cookie.
+     *
+     * @param userId the string to store
+     * @since 3.0
+     */
+    void setUserId(String userId);
 
     /**
      * Removes stored information from the cookie.

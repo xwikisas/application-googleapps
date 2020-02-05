@@ -33,12 +33,11 @@ import com.xpn.xwiki.XWikiException;
  */
 public class GoogleAppsException extends RuntimeException
 {
-
     private static final long serialVersionUID = 3000;
+
     /**
-     * @param msg Message to denote the error for programmers.
+     * @param msg     Message to denote the error for programmers.
      * @param wrapped Exception that has caused this one.
-     *
      * @since 3.0
      */
     public GoogleAppsException(String msg, Exception wrapped)
@@ -47,9 +46,7 @@ public class GoogleAppsException extends RuntimeException
     }
 
     /**
-     *
      * @param msg Message to denote the error for programmers.
-     *
      * @since 3.0
      */
     public GoogleAppsException(String msg)
@@ -58,9 +55,7 @@ public class GoogleAppsException extends RuntimeException
     }
 
     /**
-     *
      * @param wrapped Exception that has caused this one.
-     *
      * @since 3.0
      */
     public GoogleAppsException(Exception wrapped)
@@ -69,7 +64,6 @@ public class GoogleAppsException extends RuntimeException
     }
 
     /**
-     *
      * @return true if the wrapped exception of XWiki origin.
      * @since 3.0
      */
@@ -80,12 +74,11 @@ public class GoogleAppsException extends RuntimeException
     }
 
     /**
-     *
      * @return true if the wrapped exception of Google origin (for now: any IO-related exception).
      * @since 3.0
      */
     @Unstable
-    public boolean isGoogleCommException()
+    public boolean isGoogleException()
     {
         return super.getCause() instanceof IOException;
     }

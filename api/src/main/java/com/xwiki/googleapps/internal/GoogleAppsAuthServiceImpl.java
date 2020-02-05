@@ -30,7 +30,6 @@ import javax.servlet.http.HttpSession;
 
 import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
-import com.xwiki.googleapps.GoogleAppsManager;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
@@ -46,6 +45,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.user.api.XWikiUser;
 import com.xpn.xwiki.user.impl.xwiki.XWikiAuthServiceImpl;
 import com.xpn.xwiki.web.XWikiRequest;
+import com.xwiki.googleapps.GoogleAppsManager;
 
 /**
  * An authenticator that can include a negotiation with the Google Cloud (e.g. Google Drive) services. This
@@ -73,6 +73,8 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
     @Inject
     @Named("xwikicfg")
     private Provider<ConfigurationSource> xwikicfgProvider;
+
+    private Pattern logoutRequestMatcher;
 
     /**
      * Evaluates if the user can be authenticated based on request info such as cookies.
@@ -231,8 +233,6 @@ public class GoogleAppsAuthServiceImpl extends XWikiAuthServiceImpl
             throw new XWikiException("Trouble at authenticating", e);
         }
     }
-
-    private Pattern logoutRequestMatcher;
 
     /**
      * @return true if the current request match the configured logout page pattern.

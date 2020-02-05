@@ -86,7 +86,7 @@ public interface GoogleAppsManager
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @return found credential
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -97,7 +97,7 @@ public interface GoogleAppsManager
      *
      * @param redirect If a redirect can be done
      * @return found credential
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -117,7 +117,7 @@ public interface GoogleAppsManager
      * Get the list of all documents in the user's associated account.
      *
      * @return A list of max 10 documents.
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -129,7 +129,7 @@ public interface GoogleAppsManager
      * @param query     the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -141,7 +141,7 @@ public interface GoogleAppsManager
      * @param query     the expected filename substring
      * @param nbResults max number of results
      * @return The list of files at Google Drive.
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -155,7 +155,7 @@ public interface GoogleAppsManager
      * @param id   store object attached to this attachment using this id (for later sync)
      * @param url  fetch from this URL
      * @return true if successful
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -167,7 +167,7 @@ public interface GoogleAppsManager
      * @param pageName The XWiki page where the attachment is
      * @param fileName The filename of the attachment
      * @return information about the corresponding Google Drive document
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -192,7 +192,7 @@ public interface GoogleAppsManager
      * @param obj   the XWiki object where this embedding is to be updated (or null if it is to be created)
      * @param nb    the number of the embedding across all the page's embeddings
      * @return the created or actualized document
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
@@ -206,7 +206,7 @@ public interface GoogleAppsManager
      * @param name the attachment name
      * @return a record with the keys fileName, exportLink, version, editLink,  embedLink, and google-user's
      * email-address
-     * @throws GoogleAppsException    if a communication problem with the other components occured
+     * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
