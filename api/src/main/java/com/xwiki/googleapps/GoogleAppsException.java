@@ -31,6 +31,7 @@ import com.xpn.xwiki.XWikiException;
  * @version $Id$
  * @since 3.0
  */
+@Unstable
 public class GoogleAppsException extends RuntimeException
 {
     private static final long serialVersionUID = 3000;
@@ -67,19 +68,17 @@ public class GoogleAppsException extends RuntimeException
      * @return true if the wrapped exception of XWiki origin.
      * @since 3.0
      */
-    @Unstable
     public boolean isWikiException()
     {
-        return super.getCause() instanceof XWikiException;
+        return getCause() instanceof XWikiException;
     }
 
     /**
      * @return true if the wrapped exception of Google origin (for now: any IO-related exception).
      * @since 3.0
      */
-    @Unstable
     public boolean isGoogleException()
     {
-        return super.getCause() instanceof IOException;
+        return getCause() instanceof IOException;
     }
 }

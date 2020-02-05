@@ -28,6 +28,8 @@ import org.xwiki.component.phase.InitializationException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
+import org.xwiki.stability.Unstable;
+
 
 import com.xpn.xwiki.doc.XWikiDocument;
 
@@ -37,6 +39,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
  * @version $Id$
  * @since 3.0
  */
+@Unstable
 class GoogleAppsEventListener implements EventListener
 {
     private GoogleAppsManagerImpl manager;
@@ -87,7 +90,7 @@ class GoogleAppsEventListener implements EventListener
         if (event instanceof DocumentUpdatedEvent) {
             XWikiDocument document = (XWikiDocument) source;
             DocumentReference configDocRef = manager.getConfigDocRef();
-            if (document != null && document.getDocumentReference().compareTo(configDocRef) == 0) {
+            if (document != null && document.getDocumentReference().equals(configDocRef)) {
                 configChanged = true;
             }
         }
