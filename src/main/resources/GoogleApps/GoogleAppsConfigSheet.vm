@@ -13,36 +13,47 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
     $services.localization.render("GoogleApps.GoogleAppsConfigClass_${n}")##
 #end
 #macro(tp $n $p)##
-    $services.localization.render("GoogleApps.GoogleAppsConfigClass_${n}",$p)##
+    #set($prf="GoogleApps.GoogleAppsConfigClass_")
+    #if($n.startsWith("googleapps"))#set($prf="")#end
+    #set($msg=$services.localization.render("GoogleApps.GoogleAppsConfigClass_${n}",$p))##
+    $stringtool.replacePattern($msg, '\[\[([^>]*)>>([^\]]*)\]\]', '<a href="$2">$1</a>')##
 #end
+#macro (displayInput $property)##
+    #set ($output = $doc.display($property, 'edit', $obj))##
+    #set ($output = $stringtool.removeStart($output, '{{html clean="false" wiki="false"}}'))##
+    #set ($output = $stringtool.removeEnd($output, '{{/html}}'))##
+    $output##
+#end
+
 $services.localization.render('googleapps.config.explanation')
 
-
-{{html wiki=true}}
+{{html wiki=false}}
 
 <form id="$formId" method="post" action="$xwiki.getURL($configDoc, 'saveandcontinue')" class="xform">
-; $configDoc.display("activate", 'edit', $obj) <label for="${prefix}_activate">#t("activate")</label>
+<dl>
+    <dt>#displayInput("activate") <label for="${prefix}_activate">#t("activate")</label></dt>
+</dl>
 
 <fieldset>
 <legend>#t("communicate")</legend>
 
-; <span class="xHint">##
-#tp("communicate.hint",  ['[[', '>>https://accounts.google.com/ManageDomains]]'])<br>
-#tp("communicate.hint2", ['[[', '>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]'])</span>
+<dl><dt><span class="xHint">##
+    #tp("communicate.hint",  ['[[', '>>https://accounts.google.com/ManageDomains]]'])<br>
+    #tp("communicate.hint2", ['[[', '>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]'])</span></dt></dl>
 
 
-; <label for="${prefix}_clientid">#t("clientid")</label> ##
-<span class="xHint">#t("clientid.hint")</span>
-: $configDoc.display("clientid", 'edit', $obj)
+<dl><dt><label for="${prefix}_clientid">#t("clientid")</label> ##
+    <span class="xHint">#t("clientid.hint")</span></dt>
+    <dd> #displayInput("clientid")</dd></dl>
 
-; <label for="${prefix}_secret">#t("secret")</label> ##
-<span class="xHint">#t("secret.hint")</span>
-: $configDoc.display("secret", 'edit', $obj)
+<dl><dt><label for="${prefix}_secret">#t("secret")</label> ##
+<span class="xHint">#t("secret.hint")</span></dt>
+    <dd> #displayInput("secret")</dd></dl>
 
 ## checkboxes for scope, needs JS
-; <label>#t("scope")</label> ##
-<span class="xHint">#t("scope.hint")</span>
-: <label title="#t('checkbox_mandatory')"> ##
+<dl><dt><label>#t("scope")</label> ##
+<span class="xHint">#t("scope.hint")</span></dt>
+<dd> <label title="#t('checkbox_mandatory')"> ##
 <input type="checkbox" name="scope_identity" disabled="true" checked>#t("scope_identity")</label> ##
 <label title="#t('checkbox_mandatory')"> ##
 <input type="checkbox" name="scope_email"    disabled="true" checked>#t("scope_email")</label> ##
@@ -50,45 +61,47 @@ $services.localization.render('googleapps.config.explanation')
 <input type="checkbox" name="scope_drive"                           >#t("scope_drive")</label> ##
 <label title="#t('checkbox_notyetdone')"> ##
 <input type="checkbox" name="scope_avatar"                          >#t("scope_avatar")</label> ##
-$configDoc.display("scope", "hidden")
+    <input type="hidden" name="GoogleApps.GoogleAppsConfigClass_0_scope" value="${obj.getValue('scope')}"/></dd></dl>
 
-; <label for="${prefix}_appname">#t("appname")</label> ##
-<span class="xHint">#t("appname.hint")</span>
-: $configDoc.display("appname", 'edit', $obj)
+    <dl><dt><label for="${prefix}_appname">#t("appname")</label> ##
+<span class="xHint">#t("appname.hint")</span></dt>
+        <dd> #displayInput("appname")</dd></dl>
 
 </fieldset>
 
 #if($services.googleAppsService.missesAuthenticationConfig())
-    {{warning}}$services.localization.render('googleapps.error.authConfigNotFound')
-    $services.localization.render('googleapps.error.authConfigShould',['[[','>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]']):
-
-    {{code}}xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl
-    xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService{{/code}}
-    {{/warning}}
-
+    <div class="box warningmessage">
+        <p>$services.localization.render('googleapps.error.authConfigNotFound')<br>
+            #tp('googleapps.error.authConfigShould',['[[','>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]'])</p>
+        <div class="box"><div class="code"><span style="border: 1px solid #FF0000; ">xwiki.authentication.authclass=com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl</span><br><span style="border: 1px solid #FF0000; ">xwiki.authentication.groovy.pagename=xwiki:GoogleApps.AuthService</span>
+        </div></div></div>
 #end
 <fieldset>
 <legend>#t("loginbehaviour")</legend>
 
-; <label for="${prefix}_domain">#t("domain")</label> ##
-<span class="xHint">#t("domain.hint")</span>
-: $configDoc.display("domain", 'edit', $obj)<br> ##
-<span id="googleapps-domain-livehint" class="xHint">&nbsp;</span>
+<dl><dt><label for="${prefix}_domain">#t("domain")</label> ##
+<span class="xHint">#t("domain.hint")</span></dt>
+<dd> #displayInput("domain")<br> ##
+    <span id="googleapps-domain-livehint" class="xHint">&nbsp;</span></dd></dl>
 
-; $configDoc.display("useCookies", 'edit', $obj) <label for="${prefix}_useCookies">#t("useCookies")</label> ##
-<span class="xHint">#t("useCookies.hint")</span>
+<dl><dt>#displayInput("useCookies") <label for="${prefix}_useCookies">#t("useCookies")</label> ##
+    <span class="xHint">#t("useCookies.hint")</span></dt>
+    <dd>
+        <dl>
+            <dt>#displayInput("skipLoginPage") ##
+                <label for="${prefix}_skipLoginPage">#t("skipLoginPage")</label>
+                <span class="xHint">#t("skipLoginPage.hint")</span></dt>
+        </dl>
+        <dl><dt>#displayInput("authWithCookies") ##
+        <label for="${prefix}_authWithCookies">#t("authWithCookies")</label> ##
+            <span class="xHint">#t("authWithCookies.hint")</span></dt></dl>
 
-:; $configDoc.display("skipLoginPage", 'edit', $obj) ##
-<label for="${prefix}_skipLoginPage">#t("skipLoginPage")</label> ##
-<span class="xHint">#t("skipLoginPage.hint")</span>
+        <dl><dt><label for="${prefix}_cookiesTTL">#t("cookiesTTL")</label> ##
+            <span class="xHint">#t("cookiesTTL.hint")</span></dt>
+            <dd>#displayInput("cookiesTTL")</dd></dl>
+    </dd>
+</dl>
 
-:; $configDoc.display("authWithCookies", 'edit', $obj) ##
-<label for="${prefix}_authWithCookies">#t("authWithCookies")</label> ##
-<span class="xHint">#t("authWithCookies.hint")</span>
-
-:; <label for="${prefix}_cookiesTTL">#t("cookiesTTL")</label> ##
-<span class="xHint">#t("cookiesTTL.hint")</span>
-:: $configDoc.display("cookiesTTL", 'edit', $obj)
 </fieldset>
 
 
@@ -109,12 +122,11 @@ value="$services.localization.render('admin.save')" /></span>
 </div>
 </form>
 
-
 <div id="driveOnNowWhat">
 
-#tp("nowWhat1", ['[[','>>GoogleApps.TestDocumentList]]'])
+    <p>#tp("nowWhat1", ['[[',">>${xwiki.getDocument('GoogleApps.TestDocumentList').getURL()}]]"])</p>
 
-#tp("nowWhat2", ['##~{~{drive/~}~}##'])
+    <p>#tp("nowWhat2", ['<code>{{drive/}}</code>'])</p>
 
 </div>
 {{/html}}
