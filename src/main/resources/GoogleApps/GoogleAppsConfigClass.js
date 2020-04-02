@@ -100,7 +100,11 @@ require(['jquery'], function (jQuery) {
         cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
         jQuery(prefix + 'useCookies').each(updateCookieFields).change(updateCookieFields);
 
-        allInputs = jQuery('#googleapps_GoogleApps\\.GoogleAppsConfig input:not([name$=\'_activate\'])');
+        var keepThem = "name$=\'_activate\'],[name=\'formactionsac\'],[name=\'form_token\'],"
+            + "[name=\'xcontinue\'],[name=\'xredirect\'";
+
+        allInputs = jQuery(
+            '#googleapps_GoogleApps\\.GoogleAppsConfig input:not(['+keepThem+'])');
         jQuery(prefix + 'activate').each(updateAllInputs).change(updateAllInputs);
 
         jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
