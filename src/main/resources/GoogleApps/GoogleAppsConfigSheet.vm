@@ -113,23 +113,23 @@ $services.localization.render('googleapps.config.explanation')
         <dt>#displayInput ('useCookies') <label for="${propNamePrefix}_useCookies">#t ('useCookies')</label>
         <span class="xHint">#t ('useCookies.hint')</span></dt>
         <dd>
-            <dl>
-                <dt>#displayInput ('skipLoginPage')
-                    <label for="${propNamePrefix}_skipLoginPage">#t ('skipLoginPage')</label>
-                    <span class="xHint">#t ('skipLoginPage.hint')</span></dt>
-                <dd></dd>
-            </dl>
-            <dl>
-                <dt>#displayInput ('authWithCookies')
-                    <label for="${propNamePrefix}_authWithCookies">#t ('authWithCookies')</label>
-                <span class="xHint">#t ('authWithCookies.hint')</span></dt>
-            </dl>
+          <dl>
+            <dt>#displayInput ('skipLoginPage')
+              <label for="${propNamePrefix}_skipLoginPage">#t ('skipLoginPage')</label>
+              <span class="xHint">#t ('skipLoginPage.hint')</span></dt>
+            <dd></dd>
+          </dl>
+          <dl>
+            <dt>#displayInput ('authWithCookies')
+               <label for="${propNamePrefix}_authWithCookies">#t ('authWithCookies')</label>
+            <span class="xHint">#t ('authWithCookies.hint')</span></dt>
+          </dl>
 
-            <dl>
-                <dt><label for="${propNamePrefix}_cookiesTTL">#t("cookiesTTL")</label>
-                    <span class="xHint">#t ('cookiesTTL.hint')</span></dt>
-                <dd>#displayInput ('cookiesTTL')</dd>
-            </dl>
+          <dl>
+              <dt><label for="${propNamePrefix}_cookiesTTL">#t("cookiesTTL")</label>
+                 <span class="xHint">#t ('cookiesTTL.hint')</span></dt>
+              <dd>#displayInput ('cookiesTTL')</dd>
+          </dl>
         </dd>
     </dl>
   </fieldset>
@@ -145,18 +145,18 @@ $services.localization.render('googleapps.config.explanation')
 
   ## submit
   <div class="bottombuttons">
-      <p class="admin-buttons">
-          <span class="buttonwrapper"><input class="button" type="submit" name="formactionsac"
-                  value="$services.localization.render('admin.save')" /></span>
-      </p>
+    <p class="admin-buttons">
+      <span class="buttonwrapper"><input class="button" type="submit" name="formactionsac"
+        value="$services.localization.render('admin.save')" /></span>
+    </p>
   </div>
 </form>
 
 <div id="driveOnNowWhat">
 
-    <p>#tp ('nowWhat1', ['[[',">>${xwiki.getURL('GoogleApps.TestDocumentList')}]]"])</p>
+  <p>#tp ('nowWhat1', ['[[',">>${xwiki.getURL('GoogleApps.TestDocumentList')}]]"])</p>
 
-    <p>#tp ('nowWhat2', ['<code>{{drive/}}</code>'])</p>
+  <p>#tp ('nowWhat2', ['<code>{{drive/}}</code>'])</p>
 
 </div>
 {{/html}}
