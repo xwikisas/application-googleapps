@@ -30,7 +30,6 @@ import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
 import org.xwiki.stability.Unstable;
 
-
 import com.xpn.xwiki.doc.XWikiDocument;
 
 /**

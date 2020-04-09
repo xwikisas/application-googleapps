@@ -106,7 +106,6 @@ import com.xwiki.googleapps.GoogleAppsManager;
 public class GoogleAppsManagerImpl
         implements GoogleAppsManager, Initializable, Disposable
 {
-
     private static final String AVATAR = "avatar";
 
     private static final String SPACENAME = "GoogleApps";
@@ -190,6 +189,7 @@ public class GoogleAppsManagerImpl
     private ObjectReference configObjRef;
 
     private GoogleAppsEventListener eventListener;
+
     /**
      * A map of hash to full redirects.
      */
