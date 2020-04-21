@@ -352,11 +352,11 @@ if(!googleApps.active || !googleApps.driveEnabled) {
   """
   if (query &amp;&amp; embednb==nb) {
    def squery = "'" + query + "'"
-   def results = googleApps.listDocuments("fullText contains ${squery}", 10)
-   def nbres = results.items.size();
+   def results = googleApps.listDriveDocumentsWithTypes("fullText contains ${squery}", 10)
+   def nbres = results.size();
 
    println "${nbres} documents found: "
-   for (entry in results.items) {
+   for (entry in results) {
     def docName = entry.title;
     def embedLink = entry.embedLink;
     if (embedLink==null)

@@ -52,7 +52,7 @@
 {{translation key='googleapps.testDocList.about'/}}
 
 #set($googleApps = $services.googleApps)
-#set($doclist = $googleApps.getDocumentList())
+#set($doclist = $googleApps.listDriveDocumentsWithTypes("",10))
 #foreach($item in $doclist)
   * [[$item.title $item.id>>$item.editLink]]
 #end

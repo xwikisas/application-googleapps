@@ -50,7 +50,7 @@ import com.xpn.xwiki.XWikiContext;
 /**
  * Tools to help storing and retrieving enriched information within cookies such as the linked Google user profile.
  * <p>
- * This code is inspired by  from xwiki-authenticator-trusted https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
+ * Inspiration: xwiki-authenticator-trusted https://github.com/xwiki-contrib/xwiki-authenticator-trusted/edit/master\
  * /xwiki-authenticator-trusted-api/src/main/java/org/xwiki/contrib/authentication\
  * /internal/CookieAuthenticationPersistenceStore.java.
  *

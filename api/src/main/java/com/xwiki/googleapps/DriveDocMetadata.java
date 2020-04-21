@@ -44,4 +44,34 @@ public class DriveDocMetadata
      * URL to pull from in order to fetch the document.
      */
     public String exportLink;
+
+    /**
+     *
+     * @return the internal Google Id of the document.
+     */
+    public String getId() {
+        return id;
+    }
+
+
+    /**
+     * @return the URL to direct the user to for editing.
+     */
+    public String getEditLink() {
+        return editLink;
+    }
+
+    /**
+     * @return the URL to pull from in order to fetch the document.
+     */
+    public String getExportLink() {
+        return exportLink;
+    }
+
+    /**
+     * @return a useful string representation
+     */
+    public String toString() {
+        return "id " + id + " edit: " + editLink + " export " + exportLink;
+    }
 }

@@ -43,11 +43,6 @@
       <version>1.24.1</version>
     </dependency>
     <dependency>
-      <groupId>com.google.gdata</groupId>
-      <artifactId>core</artifactId>
-      <version>1.47.1</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-people</artifactId>
       <version>v1-rev442-1.24.1</version>
@@ -56,6 +51,12 @@
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-drive</artifactId>
       <version>v2-rev358-1.24.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>

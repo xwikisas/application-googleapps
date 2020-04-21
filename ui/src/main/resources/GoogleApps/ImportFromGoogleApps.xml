@@ -65,7 +65,7 @@
     #set($exportData = $googleApps.getExportLink($docName, $elink))
     #set($stype = $exportData[0])
     #set($newDocName = $exportData[1])
-    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
+    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;mediaType=${stype}&amp;id=${entry.id}"]] #end
 
   #end
 #else

@@ -28,7 +28,6 @@ import org.xwiki.stability.Unstable;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 
@@ -114,16 +113,6 @@ public interface GoogleAppsManager
     String updateUser();
 
     /**
-     * Get the list of all documents in the user's associated account.
-     *
-     * @return A list of max 10 documents.
-     * @throws GoogleAppsException if a communication problem with the other components occured
-     * @since 3.0
-     */
-    @Unstable
-    List<File> getDocumentList() throws GoogleAppsException;
-
-    /**
      * Fetches a list of Google Drive document matching a substring query in the filename.
      *
      * @param query     the expected query (e.g. fullText contains winter ski)
@@ -136,30 +125,19 @@ public interface GoogleAppsManager
     List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws GoogleAppsException;
 
     /**
-     * Fetches a list of Google Drive document matching a given query.
-     *
-     * @param query     the expected filename substring
-     * @param nbResults max number of results
-     * @return The list of files at Google Drive.
-     * @throws GoogleAppsException if a communication problem with the other components occured
-     * @since 3.0
-     */
-    @Unstable
-    FileList listDocuments(String query, int nbResults) throws GoogleAppsException;
-
-    /**
      * Fetches the google-drive document's representation and stores it as attachment.
      *
      * @param page attach to this page
      * @param name attach using this file name
      * @param id   store object attached to this attachment using this id (for later sync)
-     * @param url  fetch from this URL
+     * @param mediaType  content-type of the file to be fetched (or "unknown"; in this case the
+     *                   mediaType is read from Tika.
      * @return true if successful
      * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    boolean retrieveFileFromGoogle(String page, String name, String id, String url) throws GoogleAppsException;
+    boolean retrieveFileFromGoogle(String page, String name, String id, String mediaType) throws GoogleAppsException;
 
     /**
      * Extracts metadata about the Google Drive document corresponding to the named attachment.

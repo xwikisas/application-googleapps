@@ -34,7 +34,6 @@ import org.xwiki.stability.Unstable;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.api.Document;
@@ -141,43 +140,18 @@ public class GoogleAppsScriptService implements ScriptService
     }
 
     /**
-     * Get the list of all documents in the user's associated account.
-     *
-     * @return A list of max 10 documents.
-     * @since 3.0
-     */
-    @Unstable
-    public List<File> getDocumentList()
-    {
-        return manager.getDocumentList();
-    }
-
-    /**
      * Fetches a list of Google Drive document matching a substring query in the filename.
+     * (used in the import function)
      *
      * @param query     the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
-     * @return The list of files at Google Drive.
+     * @return The list of {@File} at Google Drive.
      * @since 3.0
      */
     @Unstable
     public List<File> listDriveDocumentsWithTypes(String query, int nbResults)
     {
         return manager.listDriveDocumentsWithTypes(query, nbResults);
-    }
-
-    /**
-     * Fetches a list of Google Drive document matching a given query.
-     *
-     * @param query     the expected filename substring
-     * @param nbResults max number of results
-     * @return The list of files at Google Drive.
-     * @since 3.0
-     */
-    @Unstable
-    public FileList listDocuments(String query, int nbResults)
-    {
-        return manager.listDocuments(query, nbResults);
     }
 
     /**
@@ -204,14 +178,15 @@ public class GoogleAppsScriptService implements ScriptService
      * @param page attach to this page
      * @param name attach using this file name
      * @param id   store object attached to this attachment using this id (for later sync)
-     * @param url  fetch from this URL
+     * @param mediaType  content-type of the file to be fetched (or "unknown"; in this case the
+     *                   mediaType is read from Tika.
      * @return true if successful
      * @since 3.0
      */
     @Unstable
-    public boolean retrieveFileFromGoogle(String page, String name, String id, String url)
+    public boolean retrieveFileFromGoogle(String page, String name, String id, String mediaType)
     {
-        return manager.retrieveFileFromGoogle(page, name, id, url);
+        return manager.retrieveFileFromGoogle(page, name, id, mediaType);
     }
 
     /**

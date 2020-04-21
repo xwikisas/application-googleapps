@@ -19,8 +19,6 @@
  */
 package com.xwiki.googleapps.internal;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -39,13 +37,14 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -80,9 +79,6 @@ import com.google.api.services.people.v1.PeopleService;
 import com.google.api.services.people.v1.PeopleServiceScopes;
 import com.google.api.services.people.v1.model.EmailAddress;
 import com.google.api.services.people.v1.model.Person;
-import com.google.gdata.client.docs.DocsService;
-import com.google.gdata.data.MediaContent;
-import com.google.gdata.data.media.MediaSource;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
@@ -803,7 +799,7 @@ public class GoogleAppsManagerImpl
      * Performs the necessary communication with Google-Services to fetch identity and update the XWiki-user object or
      * possibly sends a redirect to a Google login screen.
      *
-     * @return "failed login" if failed, NOUSER (can be attempted to Google-OAuth), or "ok" if successful
+     * @return "failed login" if failed, {@NOUSER} (can be attempted to Google-OAuth), or "ok" if successful
      * @since 3.0
      */
     @Unstable
@@ -967,37 +963,23 @@ public class GoogleAppsManagerImpl
                                     + (imageUrl.contains("?") ? "&" : '?')
                                     + "sz=512";
                             log.debug("Pulling avatar " + imageUrl);
+                            XWikiAttachment attachment =
+                                    userObj.getStringValue(AVATAR) == null ? null
+                                            : userDoc.getAttachment(userObj.getStringValue(AVATAR));
                             HttpGet httpget = new HttpGet(imageUrl);
-                            // TODO: add an if-modified-since
+                            if (attachment != null) {
+                                httpget.addHeader("If-Modified-Since",
+                                        DateUtil.formatDate(attachment.getDate()));
+                            }
                             CloseableHttpResponse response = httpclient.execute(httpget);
-                            HttpEntity entity = response.getEntity();
-                            if (entity != null) {
-                                ByteArrayOutputStream bOut =
-                                        new ByteArrayOutputStream((int) entity.getContentLength());
-                                IOUtils.copy(entity.getContent(), bOut);
-                                byte[] bytesFromGoogle = bOut.toByteArray();
-
-                                XWikiAttachment attachment =
-                                        userObj.getStringValue(AVATAR) == null ? null
-                                                : userDoc.getAttachment(userObj.getStringValue(AVATAR));
-                                boolean fileChanged = attachment == null
-                                        || attachment.getFilesize() != bytesFromGoogle.length;
-                                if (!fileChanged) {
-                                    byte[] b = attachment.getContent(context);
-                                    for (int i = 0; i < b.length; i++) {
-                                        if (b[i] != bytesFromGoogle[i]) {
-                                            fileChanged = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (fileChanged) {
-                                    String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                                    log.debug("Avatar changed " + fileName);
-                                    userObj.set(AVATAR, fileName, context);
-                                    userDoc.addAttachment(fileName, bytesFromGoogle, context);
-                                    changed = true;
-                                }
+                            HttpEntity entity = null;
+                            if (response.getStatusLine().getStatusCode() == 200
+                                    && (entity = response.getEntity()) != null) {
+                                String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+                                log.debug("Avatar changed " + fileName);
+                                userObj.set(AVATAR, fileName, context);
+                                userDoc.addAttachment(fileName, entity.getContent(), context);
+                                changed = true;
                             }
                         }
 
@@ -1056,37 +1038,6 @@ public class GoogleAppsManagerImpl
     }
 
     /**
-     * Build and return an authorized Drive client service.
-     *
-     * @return an authorized Drive client service
-     */
-    private DocsService getDocsService()
-    {
-        Credential credential = authorize();
-        DocsService service = new DocsService(configAppName);
-        service.setOAuth2Credentials(credential);
-        return service;
-    }
-
-    /**
-     * Get the list of all documents in the user's associated account.
-     *
-     * @return A list of max 10 documents.
-     * @since 3.0
-     */
-    @Unstable
-    public List<File> getDocumentList()
-    {
-        try {
-            Drive drive = getDriveService();
-            FileList result = drive.files().list().setMaxResults(10).execute();
-            return result.getItems();
-        } catch (IOException e) {
-            throw new GoogleAppsException(e);
-        }
-    }
-
-    /**
      * Fetches a list of Google Drive document matching a substring query in the filename.
      *
      * @param query     the expected query (e.g. fullText contains winter ski)
@@ -1100,32 +1051,13 @@ public class GoogleAppsManagerImpl
         try {
             Drive drive = getDriveService();
             Drive.Files.List req = drive.files().list()
-                    .setQ(query)
                     .setFields("items(id,mimeType,title,exportLinks,selfLink,version,alternateLink)")
                     .setMaxResults(nbResults);
+            if (query != null && query.length() > 0) {
+                req.setQ(query);
+            }
             FileList result = req.execute();
             return result.getItems();
-        } catch (IOException e) {
-            throw new GoogleAppsException(e);
-        }
-    }
-
-    /**
-     * Fetches a list of Google Drive document matching a given query.
-     *
-     * @param query     the expected filename substring
-     * @param nbResults max number of results
-     * @return The list of files at Google Drive.
-     * @since 3.0
-     */
-    @Unstable
-    public FileList listDocuments(String query, int nbResults)
-    {
-        try {
-            Drive drive = getDriveService();
-            Drive.Files.List req = drive.files().list().setQ(query).setMaxResults(nbResults);
-            FileList result = req.execute();
-            return result;
         } catch (IOException e) {
             throw new GoogleAppsException(e);
         }
@@ -1137,60 +1069,34 @@ public class GoogleAppsManagerImpl
      * @param page attach to this page
      * @param name attach using this file name
      * @param id   store object attached to this attachment using this id (for later sync)
-     * @param url  fetch from this URL
+     * @param mediaType  content-type of the file to be fetched (or "unknown"; in this case the
+     *                   mediaType is read from Tika.
      * @return true if successful
      * @since 3.0
      */
     @Unstable
-    public boolean retrieveFileFromGoogle(String page, String name, String id, String url)
+    public boolean retrieveFileFromGoogle(String page, String name, String id, String mediaType)
     {
-        return retrieveFileFromGoogle(getDocsService(), getDriveService(), page, name, id, url);
+        return retrieveFileFromGoogle(getDriveService(), page, name, id, mediaType);
     }
 
-    private boolean retrieveFileFromGoogle(DocsService docsService, Drive driveService,
-            String page, String name, String id, String url)
+    private boolean retrieveFileFromGoogle(Drive driveService, String page, String name, String id, String mediaType)
     {
-        log.info("Retrieving " + name + " to page " + page + ": " + id + url);
+        String mt = mediaType;
+        if ("unknown".equalsIgnoreCase(mediaType) || mediaType == null || !mediaType.contains("/")) {
+            mt = new Tika().detect(name);
+        }
+
+        log.info("Retrieving " + name + " to page " + page + ": " + id + "(mediatype " + mt + ").");
 
         try {
             XWikiDocument adoc = getXWiki().getDocument(documentResolver.resolve(page), xwikiContextProvider.get());
-            byte[] data = downloadFile(docsService, url);
-            saveFileToXWiki(driveService, adoc, id, name, new ByteArrayInputStream(data), true);
+            InputStream downloadStream = driveService.files().export(id, mt).executeMediaAsInputStream();
+            saveFileToXWiki(driveService, adoc, id, name, downloadStream, true);
             return true;
         } catch (Exception e) {
             log.info(e.getMessage(), e);
             throw new GoogleAppsException("Trouble at retrieving from Google.", e);
-        }
-    }
-
-    private byte[] downloadFile(DocsService docsService, String exportUrl)
-    {
-        try {
-            MediaContent mc = new MediaContent();
-            mc.setUri(exportUrl);
-            MediaSource ms = docsService.getMedia(mc);
-
-            InputStream inStream = null;
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-            try {
-                inStream = ms.getInputStream();
-
-                int c;
-                while ((c = inStream.read()) != -1) {
-                    outStream.write(c);
-                }
-            } finally {
-                if (inStream != null) {
-                    inStream.close();
-                }
-                outStream.flush();
-                outStream.close();
-            }
-            return outStream.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new GoogleAppsException("trouble at downloading document", e);
         }
     }
 
@@ -1264,7 +1170,7 @@ public class GoogleAppsManagerImpl
                 return gdm;
             }
         } catch (XWikiException e) {
-            throw new GoogleAppsException("Can't get Google-Document inside XWiki.", e);
+            throw new GoogleAppsException("Can't get        Google-Document inside XWiki.", e);
         }
     }
 
@@ -1296,9 +1202,9 @@ public class GoogleAppsManagerImpl
                 obj = doc.newXObject(getSyncDocClassReference(), context);
                 obj.setNumber(nb);
             }
-            obj.setStringValue("id", docId);
+            obj.setStringValue(ID, docId);
             if (embedLink != null) {
-                obj.setStringValue("embedLink", embedLink);
+                obj.setStringValue(EMBEDLINK, embedLink);
             }
             obj.setStringValue(EDITLINK, docData.getAlternateLink());
             obj.setStringValue(VERSION, docData.getVersion().toString());
