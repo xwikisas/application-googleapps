@@ -19,9 +19,7 @@
  */
 package com.xwiki.googleapps;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,10 +30,7 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.script.service.ScriptService;
 import org.xwiki.stability.Unstable;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.services.drive.model.File;
 import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.api.Document;
 import com.xpn.xwiki.api.Object;
 
@@ -58,11 +53,10 @@ public class GoogleAppsScriptService implements ScriptService
 
     /**
      * @return if the application is licensed and activated
-     * @throws XWikiException in case a context cannot be read from thread.
      * @since 3.0
      */
     @Unstable
-    public boolean isActive() throws XWikiException
+    public boolean isActive()
     {
         return manager.isActive();
     }
@@ -78,50 +72,14 @@ public class GoogleAppsScriptService implements ScriptService
     }
 
     /**
-     * Finds when the JAR file was assembled by maven.
-     *
-     * @return the build date.
-     * @since 3.0
-     */
-    @Unstable
-    public Date getBuildTime()
-    {
-        return manager.getBuildTime();
-    }
-
-    /**
-     * Finds the version of the JAR file.
-     *
-     * @return the build version.
-     * @since 3.0
-     */
-    @Unstable
-    public String getBuildVersion()
-    {
-        return manager.getBuildVersion();
-    }
-
-    /**
-     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
-     *
-     * @return found credential
-     * @since 3.0
-     */
-    @Unstable
-    public Credential authorize()
-    {
-        return manager.authorize();
-    }
-
-    /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
-     * @return found credential
+     * @return if found a credential
      * @since 3.0
      */
     @Unstable
-    public Credential authorize(boolean redirect)
+    public boolean authorize(boolean redirect)
     {
         return manager.authorize(redirect);
     }
@@ -140,18 +98,18 @@ public class GoogleAppsScriptService implements ScriptService
     }
 
     /**
-     * Fetches a list of Google Drive document matching a substring query in the filename.
-     * (used in the import function)
+     * Fetches a list of Google Drive document matching a substring query in the filename. (used in the import
+     * function)
      *
      * @param query     the expected query (e.g. fullText contains winter ski)
      * @param nbResults max number of results
-     * @return The list of {@File} at Google Drive.
+     * @return The list of DriveDocMetadata
      * @since 3.0
      */
     @Unstable
-    public List<File> listDriveDocumentsWithTypes(String query, int nbResults)
+    public List<DriveDocMetadata> listDriveDocuments(String query, int nbResults)
     {
-        return manager.listDriveDocumentsWithTypes(query, nbResults);
+        return manager.listDriveDocuments(query, nbResults);
     }
 
     /**
@@ -175,18 +133,17 @@ public class GoogleAppsScriptService implements ScriptService
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
      *
-     * @param page attach to this page
-     * @param name attach using this file name
-     * @param id   store object attached to this attachment using this id (for later sync)
-     * @param mediaType  content-type of the file to be fetched (or "unknown"; in this case the
-     *                   mediaType is read from Tika.
-     * @return true if successful
+     * @param page      attach to this page
+     * @param name      attach using this file name
+     * @param id        store object attached to this attachment using this id (for later sync)
+     * @param mediaType content-type of the file to be fetched (or "unknown"; in this case the mediaType is read from
+     *                  Tika.
      * @since 3.0
      */
     @Unstable
-    public boolean retrieveFileFromGoogle(String page, String name, String id, String mediaType)
+    public void retrieveFileFromGoogle(String page, String name, String id, String mediaType)
     {
-        return manager.retrieveFileFromGoogle(page, name, id, mediaType);
+        manager.retrieveFileFromGoogle(page, name, id, mediaType);
     }
 
     /**
@@ -195,27 +152,12 @@ public class GoogleAppsScriptService implements ScriptService
      * @param pageName The XWiki page where the attachment is
      * @param fileName The filename of the attachment
      * @return information about the corresponding Google Drive document
-     * @throws XWikiException if something happened at XWiki side
      * @since 3.0
      */
     @Unstable
-    public DriveDocMetadata getGoogleDocument(String pageName, String fileName)
+    public DriveDocMetadata getSyncDocMetadata(String pageName, String fileName)
     {
-        return manager.getGoogleDocument(pageName, fileName);
-    }
-
-    /**
-     * Reads the extension and document name.
-     *
-     * @param docName the raw docName
-     * @param elink   the link where to read the extension name
-     * @return an array with extension and simplified document name
-     * @since 3.0
-     */
-    @Unstable
-    public String[] getExportLink(String docName, String elink)
-    {
-        return manager.getExportLink(docName, elink);
+        return manager.getSyncDocMetadata(pageName, fileName);
     }
 
     /**
@@ -228,21 +170,8 @@ public class GoogleAppsScriptService implements ScriptService
      * @since 3.0
      */
     @Unstable
-    public Map<String, java.lang.Object> saveAttachmentToGoogle(String page, String name)
+    public DriveDocMetadata saveAttachmentToGoogle(String page, String name)
     {
         return manager.saveAttachmentToGoogle(page, name);
-    }
-
-    /**
-     * Reads the google user-info attached to the current user as stored in the request.
-     *
-     * @return the google user-info with keys displayName, emails (array of type,value pairs), etag, id, image (map with
-     * keys isDefault and url), kind, language, name (map with keys familyName and givenName).
-     * @since 3.0
-     */
-    @Unstable
-    public Map<String, java.lang.Object> getGoogleUser()
-    {
-        return manager.getGoogleUser();
     }
 }

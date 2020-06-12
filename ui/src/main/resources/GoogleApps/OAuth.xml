@@ -44,8 +44,8 @@
 $services.localization.render("googleapps.login.oauth.message")
 
 #set($googleApps = $services.googleApps)
-#set($creds = $googleApps.authorize())
-#if($creds)
+#set($success = $googleApps.authorize(true))
+#if($success)
 #if($request.state)
 $services.localization.render("googleapps.login.oauth.success")
 #else

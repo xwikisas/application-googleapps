@@ -121,7 +121,7 @@
     <property>
       <code>#set($googleApps = $services.googleApps)
         #if($googleApps.active &amp;&amp; $googleApps.driveEnabled)
-var listener = function(event) {
+  var listener = function(event) {
   if (event.memo.id == 'Attachments') {
     var buttons = $$(".xwikibuttonlinks")
     for (i=0;i&lt;=buttons.length;i++)

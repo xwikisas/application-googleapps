@@ -45,29 +45,30 @@
     {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'/}}
 
 {{html clean==false wiki=true}}
-&lt;form action="" method="get"&gt;
+&lt;form action="" method="get">
 {{translation key='googleapps.importGA.search'/}}
-&lt;input type="text" name="query" value="$!{request.query}" /&gt;
-&lt;input type="hidden" name="page" value="$!{request.page}" /&gt;
-&lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
-&lt;input type="submit" value="Search" /&gt;
-&lt;/form&gt;
+&lt;input type="text" name="query" value="$!{request.query}" />
+&lt;input type="hidden" name="page" value="$!{request.page}" />
+&lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" />
+&lt;input type="submit" value="Search" />
+&lt;/form>
 {{/html}}
 
 #if($request.query)
 #set($googleApps = $services.googleApps)
 #set($squery = "'" + $request.query + "'")
-#set($result = $googleApps.listDriveDocumentsWithTypes("fullText contains ${squery}", 20))
+#set($result = $googleApps.listDriveDocuments("fullText contains ${squery}", 20))
 #if(!$result.empty)
   #foreach($entry in $result)
-    #set($docName = $entry.title)
-* $docName #foreach($elink in $entry.exportLinks)
-    #set($exportData = $googleApps.getExportLink($docName, $elink))
-    #set($stype = $exportData[0])
-    #set($newDocName = $exportData[1])
-    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;mediaType=${stype}&amp;id=${entry.id}"]] #end
+    #set($docName = $entry.fileName)
+* $docName: #foreach($alternative in $entry.exportLinksAlternatives)
+  #set($elink = $alternative.exportUrl)
+  #set($stype = $alternative.extension)
+  #set($newFileName = $alternative.newFileName)
+ [[${stype}>>RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newFileName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.editLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
+ #if($entry.downloadUrl) [[${stype}>>RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newFileName)}&amp;url=${escapetool.url($downloadUrl)}&amp;editLink=${escapetool.url($entry.editLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]]#end
 
-  #end
+#end
 #else
     {{translation key='googleapps.importGA.empty'/}}
 #end

@@ -46,21 +46,21 @@
 #if (!$services.licensing.licensor.hasLicensureForEntity($mainReference))
   {{error}}#getMissingLicenseMessage('googleapps.extension.name'){{/error}}
 #else
-$services.localization.render('googleapps.webHome.1')
-$services.localization.render('googleapps.webHome.2')
-## You can test the integration in test-document-list
-$services.localization.render('googleapps.webHome.3', ["[[","&gt;&gt;TestDocumentList]]"])
+	$services.localization.render('googleapps.webHome.1')
+	$services.localization.render('googleapps.webHome.2')
+	## You can test the integration in test-document-list
+	$services.localization.render('googleapps.webHome.3', ["[[","&gt;&gt;TestDocumentList]]"])
 
-#if($hasGlobalAdmin)
-#set($url=$xwiki.getURL('XWiki.XWikiPreferences', 'admin', 'editor=globaladmin&amp;section=googleapps'))
-## you can modify the config here
-$services.localization.render('googleapps.webHome.4', ["[[","&gt;&gt;path:$url]]"])
-## you can try it in driveMacroTest
-$services.localization.render('googleapps.webHome.5', ["[[","&gt;&gt;DriveMacroTest]]"])
-#end
+	#if($hasGlobalAdmin)
+		#set($url=$xwiki.getURL('XWiki.XWikiPreferences', 'admin', 'editor=globaladmin&amp;section=googleapps'))
+		## you can modify the config here
+		$services.localization.render('googleapps.webHome.4', ["[[","&gt;&gt;path:$url]]"])
+		## you can try it in driveMacroTest
+		$services.localization.render('googleapps.webHome.5', ["[[","&gt;&gt;DriveMacroTest]]"])
+	#end
 #end
 
-[[GoogleApps Application version ${services.googleApps.buildVersion} built on ${services.googleApps.buildTime}>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration]].
+[[=&gt; More about the GoogleApps Application>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration]].
 {{/velocity}}
 </content>
 </xwikidoc>

@@ -19,15 +19,11 @@
  */
 package com.xwiki.googleapps;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.services.drive.model.File;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 
@@ -64,43 +60,15 @@ public interface GoogleAppsManager
     int getConfigCookiesTTL();
 
     /**
-     * Finds when the JAR file was assembled by maven.
-     *
-     * @return the build date.
-     * @since 3.0
-     */
-    @Unstable
-    Date getBuildTime();
-
-    /**
-     * Finds the version of the JAR file.
-     *
-     * @return the build version.
-     * @since 3.0
-     */
-    @Unstable
-    String getBuildVersion();
-
-    /**
-     * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
-     *
-     * @return found credential
-     * @throws GoogleAppsException if a communication problem with the other components occured
-     * @since 3.0
-     */
-    @Unstable
-    Credential authorize() throws GoogleAppsException;
-
-    /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
-     * @return found credential
+     * @return if found a credential
      * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    Credential authorize(boolean redirect) throws GoogleAppsException;
+    boolean authorize(boolean redirect) throws GoogleAppsException;
 
     /**
      * Performs the necessary communication with Google-Services to fetch identity and update the XWiki-user object or
@@ -122,22 +90,21 @@ public interface GoogleAppsManager
      * @since 3.0
      */
     @Unstable
-    List<File> listDriveDocumentsWithTypes(String query, int nbResults) throws GoogleAppsException;
+    List<DriveDocMetadata> listDriveDocuments(String query, int nbResults) throws GoogleAppsException;
 
     /**
      * Fetches the google-drive document's representation and stores it as attachment.
      *
-     * @param page attach to this page
-     * @param name attach using this file name
-     * @param id   store object attached to this attachment using this id (for later sync)
-     * @param mediaType  content-type of the file to be fetched (or "unknown"; in this case the
-     *                   mediaType is read from Tika.
-     * @return true if successful
+     * @param page      attach to this page
+     * @param name      attach using this file name
+     * @param id        store object attached to this attachment using this id (for later sync)
+     * @param mediaType content-type of the file to be fetched (or "unknown"; in this case the mediaType is read from
+     *                  Tika.
      * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    boolean retrieveFileFromGoogle(String page, String name, String id, String mediaType) throws GoogleAppsException;
+    void retrieveFileFromGoogle(String page, String name, String id, String mediaType) throws GoogleAppsException;
 
     /**
      * Extracts metadata about the Google Drive document corresponding to the named attachment.
@@ -149,18 +116,8 @@ public interface GoogleAppsManager
      * @since 3.0
      */
     @Unstable
-    DriveDocMetadata getGoogleDocument(String pageName, String fileName) throws GoogleAppsException;
+    DriveDocMetadata getSyncDocMetadata(String pageName, String fileName) throws GoogleAppsException;
 
-    /**
-     * Reads the extension and document name.
-     *
-     * @param docName the raw docName
-     * @param elink   the link where to read the extension name
-     * @return an array with extension and simplified document name
-     * @since 3.0
-     */
-    @Unstable
-    String[] getExportLink(String docName, String elink);
 
     /**
      * Inserts the current information on the document to be embedded.
@@ -182,21 +139,10 @@ public interface GoogleAppsManager
      *
      * @param page the XWiki page name
      * @param name the attachment name
-     * @return a record with the keys fileName, exportLink, version, editLink,  embedLink, and google-user's
-     * email-address
+     * @return a metadata about the file
      * @throws GoogleAppsException if a communication problem with the other components occured
      * @since 3.0
      */
     @Unstable
-    Map<String, Object> saveAttachmentToGoogle(String page, String name) throws GoogleAppsException;
-
-    /**
-     * Reads the google user-info attached to the current user as stored in the request.
-     *
-     * @return the google user-info with keys displayName, emails (array of type,value pairs), etag, id, image (map with
-     * keys isDefault and url), kind, language, name (map with keys familyName and givenName).
-     * @since 3.0
-     */
-    @Unstable
-    Map<String, Object> getGoogleUser();
+    DriveDocMetadata saveAttachmentToGoogle(String page, String name) throws GoogleAppsException;
 }

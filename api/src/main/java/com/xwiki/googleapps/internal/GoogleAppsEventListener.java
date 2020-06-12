@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
-import org.xwiki.component.phase.InitializationException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
@@ -41,11 +40,11 @@ import com.xpn.xwiki.doc.XWikiDocument;
 @Unstable
 class GoogleAppsEventListener implements EventListener
 {
-    private GoogleAppsManagerImpl manager;
+    private final GoogleAppsXWikiObjects gaXWikiObjects;
 
-    GoogleAppsEventListener(GoogleAppsManagerImpl manager)
+    GoogleAppsEventListener(GoogleAppsXWikiObjects gaXWikiObjects)
     {
-        this.manager = manager;
+        this.gaXWikiObjects = gaXWikiObjects;
     }
 
     /**
@@ -88,22 +87,14 @@ class GoogleAppsEventListener implements EventListener
         }
         if (event instanceof DocumentUpdatedEvent) {
             XWikiDocument document = (XWikiDocument) source;
-            DocumentReference configDocRef = manager.getConfigDocRef();
+            DocumentReference configDocRef = gaXWikiObjects.getConfigDocRef();
             if (document != null && document.getDocumentReference().equals(configDocRef)) {
                 configChanged = true;
             }
         }
 
-        if (configChanged) {
-            manager.readConfigDoc(null);
-        }
-
-        if (applicationStarted || configChanged) {
-            try {
-                manager.initialize();
-            } catch (InitializationException e) {
-                e.printStackTrace();
-            }
+        if (configChanged || applicationStarted) {
+            gaXWikiObjects.restart();
         }
     }
 }

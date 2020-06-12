@@ -1,0 +1,99 @@
+{{velocity}}{{html clean="false" wiki="false"}}
+  #if ($context.action=="login" && $doc.fullName=="XWiki.XWikiLogin")
+    #set($googleApps = $services.googleApps)
+    #if($googleApps.active)
+      #if ($request.googleLogin == "oauthReturn")
+        <!-- === GoogleApps: return of the OAuth bounce; if all goes well, the user can be logged in === -->
+        #set($result = $googleApps.updateUser())
+        #set($prfx = "failed login:")
+        #if ($result.startsWith($prfx))
+          #set($email = $result.substring($prfx.length()))
+          #set($errorMsg = " ${services.localization.render('googleapps.login.domainerror1')} ")
+          #set($errorMsg = " ${errorMsg} ${services.localization.render('googleapps.login.domainerror2')} $!{email}.")
+          #set($errorMsg = " ${errorMsg} ${services.localization.render('googleapps.login.domainerror3')}")
+        #elseif ($result=="ok")
+          #set($successM = ${services.localization.render("googleapps.login.redirectmessage")})
+          #if ($request.xredirect && $request.xredirect!="")
+            $response.sendRedirect($request.xredirect)
+          #else
+            $response.sendRedirect($xwiki.getURL("Main.WebHome"))
+          #end
+        #else ## $result is "no user"
+          #set($errorMsg = ${services.localization.render('googleapps.login.message')})
+          #set($errorMsg = " ${errorMsg} ${services.localization.render('googleapps.login.error')}")
+        #end
+      #elseif ($request.googleLogin == "start")
+        <!-- ==== GoogleApps Start login, should bounce to Google === -->
+        #set($succesMsg = $services.localization.render("googleapps.login.oauth.message"))
+        #set($success = $googleApps.authorize(true)) <!-- authorized? $success -->
+        #if($success)
+          #if($request.state)
+            #set($successMsg = $services.localization.render("googleapps.login.oauth.successwithredirect"))
+          #else
+            #set($successMsg = $services.localization.render("googleapps.login.oauth.success"))
+          #end
+        #else
+          #set($errorMsg = $services.localization.render("googleapps.login.oauth.failedGoogleRequest"))
+        #end
+      #else
+        <!-- no such googleLogin operation "$request.googleLogin" -->
+      #end
+
+      #if ($successMsg || $errorMsg)
+        <!-- ==== Google Apps Login Extension: Success or warning messages ==== -->
+        <script type="text/javascript">
+          document.addEventListener('DOMContentLoaded', function() {
+            var p = document.createElement("p"), div = document.createElement("div");
+            #if ($successMsg)
+              p.innerText = "${escapetool.javascript($successMsg)}";
+              div.className = "box successmessage";
+            #elseif ($errorMsg)
+              p.innerText = "${escapetool.javascript($errorMsg)}";
+              div.className = "box warningmessage";
+            #end
+            div.appendChild(p);
+            var c = document.getElementById("mainContentArea")
+            c.insertBefore(div, c.firstChild);
+          });
+        </script>
+      #end
+
+
+      <!-- ==== Google Apps Login Extension: Button: offer a button to login to Google) ==== -->
+      <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function() {
+          require(['jquery', 'xwiki-events-bridge', 'xwiki-meta'], function($, xm) {
+            window.loginWithXWiki = function() {
+              jQuery(".panel .panel-body dl").show()
+              return false;
+            }
+            if (XWiki.contextaction == "login" || XWiki.contextaction == "loginsubmit" ) {
+              var url = location.href;
+              if (url.indexOf('?') < 0){
+                url=url+'?';
+              }
+              if (url.indexOf('googleLogin=')>=0) {
+                url = url.replace(/googleLogin=[a-zA-Z]*/, "googleLogin=start");
+              } else {
+                url = url + "&googleLogin=start";
+              }
+            }
+            jQuery('<div id="googleapps-login-choice">'
+              + '<div class="col-xs-12" style="margin-bottom: 20px; padding: 20px;">'
+              + '<a href="' + url + '" class="btn btn-primary col-xs-5" href="">${escapetool.javascript($services.localization.render("googleapps.login.withgoogle"))}</a>'
+              + '<div class="col-xs-2"></div>'
+              + '<a href="javascript:void(0)" onclick="return loginWithXWiki()"  class="btn btn-primary col-xs-5" href=""'
+              + ' >${escapetool.javascript($services.localization.render("googleapps.login.withxwiki"))}</a></div>'
+              + '<div style="clear: both;"></div></div>').insertBefore(jQuery(".panel .panel-body dl"));
+            if (XWiki.contextaction != "loginsubmit") {
+              jQuery(".panel .panel-body dl").hide();
+            }
+          }); // end requirejs
+        });
+      </script>
+    #else
+      <!-- googleApps installed but not active -->
+    #end ## googleApps is active
+  #end ## on login page
+{{/html}}{{/velocity}}

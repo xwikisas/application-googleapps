@@ -42,14 +42,19 @@
   <content>{{velocity}}
 #set($googleApps = $services.googleApps)
 #if($request.url || $request.mediaType)
- #set($mediaType = $request.mediaType)
- #if("$!{mediaType}"=="")#set($mediaType="unknown")#end
- #set($ok = $googleApps.retrieveFileFromGoogle($request.page, $request.name, $request.id, $mediaType))
- #if(!$ok)
-$services.localization.render("googleapps.retrieve.fail") $request.id
- #end
-#else
-$services.localization.render("googleapps.retrieve.nodocument")
+  #set($mediaType = $request.mediaType)
+  #if("$!{mediaType}"=="")#set($mediaType="unknown")#end
+  #try()
+    #set($ok = $googleApps.retrieveFileFromGoogle($request.page, $request.name, $request.id, $mediaType))
+    #set($url = $xwiki.getDocument($request.page).getURL("view", "#Attachments"))
+    $response.sendRedirect($url)
+  #end
+  #if ("$!exception" != '')
+    $services.localization.render("googleapps.retrieve.fail") $request.id
+    #displayException($exception)
+  #else
+    redirecting...
+  #end
 #end
 {{/velocity}}</content>
 </xwikidoc>

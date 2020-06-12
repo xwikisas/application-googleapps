@@ -8,10 +8,12 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
 #set($className="GoogleApps.GoogleAppsConfigClass")
 #set($propNamePrefix="${configDoc.fullName}_${className}_0")
 #set($obj = $configDoc.getObject($className))
+
 ## shorthand for t(ranslation) and tp(translation with parameters).
 #macro (t $name)
   $services.localization.render("GoogleApps.GoogleAppsConfigClass_${name}")
 #end
+
 #macro (tp $name $params)
   #set ($transNamePrefix = 'GoogleApps.GoogleAppsConfigClass_')
   #if ($name.startsWith("googleapps"))
@@ -21,6 +23,7 @@ $xwiki.ssx.use('GoogleApps.GoogleAppsConfigClass')
   ## convert to <a href="link">link-text</a> for the simple wiki syntax of links
   $stringtool.replacePattern($msg, '\[\[([^>]*)>>([^\]]*)\]\]', '<a href="$2">$1</a>')
 #end
+
 #macro (displayInput $property)
   #set ($output = $doc.display($property, 'edit', $obj))
   #set ($output = $stringtool.removeStart($output, '{{html clean="false" wiki="false"}}'))
