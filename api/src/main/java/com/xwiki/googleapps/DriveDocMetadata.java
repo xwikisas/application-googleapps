@@ -114,7 +114,7 @@ public class DriveDocMetadata
     }
 
     /**
-     * Insert one of the possible export alternative's info.
+     * Inserts one of the information about one of the export-alternatives.
      *
      * @param extension   understood the file type.
      * @param newFileName the filename when this file is stored on a desktop with this type

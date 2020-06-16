@@ -13,8 +13,8 @@ require(['jquery'], function (jQuery) {
 
 
   // reactivating
-  function reactivate(elts) {
-    jQuery(elts).each(function () {
+  function reactivate(elements) {
+    jQuery(elements).each(function () {
       if (typeof (this.wasDisabled)) {
         jQuery(jQuery(this).closest('dl')).find('label').css('color','black');
         jQuery(this).prop('disabled', this.wasDisabled);

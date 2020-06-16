@@ -50,22 +50,15 @@ $services.localization.render('googleapps.config.explanation')
         #tp ('communicate.hint2', ['[[', '>>https://store.xwiki.com/xwiki/bin/view/Extension/GoogleAppsIntegration#installation]]'])</span>
       </dt>
       <dd></dd>
-    </dl>
-
-    <dl>
       <dt><label for="${propNamePrefix}_clientid">#t ('clientid')</label>
         <span class="xHint">#t ("clientid.hint")</span></dt>
       <dd> #displayInput ('clientid')</dd>
-    </dl>
 
-    <dl>
       <dt><label for="${propNamePrefix}_secret">#t ('secret')</label>
         <span class="xHint">#t("secret.hint")</span></dt>
       <dd> #displayInput ("secret")</dd>
-    </dl>
 
     ## checkboxes for scope, needs JS
-    <dl>
       <dt><label>#t ('scope')</label>
         <span class="xHint">#t ('scope.hint')</span></dt>
       <dd>
@@ -79,9 +72,7 @@ $services.localization.render('googleapps.config.explanation')
           <input type="checkbox" name="scope_avatar">#t ('scope_avatar')</label>
         <input type="hidden" name="GoogleApps.GoogleAppsConfigClass_0_scope" value="${obj.getValue('scope')}"/>
       </dd>
-    </dl>
 
-    <dl>
       <dt><label for="${propNamePrefix}_appname">#t ('appname')</label>
         <span class="xHint">#t ('appname.hint')</span></dt>
       <dd> #displayInput ('appname')</dd>
@@ -96,9 +87,7 @@ $services.localization.render('googleapps.config.explanation')
         <span class="xHint">#t("domain.hint")</span></dt>
       <dd> #displayInput ("domain")<br>
         <span id="googleapps-domain-livehint" class="xHint">&nbsp;</span></dd>
-    </dl>
 
-    <dl>
       <dt>#displayInput ('useCookies') <label for="${propNamePrefix}_useCookies">#t ('useCookies')</label>
       <span class="xHint">#t ('useCookies.hint')</span></dt>
       <dd>
@@ -107,14 +96,10 @@ $services.localization.render('googleapps.config.explanation')
             <label for="${propNamePrefix}_skipLoginPage">#t ('skipLoginPage')</label>
             <span class="xHint">#t ('skipLoginPage.hint')</span></dt>
           <dd></dd>
-        </dl>
-        <dl>
           <dt>#displayInput ('authWithCookies')
             <label for="${propNamePrefix}_authWithCookies">#t ('authWithCookies')</label>
           <span class="xHint">#t ('authWithCookies.hint')</span></dt>
         <dd></dd>
-        </dl>
-        <dl>
           <dt><label for="${propNamePrefix}_cookiesTTL">#t("cookiesTTL")</label>
             <span class="xHint">#t ('cookiesTTL.hint')</span></dt>
           <dd>#displayInput ('cookiesTTL')</dd>

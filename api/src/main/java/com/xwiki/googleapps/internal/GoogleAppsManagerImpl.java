@@ -249,16 +249,6 @@ public class GoogleAppsManagerImpl
     }
 
     /**
-     * @return how long (in seconds) the cookies should be valid
-     * @since 3.0
-     */
-    @Unstable
-    public int getConfigCookiesTTL()
-    {
-        return gaXWikiObjects.getConfigCookiesTTL();
-    }
-
-    /**
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
      */

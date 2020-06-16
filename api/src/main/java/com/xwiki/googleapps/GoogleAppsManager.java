@@ -53,13 +53,6 @@ public interface GoogleAppsManager
     boolean isDriveEnabled();
 
     /**
-     * @return if the app is configured to use the Google Drive integration (default: yes).
-     * @since 3.0
-     */
-    @Unstable
-    int getConfigCookiesTTL();
-
-    /**
      * Inspects the stored information to see if an authorization or a redirect needs to be pronounced.
      *
      * @param redirect If a redirect can be done
