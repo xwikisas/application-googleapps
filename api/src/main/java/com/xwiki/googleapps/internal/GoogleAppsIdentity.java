@@ -29,7 +29,6 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.xwiki.model.reference.DocumentReference;
-import org.xwiki.stability.Unstable;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -404,7 +403,6 @@ class GoogleAppsIdentity implements GoogleAppsConstants
      * @return found credential
      * @since 3.0
      */
-    @Unstable
     Credential authorize(boolean redirect)
     {
         try {

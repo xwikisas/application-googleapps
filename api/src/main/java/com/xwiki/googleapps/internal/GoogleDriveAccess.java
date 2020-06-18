@@ -40,7 +40,7 @@ import com.google.api.services.drive.model.FileList;
 import com.xwiki.googleapps.DriveDocMetadata;
 import com.xwiki.googleapps.GoogleAppsException;
 
-class GoogleDriveAccess implements GoogleAppsConstants
+public class GoogleDriveAccess implements GoogleAppsConstants
 {
 
     // ----- communication tools
@@ -152,15 +152,16 @@ class GoogleDriveAccess implements GoogleAppsConstants
         try {
             File docData = getDriveService().files().get(docId).execute();
             DriveDocMetadata ddm = new DriveDocMetadata();
-            ddm.id = docId;
-            ddm.embedLink = docData.getEmbedLink();
-            if (ddm.embedLink == null) {
-                ddm.embedLink = docData.getAlternateLink();
+            ddm.setId(docId);
+            ddm.setEmbedLink(docData.getEmbedLink());
+            if (ddm.getEmbedLink() == null) {
+                ddm.setEmbedLink(docData.getAlternateLink());
             }
-            ddm.editLink = docData.getAlternateLink();
-            ddm.fileName = docData.getOriginalFilename() != null ? docData.getOriginalFilename() : docData.getTitle();
-            ddm.user = getDriveService().about().get().execute().getUser().getEmailAddress();
-            ddm.version = docData.getVersion().toString();
+            ddm.setEditLink(docData.getAlternateLink());
+            ddm.setFileName(
+                    docData.getOriginalFilename() != null ? docData.getOriginalFilename() : docData.getTitle());
+            ddm.setUser(getDriveService().about().get().execute().getUser().getEmailAddress());
+            ddm.setVersion(docData.getVersion().toString());
             return ddm;
         } catch (IOException e) {
             throw new GoogleAppsException(e);
@@ -209,27 +210,27 @@ class GoogleDriveAccess implements GoogleAppsConstants
     private DriveDocMetadata createDriveDocMetadata(File googleFile, String userName)
     {
         DriveDocMetadata ddm = new DriveDocMetadata();
-        ddm.embedLink = googleFile.getEmbedLink() != null
-                ? googleFile.getEmbedLink() : googleFile.getAlternateLink();
-        ddm.editLink = googleFile.getAlternateLink();
-        ddm.version = Long.toString(googleFile.getVersion());
-        ddm.fileName = googleFile.getOriginalFilename();
-        if (ddm.fileName == null) {
-            ddm.fileName = googleFile.getTitle();
+        ddm.setEmbedLink(googleFile.getEmbedLink() != null
+                ? googleFile.getEmbedLink() : googleFile.getAlternateLink());
+        ddm.setEditLink(googleFile.getAlternateLink());
+        ddm.setVersion(Long.toString(googleFile.getVersion()));
+        ddm.setFileName(googleFile.getOriginalFilename());
+        if (ddm.getFileName() == null) {
+            ddm.setFileName(googleFile.getTitle());
         }
-        ddm.id = googleFile.getId();
-        ddm.user = userName;
+        ddm.setId(googleFile.getId());
+        ddm.setUser(userName);
         if (googleFile.getExportLinks() != null) {
             for (String elink : googleFile.getExportLinks().values()) {
                 int index = elink.indexOf(EXPORTFORMATEQ) + 13;
                 String extension = elink.substring(index);
-                String newFileName = ddm.fileName
+                String newFileName = ddm.getFileName()
                         .replaceAll("\\.(doc|docx|odt|xls|xlsx|ods|pptx|svg|png|jpeg|pdf|)$", "");
                 newFileName += '.' + extension;
                 ddm.addExportAlternative(extension, newFileName, elink);
             }
         }
-        ddm.exportLink = googleFile.getDownloadUrl();
+        ddm.setExportLink(googleFile.getDownloadUrl());
         return ddm;
     }
 }

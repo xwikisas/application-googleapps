@@ -267,11 +267,11 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
             if (context.getRequest().getParameter(URL) != null) {
                 object.set(EXPORTLINK, context.getRequest().getParameter(URL), context);
             }
-            object.set(VERSION, ddm.version, context);
-            object.set(EDITLINK, ddm.editLink, context);
-            object.set(EMBEDLINK, ddm.embedLink, context);
+            object.set(VERSION, ddm.getVersion(), context);
+            object.set(EDITLINK, ddm.getEditLink(), context);
+            object.set(EMBEDLINK, ddm.getEmbedLink(), context);
             if (object.getStringValue(USER) == null || object.getStringValue(USER).length() == 0) {
-                object.set(USER, ddm.user, context);
+                object.set(USER, ddm.getUser(), context);
             }
             context.getWiki().saveDocument(adoc, UPDATECOMMENT, context);
             log.info("Document " + name + " has been saved to XWiki");
@@ -290,9 +290,9 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
                 return null;
             } else {
                 DriveDocMetadata gdm = new DriveDocMetadata();
-                gdm.id = object.getStringValue(ID);
-                gdm.editLink = object.getStringValue(EDITLINK);
-                gdm.exportLink = object.getStringValue(EXPORTLINK);
+                gdm.setId(object.getStringValue(ID));
+                gdm.setEditLink(object.getStringValue(EDITLINK));
+                gdm.setExportLink(object.getStringValue(EXPORTLINK));
                 return gdm;
             }
         } catch (Exception e) {
@@ -311,14 +311,14 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
                 obj.setNumber(nb);
             }
             obj.setStringValue(ID, docId);
-            if (ddm.embedLink != null) {
-                obj.setStringValue(EMBEDLINK, ddm.embedLink);
+            if (ddm.getEmbedLink() != null) {
+                obj.setStringValue(EMBEDLINK, ddm.getEmbedLink());
             }
 
-            obj.setStringValue(EDITLINK, ddm.editLink);
-            obj.setStringValue(VERSION, ddm.version);
-            obj.setStringValue(FILENAME, ddm.fileName);
-            obj.setStringValue(USER, ddm.user);
+            obj.setStringValue(EDITLINK, ddm.getEditLink());
+            obj.setStringValue(VERSION, ddm.getVersion());
+            obj.setStringValue(FILENAME, ddm.getFileName());
+            obj.setStringValue(USER, ddm.getUser());
             context.getWiki().saveDocument(doc, "Inserting Google Document", context);
             return obj;
         } catch (Exception e) {
@@ -346,13 +346,13 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
             XWikiDocument adoc = context.getWiki().getDocument(documentResolver.resolve(page), context);
             BaseObject object = adoc
                     .newXObject(getSyncDocClassReference(), context);
-            object.set(ID, ddm.id, context);
+            object.set(ID, ddm.getId(), context);
             object.set(FILENAME, name, context);
-            object.set(EXPORTLINK, ddm.exportLink, context);
-            object.set(VERSION, ddm.version, context);
-            object.set(EDITLINK, ddm.editLink, context);
-            object.set(EMBEDLINK, ddm.embedLink, context);
-            object.set(USER, ddm.user, context);
+            object.set(EXPORTLINK, ddm.getExportLink(), context);
+            object.set(VERSION, ddm.getVersion(), context);
+            object.set(EDITLINK, ddm.getEditLink(), context);
+            object.set(EMBEDLINK, ddm.getEmbedLink(), context);
+            object.set(USER, ddm.getUser(), context);
 
             context.getWiki().saveDocument(adoc, UPDATECOMMENT, context);
         } catch (Exception e) {

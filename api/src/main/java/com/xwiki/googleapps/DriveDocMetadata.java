@@ -36,42 +36,42 @@ public class DriveDocMetadata
     /**
      * Google's internal id to find the document again.
      */
-    public String id;
+    private String id;
 
     /**
      * URL to direct the user to for editing.
      */
-    public String editLink;
+    private String editLink;
 
     /**
      * URL to pull from in order to fetch the document.
      */
-    public String exportLink;
+    private String exportLink;
 
     /**
      * URL to use to show an embedded view.
      */
-    public String embedLink;
+    private String embedLink;
 
     /**
      * A stringified version number.
      */
-    public String version;
+    private String version;
 
     /**
      * The name of the file in case it is an uploaded file.
      */
-    public String fileName;
+    private String fileName;
 
     /**
      * The email-address of the user with which this document's connection was created.
      */
-    public String user;
+    private String user;
 
     /**
      * A list of export possibilities.
      */
-    public List<ExportAlternative> exportLinksAlternatives = new LinkedList<>();
+    private List<ExportAlternative> exportLinksAlternatives = new LinkedList<>();
 
     /**
      * @return the internal Google Id of the document.
@@ -79,6 +79,11 @@ public class DriveDocMetadata
     public String getId()
     {
         return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
     }
 
     /**
@@ -89,6 +94,11 @@ public class DriveDocMetadata
         return version;
     }
 
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
+
     /**
      * @return the URL to direct the user to for editing.
      */
@@ -97,12 +107,22 @@ public class DriveDocMetadata
         return editLink;
     }
 
+    public void setEditLink(String link)
+    {
+        this.editLink = link;
+    }
+
     /**
      * @return the URL to pull from in order to fetch the document.
      */
     public String getExportLink()
     {
         return exportLink;
+    }
+
+    public void setExportLink(String link)
+    {
+        this.exportLink = link;
     }
 
     /**
@@ -116,7 +136,7 @@ public class DriveDocMetadata
     /**
      * Inserts one of the information about one of the export-alternatives.
      *
-     * @param extension   understood the file type.
+     * @param extension   the filename extension (understood as a name of the file-type)
      * @param newFileName the filename when this file is stored on a desktop with this type
      * @param exportUrl   the url to pull from.
      */
@@ -140,6 +160,11 @@ public class DriveDocMetadata
         return fileName;
     }
 
+    public void setFileName(String fileName)
+    {
+        this.fileName = fileName;
+    }
+
     /**
      * @return the same as {#getFileName}.
      */
@@ -156,6 +181,26 @@ public class DriveDocMetadata
         return "id " + id + " edit: " + editLink + " export " + exportLink;
     }
 
+    public String getEmbedLink()
+    {
+        return embedLink;
+    }
+
+    public void setEmbedLink(String link)
+    {
+        this.embedLink = link;
+    }
+
+    public String getUser()
+    {
+        return user;
+    }
+
+    public void setUser(String emailAddress)
+    {
+        this.user = emailAddress;
+    }
+
     /**
      * A class to denote export possibilities of a drive file.
      */
@@ -164,17 +209,17 @@ public class DriveDocMetadata
         /**
          * a short nickname of the file type, typically the file-ending.
          */
-        public String extension;
+        private String extension;
 
         /**
          * the revised filename if exported to this extension.
          */
-        public String newFileName;
+        private String newFileName;
 
         /**
          * the URL to pull from.
          */
-        public String exportUrl;
+        private String exportUrl;
 
         /**
          * @return a short nickname of the file type, typically the file-ending.

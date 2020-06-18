@@ -25,10 +25,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 
 import org.slf4j.Logger;
-import org.xwiki.component.annotation.Component;
 import org.xwiki.component.phase.Disposable;
 import org.xwiki.component.phase.Initializable;
 import org.xwiki.configuration.ConfigurationSource;
@@ -36,7 +34,6 @@ import org.xwiki.environment.Environment;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.observation.ObservationManager;
 import org.xwiki.query.QueryManager;
-import org.xwiki.stability.Unstable;
 
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
@@ -58,8 +55,6 @@ import com.xwiki.googleapps.GoogleAppsManager;
  * @version $Id$
  * @since 3.0
  */
-@Component
-@Singleton
 public class GoogleAppsManagerImpl
         implements GoogleAppsManager, Initializable, Disposable, GoogleAppsConstants
 {
@@ -180,7 +175,6 @@ public class GoogleAppsManagerImpl
         }
     }
 
-
     /**
      * Evaluates weather the application is active and licensed by looking at the stored documents. Within a request,
      * this method should always be the first to be called so that the config-object is read and other properties are
@@ -189,7 +183,6 @@ public class GoogleAppsManagerImpl
      * @return True if documents were readable, and the is licensed and active; false otherwise.
      * @since 3.0
      */
-    @Unstable
     public boolean isActive()
     {
         return isActive(xwikiContextProvider.get());
@@ -204,7 +197,6 @@ public class GoogleAppsManagerImpl
      * @return True if documents were readable, and the is licensed and active; false otherwise.
      * @since 3.0
      */
-    @Unstable
     boolean isActive(XWikiContext context)
     {
         startIfNeedBe();
@@ -222,7 +214,6 @@ public class GoogleAppsManagerImpl
      * @return true if the app is configured to use cookies to store the association to the Google user.
      * @since 3.0
      */
-    @Unstable
     public boolean useCookies()
     {
         return gaXWikiObjects.doesUseCookies();
@@ -232,7 +223,6 @@ public class GoogleAppsManagerImpl
      * @return true if the app is configured to simply use the cookie and thus recognize the user based on cookie
      * @since 3.0
      */
-    @Unstable
     public boolean skipLoginPage()
     {
         return gaXWikiObjects.doesSkipLoginPage();
@@ -242,7 +232,6 @@ public class GoogleAppsManagerImpl
      * @return true if the app is configured to use cookies to store the association to the Google user
      * @since 3.0
      */
-    @Unstable
     public boolean authWithCookies()
     {
         return gaXWikiObjects.doesAuthWithCookies();
@@ -252,7 +241,6 @@ public class GoogleAppsManagerImpl
      * @return if the app is configured to use the Google Drive integration (default: yes).
      * @since 3.0
      */
-    @Unstable
     public boolean isDriveEnabled()
     {
         return gaXWikiObjects.doesConfigScopeUseDrive();
@@ -295,7 +283,6 @@ public class GoogleAppsManagerImpl
      * @return "failed login" if failed, {@NOUSER} (can be attempted to Google-OAuth), or "ok" if successful
      * @since 3.0
      */
-    @Unstable
     public String updateUser()
     {
         return gaIdentity.updateUser();
@@ -308,7 +295,6 @@ public class GoogleAppsManagerImpl
      * @return if found a credential
      * @since 3.0
      */
-    @Unstable
     public boolean authorize(boolean redirect)
     {
         try {
@@ -329,7 +315,6 @@ public class GoogleAppsManagerImpl
      *                  Tika.
      * @since 3.0
      */
-    @Unstable
     public void retrieveFileFromGoogle(String page, String name, String id, String mediaType)
     {
         gaDriveAccess.retrieveFileFromGoogle(page, name, id, mediaType);
@@ -343,7 +328,6 @@ public class GoogleAppsManagerImpl
      * @return information about the corresponding Google Drive document
      * @since 3.0
      */
-    @Unstable
     public DriveDocMetadata getSyncDocMetadata(String pageName, String fileName)
     {
         return gaXWikiObjects.getGoogleDocumentMetadata(pageName, fileName);
@@ -359,7 +343,6 @@ public class GoogleAppsManagerImpl
      * @return the created or actualized document
      * @since 3.0
      */
-    @Unstable
     public BaseObject createOrUpdateEmbedObject(String docId, XWikiDocument doc, BaseObject objp, int nb)
     {
         try {
@@ -381,7 +364,6 @@ public class GoogleAppsManagerImpl
      * email-address
      * @since 3.0
      */
-    @Unstable
     public DriveDocMetadata saveAttachmentToGoogle(String page, String name)
     {
         return gaDriveAccess.saveAttachmentToGoogle(page, name);
@@ -395,7 +377,6 @@ public class GoogleAppsManagerImpl
      * @return The list of objects of Google Drive.
      * @since 3.0
      */
-    @Unstable
     public List<DriveDocMetadata> listDriveDocuments(String query, int nbResults)
     {
         startIfNeedBe();
@@ -403,5 +384,5 @@ public class GoogleAppsManagerImpl
     }
 
     enum LifeCycle
-    { CONSTRUCTED, INITIALIZED, STARTING, RUNNING, STOPPING, STOPPED }
+    {CONSTRUCTED, INITIALIZED, STARTING, RUNNING, STOPPING, STOPPED}
 }

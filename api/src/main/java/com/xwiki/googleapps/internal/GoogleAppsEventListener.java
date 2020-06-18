@@ -27,7 +27,6 @@ import org.xwiki.bridge.event.DocumentUpdatedEvent;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
-import org.xwiki.stability.Unstable;
 
 import com.xpn.xwiki.doc.XWikiDocument;
 
@@ -37,7 +36,6 @@ import com.xpn.xwiki.doc.XWikiDocument;
  * @version $Id$
  * @since 3.0
  */
-@Unstable
 class GoogleAppsEventListener implements EventListener
 {
     private final GoogleAppsXWikiObjects gaXWikiObjects;

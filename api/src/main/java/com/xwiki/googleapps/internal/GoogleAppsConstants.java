@@ -19,7 +19,9 @@
  */
 package com.xwiki.googleapps.internal;
 
-/** A set of string constants used across the classes of the app.
+/**
+ * A set of string constants used across the classes of the app.
+ *
  * @version $Id$
  * @since 3.0
  */

@@ -33,7 +33,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.xwiki.configuration.ConfigurationSource;
-import org.xwiki.stability.Unstable;
 
 import com.xpn.xwiki.XWikiContext;
 import com.xwiki.googleapps.GoogleAppsException;
@@ -94,7 +93,6 @@ public class CookieAuthenticationPersistence
     /**
      * Builds a configured object.
      */
-
     CookieAuthenticationPersistence(ConfigurationSource xwikiCfg,
             GoogleAppsXWikiObjects gaXwikiObjects, Provider<XWikiContext> contextProvider, Logger logger)
     {
@@ -130,7 +128,6 @@ public class CookieAuthenticationPersistence
      *
      * @since 3.0
      */
-    @Unstable
     void clear()
     {
         this.setUserId("XWikiGuest");
@@ -142,7 +139,6 @@ public class CookieAuthenticationPersistence
      * @return the login name found, or null.
      * @since 3.0
      */
-    @Unstable
     String getUserId()
     {
         logger.info("retrieve cookie " + cookiePrefix + AUTHENTICATION_COOKIE);
@@ -159,7 +155,6 @@ public class CookieAuthenticationPersistence
      * @param userUid the user-name (without xwiki. prefix)
      * @since 3.0
      */
-    @Unstable
     void setUserId(String userUid)
     {
         Cookie cookie = new Cookie(cookiePrefix + AUTHENTICATION_COOKIE, encryptText(userUid));
