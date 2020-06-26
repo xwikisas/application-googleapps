@@ -24,9 +24,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.phase.Initializable;
 import org.xwiki.stability.Unstable;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -40,28 +46,36 @@ import com.google.api.services.drive.model.FileList;
 import com.xwiki.googleapps.DriveDocMetadata;
 import com.xwiki.googleapps.GoogleAppsException;
 
-public class GoogleDriveAccess implements GoogleAppsConstants
+/**
+ * Tools to access the web-services of the Google Apps.
+ *
+ * @version $Id$
+ * @since 3.0
+ */
+@Component(roles = GoogleDriveAccess.class)
+@Singleton
+public class GoogleDriveAccess implements GoogleAppsConstants, Initializable
 {
 
     // ----- communication tools
+    @Inject
+    private Provider<GoogleAppsIdentity> gaIdentity;
 
-    private final GoogleAppsIdentity gaIdentity;
+    @Inject
+    private Provider<GoogleAppsXWikiObjects> gaXWikiObjects;
 
-    private final GoogleAppsXWikiObjects gaXWikiObjects;
+    @Inject
+    private Logger log;
 
-    private final Logger log;
+    private JacksonFactory jacksonFactory;
 
-    private final JacksonFactory jacksonFactory;
+    private NetHttpTransport httpTransport;
 
-    private final NetHttpTransport httpTransport;
-
-    GoogleDriveAccess(Logger log,
-            GoogleAppsXWikiObjects gaXWikiObjects, GoogleAppsIdentity gaIdentity)
+    /** Initializes the communication objects.
+     * */
+    public void initialize()
     {
         try {
-            this.log = log;
-            this.gaXWikiObjects = gaXWikiObjects;
-            this.gaIdentity = gaIdentity;
             this.jacksonFactory = JacksonFactory.getDefaultInstance();
             this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         } catch (Exception e) {
@@ -77,10 +91,10 @@ public class GoogleDriveAccess implements GoogleAppsConstants
      */
     private Drive getDriveService()
     {
-        Credential credential = gaIdentity.authorize(false);
+        Credential credential = gaIdentity.get().authorize(false);
         return new Drive.Builder(
                 httpTransport, jacksonFactory, credential)
-                .setApplicationName(gaXWikiObjects.getConfigAppName())
+                .setApplicationName(gaXWikiObjects.get().getConfigAppName())
                 .build();
     }
 
@@ -140,7 +154,7 @@ public class GoogleDriveAccess implements GoogleAppsConstants
             String user = driveService.about().get().execute().getUser().getEmailAddress();
             File docData = driveService.files().get(id).execute();
             createDriveDocMetadata(docData, user);
-            gaXWikiObjects.saveFileToXWiki(page, id, name, downloadStream, createDriveDocMetadata(docData, user));
+            gaXWikiObjects.get().saveFileToXWiki(page, id, name, downloadStream, createDriveDocMetadata(docData, user));
         } catch (Exception e) {
             log.info(e.getMessage(), e);
             throw new GoogleAppsException("Trouble at retrieving from Google.", e);
@@ -182,7 +196,7 @@ public class GoogleDriveAccess implements GoogleAppsConstants
     {
         try {
             log.debug("Starting saving attachment ${name} from page ${page}");
-            Pair<InputStream, String> attachPair = gaXWikiObjects.getAttachment(name, page);
+            Pair<InputStream, String> attachPair = gaXWikiObjects.get().getAttachment(name, page);
 
             File file = new File();
             file.setTitle(name);
@@ -196,7 +210,7 @@ public class GoogleDriveAccess implements GoogleAppsConstants
             if (docData != null) {
                 log.debug("File inserted " + docData);
                 DriveDocMetadata ddm = createDriveDocMetadata(docData, user);
-                gaXWikiObjects.insertSyncDocObject(page, name, ddm);
+                gaXWikiObjects.get().insertSyncDocObject(page, name, ddm);
                 return ddm;
             } else {
                 log.warn("File insert failed");

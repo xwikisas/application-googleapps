@@ -26,12 +26,17 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.phase.Initializable;
 import org.xwiki.configuration.ConfigurationSource;
 
 import com.xpn.xwiki.XWikiContext;
@@ -47,7 +52,9 @@ import com.xwiki.googleapps.GoogleAppsException;
  * @version $Id$
  * @since 3.0
  */
-public class CookieAuthenticationPersistence
+@Component(roles = CookieAuthenticationPersistence.class)
+@Singleton
+public class CookieAuthenticationPersistence implements Initializable
 {
     private static final String AUTHENTICATION_CONFIG_PREFIX = "xwiki.authentication";
 
@@ -72,29 +79,35 @@ public class CookieAuthenticationPersistence
 
     private static final String UNDERSCORE = "_";
 
-    private final Logger logger;
+    @Inject
+    private Logger logger;
 
-    private final GoogleAppsXWikiObjects gaXwikiObjects;
+    @Inject
+    private Provider<GoogleAppsXWikiObjects> gaXwikiObjects;
 
-    private final String cookiePrefix;
+    private String cookiePrefix;
 
-    private final String cookiePath;
+    private String cookiePath;
 
-    private final String[] cookieDomains;
+    private String[] cookieDomains;
 
-    private final Cipher encryptionCipher;
+    private Cipher encryptionCipher;
 
-    private final Cipher decryptionCipher;
+    private Cipher decryptionCipher;
 
-    private final String encryptionKey;
+    private String encryptionKey;
 
-    private final Provider<XWikiContext> contextProvider;
+    @Inject
+    private Provider<XWikiContext> contextProvider;
+
+    @Inject
+    @Named("xwikicfg")
+    private ConfigurationSource xwikiCfg;
 
     /**
      * Builds a configured object.
      */
-    CookieAuthenticationPersistence(ConfigurationSource xwikiCfg,
-            GoogleAppsXWikiObjects gaXwikiObjects, Provider<XWikiContext> contextProvider, Logger logger)
+    public void initialize()
     {
         this.cookiePrefix = xwikiCfg.getProperty(COOKIE_PREFIX_PROPERTY, "");
         this.cookiePath = xwikiCfg.getProperty(COOKIE_PATH_PROPERTY, "/");
@@ -117,10 +130,6 @@ public class CookieAuthenticationPersistence
         } catch (Exception e) {
             throw new GoogleAppsException("Unable to initialize ciphers", e);
         }
-
-        this.logger = logger;
-        this.gaXwikiObjects = gaXwikiObjects;
-        this.contextProvider = contextProvider;
     }
 
     /**
@@ -158,7 +167,7 @@ public class CookieAuthenticationPersistence
     void setUserId(String userUid)
     {
         Cookie cookie = new Cookie(cookiePrefix + AUTHENTICATION_COOKIE, encryptText(userUid));
-        cookie.setMaxAge(gaXwikiObjects.getConfigCookiesTTL());
+        cookie.setMaxAge(gaXwikiObjects.get().getConfigCookiesTTL());
         cookie.setPath(cookiePath);
         String cookieDomain = getCookieDomain();
         if (cookieDomain != null) {

@@ -19,21 +19,16 @@
  */
 package com.xwiki.googleapps.internal;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
 import org.xwiki.component.phase.Disposable;
 import org.xwiki.component.phase.Initializable;
-import org.xwiki.configuration.ConfigurationSource;
-import org.xwiki.environment.Environment;
-import org.xwiki.model.reference.DocumentReferenceResolver;
-import org.xwiki.observation.ObservationManager;
-import org.xwiki.query.QueryManager;
 
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
@@ -55,6 +50,8 @@ import com.xwiki.googleapps.GoogleAppsManager;
  * @version $Id$
  * @since 3.0
  */
+@Component
+@Singleton
 public class GoogleAppsManagerImpl
         implements GoogleAppsManager, Initializable, Disposable, GoogleAppsConstants
 {
@@ -62,39 +59,25 @@ public class GoogleAppsManagerImpl
 
     private LifeCycle lifeCycleState = LifeCycle.CONSTRUCTED;
 
-    private GoogleAppsIdentity gaIdentity;
+    // own components
+    @Inject
+    private Provider<GoogleAppsIdentity> gaIdentity;
 
-    private GoogleAppsXWikiObjects gaXWikiObjects;
+    @Inject
+    private Provider<GoogleAppsXWikiObjects> gaXWikiObjects;
 
-    private GoogleDriveAccess gaDriveAccess;
+    @Inject
+    private Provider<GoogleDriveAccess> gaDriveAccess;
+
+    @Inject
+    private Provider<GoogleAppsAuthService> authService;
 
     // ------ services from the environment
     @Inject
     private Provider<XWikiContext> xwikiContextProvider;
 
     @Inject
-    @Named("current")
-    private DocumentReferenceResolver<String> documentResolver;
-
-    @Inject
-    @Named("user")
-    private DocumentReferenceResolver<String> userResolver;
-
-    @Inject
     private Logger log;
-
-    @Inject
-    private ObservationManager observationManager;
-
-    @Inject
-    private QueryManager queryManager;
-
-    @Inject
-    private Environment environment;
-
-    @Inject
-    @Named("xwikicfg")
-    private Provider<ConfigurationSource> xwikiCfgProvider;
 
     @Override
     public void initialize()
@@ -123,26 +106,9 @@ public class GoogleAppsManagerImpl
         boolean failed = false;
 
         try {
-            File permanentDir = new File(environment.getPermanentDirectory(), SPACENAME);
-            gaXWikiObjects = new GoogleAppsXWikiObjects(log, xwikiContextProvider, queryManager,
-                    documentResolver, userResolver, permanentDir);
-            gaXWikiObjects.startIfNeedBe(observationManager);
+            gaXWikiObjects.get().startIfNeedBe();
 
-            // ----- shared communication tools
-            ConfigurationSource xwikiCfg = xwikiCfgProvider.get();
-            CookieAuthenticationPersistence cookiePersistence = new CookieAuthenticationPersistence(
-                    xwikiCfg, gaXWikiObjects, xwikiContextProvider, log);
-
-            String logoutPattern = xwikiCfg.getProperty("xwiki.authentication.logoutpage", "");
-            GoogleAppsAuthService authService = new GoogleAppsAuthService(
-                    gaXWikiObjects, cookiePersistence, logoutPattern, log);
-
-            gaIdentity = new GoogleAppsIdentity(xwikiContextProvider,
-                    gaXWikiObjects, cookiePersistence, log);
-            tryInittingAuthService(authService);
-
-            gaDriveAccess =
-                    new GoogleDriveAccess(log, gaXWikiObjects, gaIdentity);
+            tryInittingAuthService();
         } catch (Exception e) {
             e.printStackTrace();
             failed = true;
@@ -156,7 +122,7 @@ public class GoogleAppsManagerImpl
         }
     }
 
-    void tryInittingAuthService(GoogleAppsAuthService authService)
+    void tryInittingAuthService()
     {
         XWiki xwiki = getXWiki();
         if (xwiki != null) {
@@ -164,7 +130,7 @@ public class GoogleAppsManagerImpl
             // We do not verify with the context if the plugin is active and if the license is active
             // this will be done by the GoogleAppsAuthService and UI pages later on, when it is called within a request
             try {
-                xwiki.setAuthService(authService);
+                xwiki.setAuthService(authService.get());
                 log.info("Succeeded initting authService,");
             } catch (Exception e) {
                 log.info("Failed initting authService", e);
@@ -204,8 +170,8 @@ public class GoogleAppsManagerImpl
         if (gaIdentity == null) {
             initialize();
         }
-        if (gaXWikiObjects.isActive() != null) {
-            return gaXWikiObjects.isActive();
+        if (gaXWikiObjects.get().isActive() != null) {
+            return gaXWikiObjects.get().isActive();
         }
         return false;
     }
@@ -216,7 +182,7 @@ public class GoogleAppsManagerImpl
      */
     public boolean useCookies()
     {
-        return gaXWikiObjects.doesUseCookies();
+        return gaXWikiObjects.get().doesUseCookies();
     }
 
     /**
@@ -225,7 +191,7 @@ public class GoogleAppsManagerImpl
      */
     public boolean skipLoginPage()
     {
-        return gaXWikiObjects.doesSkipLoginPage();
+        return gaXWikiObjects.get().doesSkipLoginPage();
     }
 
     /**
@@ -234,7 +200,7 @@ public class GoogleAppsManagerImpl
      */
     public boolean authWithCookies()
     {
-        return gaXWikiObjects.doesAuthWithCookies();
+        return gaXWikiObjects.get().doesAuthWithCookies();
     }
 
     /**
@@ -243,7 +209,7 @@ public class GoogleAppsManagerImpl
      */
     public boolean isDriveEnabled()
     {
-        return gaXWikiObjects.doesConfigScopeUseDrive();
+        return gaXWikiObjects.get().doesConfigScopeUseDrive();
     }
 
     /**
@@ -285,7 +251,7 @@ public class GoogleAppsManagerImpl
      */
     public String updateUser()
     {
-        return gaIdentity.updateUser();
+        return gaIdentity.get().updateUser();
     }
 
     /**
@@ -298,7 +264,7 @@ public class GoogleAppsManagerImpl
     public boolean authorize(boolean redirect)
     {
         try {
-            return null != gaIdentity.authorize(redirect);
+            return null != gaIdentity.get().authorize(redirect);
         } catch (Exception ex) {
             log.warn("Trouble at authorizing", ex);
             return false;
@@ -317,7 +283,7 @@ public class GoogleAppsManagerImpl
      */
     public void retrieveFileFromGoogle(String page, String name, String id, String mediaType)
     {
-        gaDriveAccess.retrieveFileFromGoogle(page, name, id, mediaType);
+        gaDriveAccess.get().retrieveFileFromGoogle(page, name, id, mediaType);
     }
 
     /**
@@ -330,7 +296,7 @@ public class GoogleAppsManagerImpl
      */
     public DriveDocMetadata getSyncDocMetadata(String pageName, String fileName)
     {
-        return gaXWikiObjects.getGoogleDocumentMetadata(pageName, fileName);
+        return gaXWikiObjects.get().getGoogleDocumentMetadata(pageName, fileName);
     }
 
     /**
@@ -347,9 +313,9 @@ public class GoogleAppsManagerImpl
     {
         try {
 
-            DriveDocMetadata ddm = gaDriveAccess.getEmbedData(docId);
+            DriveDocMetadata ddm = gaDriveAccess.get().getEmbedData(docId);
             // use here and at retrieveFromGoogle
-            return gaXWikiObjects.createOrUpdateEmbedObject(docId, doc, objp, nb, ddm);
+            return gaXWikiObjects.get().createOrUpdateEmbedObject(docId, doc, objp, nb, ddm);
         } catch (Exception e) {
             throw new GoogleAppsException("Can't create or update embedded document.", e);
         }
@@ -366,7 +332,7 @@ public class GoogleAppsManagerImpl
      */
     public DriveDocMetadata saveAttachmentToGoogle(String page, String name)
     {
-        return gaDriveAccess.saveAttachmentToGoogle(page, name);
+        return gaDriveAccess.get().saveAttachmentToGoogle(page, name);
     }
 
     /**
@@ -380,9 +346,9 @@ public class GoogleAppsManagerImpl
     public List<DriveDocMetadata> listDriveDocuments(String query, int nbResults)
     {
         startIfNeedBe();
-        return gaDriveAccess.listDriveDocuments(query, nbResults);
+        return gaDriveAccess.get().listDriveDocuments(query, nbResults);
     }
 
     enum LifeCycle
-    {CONSTRUCTED, INITIALIZED, STARTING, RUNNING, STOPPING, STOPPED}
+    { CONSTRUCTED, INITIALIZED, STARTING, RUNNING, STOPPING, STOPPED }
 }

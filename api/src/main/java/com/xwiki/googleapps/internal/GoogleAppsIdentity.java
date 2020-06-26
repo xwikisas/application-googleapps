@@ -24,10 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -47,49 +50,60 @@ import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.web.XWikiRequest;
 import com.xwiki.googleapps.GoogleAppsException;
 
-class GoogleAppsIdentity implements GoogleAppsConstants
+/**
+ * Set of objects to recognize and read the identity of the user.
+ * @since 3.0
+ * @version $Id$
+ */
+@Component(roles = GoogleAppsIdentity.class)
+@Singleton
+public class GoogleAppsIdentity implements GoogleAppsConstants
 {
     /**
      * A map of hash to full redirects.
      */
     private final Map<String, String> storedStates = new HashMap<>();
 
-    private final Logger log;
+    @Inject
+    private Logger log;
 
-    private final Provider<XWikiContext> contextProvider;
+    @Inject
+    private Provider<XWikiContext> contextProvider;
 
-    private final GoogleAppsXWikiObjects gaXwikiObjects;
+    @Inject
+    private Provider<GoogleAppsXWikiObjects> gaXwikiObjects;
 
-    private final CookieAuthenticationPersistence cookiePersistence;
+    @Inject
+    private Provider<CookieAuthenticationPersistence> cookiePersistence;
 
-    private final JacksonFactory jacksonFactory;
 
-    private final NetHttpTransport httpTransport;
+    private JacksonFactory jacksonFactory;
+
+    private NetHttpTransport httpTransport;
 
     private FileDataStoreFactory dsFactory;
 
-    GoogleAppsIdentity(Provider<XWikiContext> contextProvider,
-            GoogleAppsXWikiObjects gaXwikiObjects,
-            CookieAuthenticationPersistence cookiePersistence,
-            Logger log)
-    {
-        try {
-            this.contextProvider = contextProvider;
-            this.gaXwikiObjects = gaXwikiObjects;
-            this.jacksonFactory = JacksonFactory.getDefaultInstance();
-            this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            this.cookiePersistence = cookiePersistence;
-            this.log = log;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new GoogleAppsException("Trouble at constructing GoogleAppsIdentity", e);
+
+
+    private void initIfNeedBe() {
+        if (this.jacksonFactory==null) {
+            try {
+                this.jacksonFactory = JacksonFactory.getDefaultInstance();
+                this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+                this.dsFactory =  new FileDataStoreFactory(gaXwikiObjects.get().getPermanentDir());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new GoogleAppsException("Trouble at constructing GoogleAppsIdentity", e);
+            }
         }
     }
 
+
     String updateUser()
     {
+        initIfNeedBe();
         try {
-            if (!gaXwikiObjects.isActive()) {
+            if (!gaXwikiObjects.get().isActive()) {
                 return FAILEDLOGIN;
             }
             log.debug("Updating user...");
@@ -99,7 +113,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
             if (credential != null) {
                 PeopleService pservice = new PeopleService.Builder(httpTransport,
                         jacksonFactory, credential)
-                        .setApplicationName(gaXwikiObjects.getConfigAppName())
+                        .setApplicationName(gaXwikiObjects.get().getConfigAppName())
                         .build();
                 gUser = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
                 // GOOGLEAPPS: User: [displayName:..., emails:[[type:account, value:...]], etag:"...",
@@ -134,7 +148,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
             String googleUserId = (String) gUser.get("resourceName");
 
             String photoUrl = extractPhotoUrl(gUser);
-            xwikiUser = gaXwikiObjects.updateXWikiUser(googleUserId, emails, email,
+            xwikiUser = gaXwikiObjects.get().updateXWikiUser(googleUserId, emails, email,
                     firstName, lastName, photoUrl);
 
             // we need to restore the credentials as the user will now be logged-in
@@ -153,7 +167,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
     private String checkDomain(List<String> emails)
     {
         String email = null;
-        String domain = gaXwikiObjects.getConfigDomain();
+        String domain = gaXwikiObjects.get().getConfigDomain();
         if (domain != null && domain.length() > 0) {
             domain = domain.trim();
             for (String address : emails) {
@@ -174,7 +188,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
 
     private String extractPhotoUrl(Person gUser)
     {
-        if (gaXwikiObjects.getConfigScopeUseAvatar()
+        if (gaXwikiObjects.get().getConfigScopeUseAvatar()
                 && gUser.getPhotos() != null
                 && gUser.getPhotos().size() > 0
                 && gUser.getPhotos().get(0).getUrl() != null)
@@ -203,6 +217,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
 
     private String getCurrentXWikiUserName()
     {
+        initIfNeedBe();
         DocumentReference userDoc = contextProvider.get().getUserReference();
         String uName = userDoc == null ? XWIKIGUEST : userDoc.getName();
         if (XWIKIGUEST.equals(uName)) {
@@ -219,28 +234,24 @@ class GoogleAppsIdentity implements GoogleAppsConstants
      */
     private GoogleAuthorizationCodeFlow getFlow()
     {
+        initIfNeedBe();
         try {
-            if (dsFactory == null) {
-                dsFactory =
-                        new FileDataStoreFactory(gaXwikiObjects.getPermanentDir());
-            }
-
             // create scopes from config
             List<String> gScopes = new ArrayList<>();
             gScopes.add(PeopleServiceScopes.USERINFO_EMAIL);
             gScopes.add(PeopleServiceScopes.USERINFO_PROFILE);
-            if (gaXwikiObjects.doesConfigScopeUseDrive()) {
+            if (gaXwikiObjects.get().doesConfigScopeUseDrive()) {
                 gScopes.add(DriveScopes.DRIVE);
             }
 
             // create flow
             return new GoogleAuthorizationCodeFlow.Builder(
                     httpTransport,
-                    jacksonFactory, gaXwikiObjects.getConfigClientId(),
-                    gaXwikiObjects.getConfigClientSecret(), gScopes)
+                    jacksonFactory, gaXwikiObjects.get().getConfigClientId(),
+                    gaXwikiObjects.get().getConfigClientSecret(), gScopes)
                     .setDataStoreFactory(dsFactory)
                     .setAccessType("online").setApprovalPrompt(AUTOAPPROVAL)
-                    .setClientId(gaXwikiObjects.getConfigClientId())
+                    .setClientId(gaXwikiObjects.get().getConfigClientId())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,6 +267,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
      */
     private Credential exchangeCode(String authorizationCode)
     {
+        initIfNeedBe();
         try {
             GoogleAuthorizationCodeFlow flow = getFlow();
             GoogleTokenResponse tokenResponse = flow
@@ -271,6 +283,7 @@ class GoogleAppsIdentity implements GoogleAppsConstants
 
     private Map<String, Credential> getCredentialStore()
     {
+        initIfNeedBe();
         final String key = "GoogleAppsCredentialStore";
         HttpSession session = contextProvider.get().getRequest().getSession(true);
         Map<String, Credential> store = (Map<String, Credential>) (session.getAttribute(key));
@@ -285,8 +298,8 @@ class GoogleAppsIdentity implements GoogleAppsConstants
     {
         try {
             if (userId.contains(XWIKIGUEST)) {
-                if (gaXwikiObjects.doesUseCookies()) {
-                    cookiePersistence.setUserId(userId);
+                if (gaXwikiObjects.get().doesUseCookies()) {
+                    cookiePersistence.get().setUserId(userId);
                 }
             }
             log.debug("Storing credentials for user " + userId + " (" + credentials + ").");
@@ -376,13 +389,13 @@ class GoogleAppsIdentity implements GoogleAppsConstants
             GoogleAuthorizationCodeRequestUrl urlBuilder = getFlow()
                     .newAuthorizationUrl()
                     .setRedirectUri(getOAuthUrl())
-                    .setState(state).setClientId(gaXwikiObjects.getConfigClientId())
+                    .setState(state).setClientId(gaXwikiObjects.get().getConfigClientId())
                     .setAccessType("offline").setApprovalPrompt(AUTOAPPROVAL);
             // Add user email to filter account if the user is logged with multiple account
-            if (gaXwikiObjects.doesUseCookies()) {
-                String userId = cookiePersistence.getUserId();
+            if (gaXwikiObjects.get().doesUseCookies()) {
+                String userId = cookiePersistence.get().getUserId();
                 if (userId != null) {
-                    String userEmail = gaXwikiObjects.getUserEmail(userId);
+                    String userEmail = gaXwikiObjects.get().getUserEmail(userId);
                     if (userEmail != null) {
                         urlBuilder = urlBuilder.set("login_hint", userEmail);
                     }
@@ -403,8 +416,9 @@ class GoogleAppsIdentity implements GoogleAppsConstants
      * @return found credential
      * @since 3.0
      */
-    Credential authorize(boolean redirect)
+    public Credential authorize(boolean redirect)
     {
+        initIfNeedBe();
         try {
             log.debug("In authorize");
             // TODO: useless? GoogleAuthorizationCodeFlow flow =

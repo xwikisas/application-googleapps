@@ -23,10 +23,17 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.servlet.http.HttpSession;
 
 import org.securityfilter.realm.SimplePrincipal;
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.phase.Initializable;
+import org.xwiki.configuration.ConfigurationSource;
 import org.xwiki.container.servlet.filters.SavedRequestManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.text.StringUtils;
@@ -45,26 +52,34 @@ import com.xpn.xwiki.web.XWikiRequest;
  * @version $Id$
  * @since 3.0
  */
-public class GoogleAppsAuthService extends XWikiAuthServiceImpl
+@Component(roles = GoogleAppsAuthService.class)
+@Singleton
+public class GoogleAppsAuthService extends XWikiAuthServiceImpl implements Initializable
 {
     private static final String XWIKISPACE = "XWiki.";
 
-    private final Logger log;
+    @Inject
+    private Logger log;
 
-    private final GoogleAppsXWikiObjects gaXwikiObjects;
+    @Inject
+    private GoogleAppsXWikiObjects gaXwikiObjects;
 
-    private final CookieAuthenticationPersistence cookiePersistance;
+    @Inject
+    private CookieAuthenticationPersistence cookiePersistance;
 
-    private final Pattern logoutRequestMatcher;
+    @Inject
+    @Named("xwikicfg")
+    private Provider<ConfigurationSource> xwikiCfg;
 
-    GoogleAppsAuthService(GoogleAppsXWikiObjects gaXwikiObjects,
-            CookieAuthenticationPersistence cookiePersistance,
-            String logoutPattern, Logger log)
+    private Pattern logoutRequestMatcher;
+
+    /**
+     * Reads the configuration.
+     */
+    public void initialize()
     {
-        this.log = log;
-        this.gaXwikiObjects = gaXwikiObjects;
-        this.logoutRequestMatcher = Pattern.compile(logoutPattern);
-        this.cookiePersistance = cookiePersistance;
+        this.logoutRequestMatcher = Pattern.compile(
+                xwikiCfg.get().getProperty("xwiki.authentication.logoutpage", ""));
     }
 
     /**

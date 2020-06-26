@@ -81,6 +81,10 @@ public class DriveDocMetadata
         return id;
     }
 
+    /**
+     * Sets the Google ID of the document having requested this document.
+     * @param id The id of the document.
+     * */
     public void setId(String id)
     {
         this.id = id;
@@ -94,6 +98,10 @@ public class DriveDocMetadata
         return version;
     }
 
+    /**
+     * Set a designation of the version of the document.
+     * @param version The version (a number, expectedly)
+     */
     public void setVersion(String version)
     {
         this.version = version;
@@ -107,6 +115,10 @@ public class DriveDocMetadata
         return editLink;
     }
 
+    /**
+     * Sets the link where this document can be edited.
+     * @param link The link where it can be edited.
+     */
     public void setEditLink(String link)
     {
         this.editLink = link;
@@ -120,6 +132,10 @@ public class DriveDocMetadata
         return exportLink;
     }
 
+    /**
+     * Sets the link from which this document can be exported (and thus saved to XWiki).
+     * @param link The link where it can be exported.
+     */
     public void setExportLink(String link)
     {
         this.exportLink = link;
@@ -160,6 +176,10 @@ public class DriveDocMetadata
         return fileName;
     }
 
+    /**
+     * Sets the name of the file when it was uploaded.
+     * @param fileName The name of the file.
+     */
     public void setFileName(String fileName)
     {
         this.fileName = fileName;
@@ -181,21 +201,37 @@ public class DriveDocMetadata
         return "id " + id + " edit: " + editLink + " export " + exportLink;
     }
 
+    /**
+     * The link of the iframe where it can be embedded.
+     * @return The link.
+     */
     public String getEmbedLink()
     {
         return embedLink;
     }
 
+    /**
+     * Sets the link with which the document can be embedded.
+     * @param link The link.
+     */
     public void setEmbedLink(String link)
     {
         this.embedLink = link;
     }
 
+    /**
+     * The Google user that was used to include this document.
+     * @return The google user email.
+     */
     public String getUser()
     {
         return user;
     }
 
+    /**
+     * The Google user that was used to include this document.
+     * @param emailAddress  The user email.
+     */
     public void setUser(String emailAddress)
     {
         this.user = emailAddress;

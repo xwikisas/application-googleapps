@@ -1,2 +1,8 @@
 com.xwiki.googleapps.internal.GoogleAppsManagerImpl
 com.xwiki.googleapps.GoogleAppsScriptService
+com.xwiki.googleapps.internal.CookieAuthenticationPersistence
+com.xwiki.googleapps.internal.GoogleAppsAuthService
+com.xwiki.googleapps.internal.GoogleAppsEventListener
+com.xwiki.googleapps.internal.GoogleAppsIdentity
+com.xwiki.googleapps.internal.GoogleAppsXWikiObjects
+com.xwiki.googleapps.internal.GoogleDriveAccess

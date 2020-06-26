@@ -29,11 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.phase.Initializable;
+import org.xwiki.environment.Environment;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.ObjectReference;
@@ -49,23 +55,50 @@ import com.xpn.xwiki.objects.BaseObject;
 import com.xwiki.googleapps.DriveDocMetadata;
 import com.xwiki.googleapps.GoogleAppsException;
 
-class GoogleAppsXWikiObjects implements GoogleAppsConstants
+/**
+ * The objects representing the configuration of the application as well as methods to
+ * connect to XWiki for the manipulation of users and attachments.
+ *
+ * @version $Id$
+ * @since 3.0
+ */
+@Component(roles = GoogleAppsXWikiObjects.class)
+@Singleton
+public class GoogleAppsXWikiObjects implements GoogleAppsConstants, Initializable
 {
     // environment
-    private final Logger log;
+    @Inject
+    private Logger log;
 
-    private final Provider<XWikiContext> contextProvider;
+    @Inject
+    private Provider<XWikiContext> contextProvider;
 
-    private final QueryManager queryManager;
+    @Inject
+    private QueryManager queryManager;
 
-    private final DocumentReferenceResolver<String> documentResolver;
+    @Inject
+    @Named("current")
+    private DocumentReferenceResolver<String> documentResolver;
 
-    private final DocumentReferenceResolver<String> userResolver;
+    @Inject
+    @Named("user")
+    private DocumentReferenceResolver<String> userResolver;
 
-    private final File permanentDir;
+    @Inject
+    private Provider<GoogleAppsEventListener> eventListener;
+
+    @Inject
+    private Environment environment;
+
+    @Inject
+    private Provider<ObservationManager> observationManager;
+
+
+    private File permanentDir;
 
     private boolean started;
 
+    // configuration properties
     private Boolean configActiveFlag;
 
     private boolean useCookies;
@@ -93,22 +126,16 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
 
     private ObjectReference configObjRef;
 
-    private GoogleAppsEventListener eventListener;
-
     private DocumentReference syncdocClassRef;
 
     private DocumentReference gauthClassRef;
 
-    GoogleAppsXWikiObjects(Logger log, Provider<XWikiContext> contextProvider,
-            QueryManager queryManager, DocumentReferenceResolver<String> documentResolver,
-            DocumentReferenceResolver<String> userResolver, File permanentDir)
+    /**
+     * Initializes the internal objects.
+     */
+    public void initialize()
     {
-        this.log = log;
-        this.contextProvider = contextProvider;
-        this.queryManager = queryManager;
-        this.documentResolver = documentResolver;
-        this.userResolver = userResolver;
-        this.permanentDir = permanentDir;
+        this.permanentDir = new File(environment.getPermanentDirectory(), SPACENAME);
     }
 
     Boolean isActive()
@@ -225,14 +252,13 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
         }
     }
 
-    void startIfNeedBe(ObservationManager observationManager)
+    void startIfNeedBe()
     {
         if (started) {
             return;
         }
         if (eventListener == null) {
-            eventListener = new GoogleAppsEventListener(this);
-            observationManager.addListener(eventListener);
+            observationManager.get().addListener(eventListener.get());
         }
         if (configActiveFlag == null || configClientId == null) {
             readConfigDoc();
@@ -584,7 +610,7 @@ class GoogleAppsXWikiObjects implements GoogleAppsConstants
         return permanentDir;
     }
 
-    public String getUserEmail(String userId)
+    String getUserEmail(String userId)
     {
         try {
             XWikiContext context = contextProvider.get();

@@ -22,8 +22,12 @@ package com.xwiki.googleapps.internal;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.xwiki.bridge.event.ApplicationReadyEvent;
 import org.xwiki.bridge.event.DocumentUpdatedEvent;
+import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
@@ -36,14 +40,12 @@ import com.xpn.xwiki.doc.XWikiDocument;
  * @version $Id$
  * @since 3.0
  */
-class GoogleAppsEventListener implements EventListener
+@Component(roles = GoogleAppsEventListener.class)
+@Singleton
+public class GoogleAppsEventListener implements EventListener
 {
-    private final GoogleAppsXWikiObjects gaXWikiObjects;
-
-    GoogleAppsEventListener(GoogleAppsXWikiObjects gaXWikiObjects)
-    {
-        this.gaXWikiObjects = gaXWikiObjects;
-    }
+    @Inject
+    private GoogleAppsXWikiObjects gaXWikiObjects;
 
     /**
      * The name of the event listener.
