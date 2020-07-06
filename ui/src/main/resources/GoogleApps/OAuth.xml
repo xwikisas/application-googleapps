@@ -41,19 +41,8 @@
   <hidden>true</hidden>
   <content>
 {{velocity}}
-$services.localization.render("googleapps.login.oauth.message")
+    This page is not used anymore in Google Apps. Please remove any link to it.
 
-#set($googleApps = $services.googleApps)
-#set($success = $googleApps.authorize(true))
-#if($success)
-#if($request.state)
-$services.localization.render("googleapps.login.oauth.success")
-#else
-$services.localization.render("googleapps.login.oauth.successwithredirect")
-#end
-#else
-$services.localization.render("googleapps.login.oauth.notauthenticated")
-#end
-
+    Please replace the redirect URLs at the Google Console to be /login/XWiki/XWikiLogin .
 {{/velocity}}</content>
 </xwikidoc>
