@@ -130,7 +130,6 @@ public class GoogleAppsGroovy {
         // SCOPES.add(PlusScopes.PLUS_LOGIN);
         SCOPES.add(PeopleServiceScopes.USERINFO_EMAIL);
         SCOPES.add(PeopleServiceScopes.USERINFO_PROFILE);
-        addDebug("SCOPE config: ${SCOPE}.")
         if(useDrive)  {
             SCOPES.addAll(Arrays.asList(DriveScopes.DRIVE));
         }
@@ -190,7 +189,7 @@ public class GoogleAppsGroovy {
 
     def storeCredentials(userId, credentials) {
         if (userId.contains("XWiki.XWikiGuest")) {
-            userId = userId + "-" + request.getSession().hashCode();
+            userId = userId + "-" + request.getSession().getId();
         }
         else {
             if (useCookies) {
@@ -211,7 +210,7 @@ public class GoogleAppsGroovy {
     }
     def getStoredCredentials(userId) {
         if (userId.contains("XWiki.XWikiGuest")) {
-            userId = userId + "-" + request.getSession().hashCode();
+            userId = userId + "-" + request.getSession().getId();
         }
         addDebug("Getting credentials for user " + userId);
         return storedCredentials.get(userId);
@@ -335,14 +334,22 @@ public class GoogleAppsGroovy {
     }
 
     def updateUser() {
-        def xwikiUser = null;
+        addDebug("Updating User ");
+        def xwikiUser = null, user = null;
         def credential = authorize();
-        PeopleService pservice = new PeopleService.Builder(HTTP_TRANSPORT,
-                JSON_FACTORY, credential).setApplicationName(APPNAME)
-                .build();
-        def user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
-        this.googleUser = user;
-        addDebug("user: " + user);
+
+        try {
+            PeopleService pservice = new PeopleService.Builder(HTTP_TRANSPORT,
+                    JSON_FACTORY, credential).setApplicationName(APPNAME)
+                    .build();
+            user = pservice.people().get("people/me").setPersonFields("emailAddresses,names,photos").execute();
+            this.googleUser = user;
+            addDebug("user: " + user);
+        } catch (Exception ex) {
+            addDebug("Error when pulling user information: ${ex}.");
+            ex.printStackTrace();
+            return null;
+        }
         String usersEmailAddress = "";
         // GOOGLEAPPS: User: [displayName:Paul Libbrecht, emails:[[type:account, value:paul.libbrecht@googlemail.com]], etag:"k-5ZH5-QJvSewqvyYHTE9ETORZg/EbrzZ-WXep7ocoOnw7mPH3ohUF0", id:108124822654357414762, image:[isDefault:false, url:https://lh5.googleusercontent.com/-ozemnElunF0/AAAAAAAAAAI/AAAAAAAACGw/oyQfa2rA1YM/s50/photo.jpg], kind:plus#person, language:en, name:[familyName:Libbrecht, givenName:Paul]]
         if (user==null) {
@@ -361,7 +368,7 @@ public class GoogleAppsGroovy {
                 }
             }
             if(!foundCompatibleDomain) {
-                def userId = context.user + "-" + request.getSession().hashCode();
+                def userId = context.user + "-" + request.getSession().getId();
                 storedCredentials.remove(userId);
                 addDebug("Wrong domain: Removed credentials for userid " + userId)
                 return -1;
