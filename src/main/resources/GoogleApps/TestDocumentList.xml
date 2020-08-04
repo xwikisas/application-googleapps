@@ -55,7 +55,11 @@
 #set($ok = $gagroovy.init($xwiki, $context, $doc))
 #set($doclist = $gagroovy.getDocumentList())
 #foreach($item in $doclist.items)
-* $item.title $item.id $item.selfLink
+  #if($item.alternateLink)
+* [[$item.title $item.id>>$item.alternateLink]]
+  #else
+* $item.title $item.id
+  #end
 #end
 {{/velocity}}</content>
 </xwikidoc>
