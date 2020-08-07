@@ -83,12 +83,6 @@ def getDriveService(credential) {
   return new Drive.Builder(httpTransport, jsonFactory, null).setHttpRequestInitializer(credential).build();
 }
 
-def getDocsService(credential) {
-  def service = new DocsService("XWiki");
-  service.setOAuth2Credentials(credential);
-  return service
-}
-
 boolean needUpdate = false;
 def gagroovy = xwiki.parseGroovyFromPage("GoogleApps.Groovy");
 gagroovy.init(xwiki, xcontext, doc)
@@ -107,7 +101,6 @@ for(item in xwiki.searchDocuments(", BaseObject as obj where doc.fullName = obj.
      email = "ludovic@xwiki.com"
     def credential = getCredential(email);
     def driveService = getDriveService(credential);
-    def docsService = getDocsService(credential);
     try {
       def result = driveService.files().get(id).execute();
       if (version==null || version=="" || version!="${result.version}") {
@@ -117,7 +110,7 @@ for(item in xwiki.searchDocuments(", BaseObject as obj where doc.fullName = obj.
         println "** ${result.title} ${result.version}"
         needUpdate = true;
         if (request.confirm) {
-           gagroovy.retrieveFileFromGoogle(docsService, driveService, item, name, result.id, exportLink)
+           gagroovy.retrieveFileFromGoogle(driveService, item, name, result.id, exportLink)
         }
        } else {
         println "* {{translation key='googleapps.sync.reqUpdateCannot' parameters='${item},${name}'/}}"

@@ -6,9 +6,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.Drive;
-
-import com.google.gdata.client.docs.DocsService;
-import com.google.gdata.data.*;
+import org.apache.tika.Tika;
 
 import com.google.api.client.http.ByteArrayContent;
 
@@ -159,6 +157,7 @@ public class GoogleAppsGroovy {
                 new GoogleAuthorizationCodeFlow.Builder(
                         HTTP_TRANSPORT, JSON_FACTORY, CLIENTID, SECRET, SCOPES)
                         .setDataStoreFactory(DATA_STORE_FACTORY)
+                        .setClientId(CLIENTID)
                         .setAccessType("online").setApprovalPrompt("auto")
                         .build();
         return flow;
@@ -335,8 +334,13 @@ public class GoogleAppsGroovy {
 
     def updateUser() {
         addDebug("Updating User ");
+        if(CLIENTID==null || CLIENTID.trim().length==0 ||
+                SECRET==null || SECRET.trim().length()==0) {
+            return -1;
+        }
         def xwikiUser = null, user = null;
         def credential = authorize();
+        if (credential == null) return -1;
 
         try {
             PeopleService pservice = new PeopleService.Builder(HTTP_TRANSPORT,
@@ -521,18 +525,6 @@ public class GoogleAppsGroovy {
                 .build();
     }
 
-    /**
-     * Build and return an authorized Drive client service.
-     * @return an authorized Drive client service
-     * @throws IOException
-     */
-    def getDocsService() throws IOException {
-        Credential credential = authorize();
-        def service = new DocsService(APPNAME);
-        service.setOAuth2Credentials(credential);
-        return service;
-    }
-
 
     public getDocumentList() {
         def drive = getDriveService();
@@ -555,48 +547,21 @@ public class GoogleAppsGroovy {
     }
 
     public retrieveFileFromGoogle(page, name, id, url) {
-        return retrieveFileFromGoogle(getDocsService(), getDriveService(), page, name, id, url);
+        return retrieveFileFromGoogle(getDriveService(), page, name, id, url);
     }
 
-    public retrieveFileFromGoogle(docsService, driveService, page, name, id, url) {
+    public retrieveFileFromGoogle(driveService, page, name, id, url) {
         addDebug("Retrieving ${name} to page ${page}: ${id} ${url}" )
         def adoc = xwiki.getDocument(page);
         try {
-            def data = downloadFile(docsService, url);
-            saveFileToXWiki(driveService, adoc, id, name, data, true);
+            String mt = new Tika().detect(name);
+            InputStream downloadStream = driveService.files().export(id, mt).executeMediaAsInputStream();
+            saveFileToXWiki(driveService, adoc, id, name, downloadStream, true);
             return id;
         } catch (Exception e) {
             addDebug(e.getMessage())
             e.printStackTrace();
         }
-    }
-
-
-    def byte[] downloadFile(docsService, String exportUrl) {
-        def mc = new MediaContent();
-        mc.setUri(exportUrl);
-        def ms = docsService.getMedia(mc);
-
-        InputStream inStream = null;
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-        try {
-            inStream = ms.getInputStream();
-
-            int c;
-            while ((c = inStream.read()) != -1) {
-                outStream.write(c);
-            }
-        } finally {
-            if (inStream != null) {
-                inStream.close();
-            }
-            if (outStream != null) {
-                outStream.flush();
-                outStream.close();
-            }
-        }
-        return outStream.toByteArray();
     }
 
     public saveFileToXWiki(driveService, adoc, id, name, data, redirect) {
@@ -768,99 +733,5 @@ public class GoogleAppsGroovy {
           xwikicfg.getProperty("xwiki.authentication.authclass")=="com.xpn.xwiki.user.impl.xwiki.GroovyAuthServiceImpl" &&
           xwikicfg.getProperty("xwiki.authentication.groovy.pagename")=="xwiki:GoogleApps.AuthService" );
     }
-
-
-/*
-public saveAttachmentInGoogle(adoc, name, entry) {
-  def data = adoc.getAttachment(name).getContentAsBytes();
-  entry.setMediaSource(new MediaByteArraySource(data, xwiki.getXWiki().getEngineContext().getMimeType(name)));
-  return entry.updateMedia(true);
-}
-
-public createAttachmentInGoogle(client, adoc, name) {
-  def tmaindir = xwiki.getXWiki().getTempDirectory(context.getContext());
-  def tdir = new File(tmaindir, RandomStringUtils.randomAlphanumeric(8));
-  try {
-       // save temporary file to disk
-       tdir.mkdirs();
-       def file = new File(tdir, name);
-       if (!file.exists())
-            file.createNewFile();
-       def fos = new FileOutputStream(file);
-       fos.write(adoc.getAttachment(name).getContentAsBytes())
-       fos.close();
-
-       String mimeType = DocumentListEntry.MediaType.fromFileName(name).getMimeType();
-       DocumentListEntry newDocument = new DocumentListEntry();
-       newDocument.setFile(file, mimeType);
-       newDocument.setTitle(new PlainTextConstruct(name));
-
-       def result = client.insert(new URL(FEED_URL), newDocument);
-       return result;
-  } finally {
-       if (tmaindir!=null)
-         tmaindir.delete();
-  }
-}
-
-public getExistingFile(client, name) {
-  DocumentQuery dquery = new DocumentQuery(new URL(FEED_URL));
-  dquery.setTitleQuery(name);
-  dquery.setTitleExact(true);
-  dquery.setMaxResults(1);
-  def resultFeed = client.getFeed(dquery, DocumentListFeed.class);
-  def entries = resultFeed.getEntries();
-  if (entries.size()>0)
-    return entries.get(0);
-  else
-    return null;
-}
-
-public getExportURL(entry, name) {
- def ext = name.substring(name.indexOf(".")+1);
- return entry.getContent().getUri() + "&exportFormat=" + ext;
-}
-
-public checkFileExists(page, name) {
- def adoc = xwiki.getDocument(page);
- if (isAuthenticated()) {
-  try {
-   def client = getDocsClient();
-   return getExistingFile(client, name)
-  } catch (Exception e) {
-   addDebug("Authentication Fail")
-   addDebug(e.getMessage())
-   e.printStackTrace();
-   sendAuthRequest();
-  }
- }  else {
-   sendAuthRequest();
- }
-}
-
-public saveAttachmentToGoogle(page, name, overwrite) {
- def adoc = xwiki.getDocument(page);
-  if (isAuthenticated()) {
-  try {
-    def client = getDocsClient();
-    if (overwrite) {
-      def entry = getExistingFile(client, name);
-      return saveAttachmentInGoogle(adoc, name, entry);
-    } else {
-      return createAttachmentInGoogle(client, adoc, name);
-    }
-  } catch (Exception e) {
-   addDebug("Authentication Fail")
-   addDebug(e.getMessage())
-   e.printStackTrace();
-   sendAuthRequest();
-  }
- }  else {
-   sendAuthRequest();
- }
-}
-
-
- */
 
 }
