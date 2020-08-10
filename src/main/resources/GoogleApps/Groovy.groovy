@@ -334,7 +334,7 @@ public class GoogleAppsGroovy {
 
     def updateUser() {
         addDebug("Updating User ");
-        if(CLIENTID==null || CLIENTID.trim().length==0 ||
+        if(CLIENTID==null || CLIENTID.trim().length()==0 ||
                 SECRET==null || SECRET.trim().length()==0) {
             return -1;
         }
