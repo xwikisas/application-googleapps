@@ -27,7 +27,7 @@
   <artifactId>application-googleapps</artifactId>
   <packaging>xar</packaging>
   <name>Google Apps Integration (Pro) UI</name>
-  <description>This extension allows to connect Google Apps to XWiki</description>
+  <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
     <!-- The list of documents that have an implicit unlimited free license. The users can view these documents without
       buying a license or getting a trial license, but they cannot edit or delete them. -->
