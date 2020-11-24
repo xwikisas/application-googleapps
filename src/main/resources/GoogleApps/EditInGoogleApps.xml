@@ -59,9 +59,13 @@
 
   (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
   #else
-  {{translation key='googleapps.editInGA.notYetInGDrive'/}}
+    #if($gagroovy.canSyncFile($request.name))
+      {{translation key='googleapps.editInGA.notYetInGDrive'/}}
 
-  (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
+      (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
+    #else
+      {{translation key='googleapps.editInGA.notSupportedFormat'/}}
+    #end
   #end
 #else
   {{translation key='googleapps.error.driveDisabled'/}}

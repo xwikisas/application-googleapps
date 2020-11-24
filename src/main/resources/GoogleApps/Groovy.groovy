@@ -630,6 +630,20 @@ public class GoogleAppsGroovy {
         return [ "type" : extension, "newDocName" : newDocName];
     }
 
+    Set prohibitedFormats = new HashSet();
+
+    public boolean canSyncFile(fileName) {
+        def p = fileName.lastIndexOf(".");
+        if(p==-1 || p == fileName.length()-1) return true;
+        fileName = fileName.substring(p+1).toLowerCase();
+        if(prohibitedFormats.size()==0) {
+            prohibitedFormats.add("doc");
+            prohibitedFormats.add("xls");
+            prohibitedFormats.add("ppt");
+        }
+        return !prohibitedFormats.contains(fileName);
+    }
+
     public getFileDisplayInfo(mimeType, docName) {
         def newDocName;
         def availableTypes;
