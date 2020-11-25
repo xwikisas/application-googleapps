@@ -425,7 +425,7 @@ public class GoogleAppsGroovy {
                             int pointIndex = fileName.lastIndexOf(".");
                             int length = fileName.length();
                             if(l-p<250) {
-                                fileName = fileName.substring(0, 255 - (length - pointIndex)) + fileName.substring(p);
+                                fileName = fileName.substring(0, 255 - (length - pointIndex)) + fileName.substring(pointIndex);
                             } else {// ill-case, extension non-existent or too long
                                 fileName = fileName.substring(length - 254);
                             }
