@@ -422,11 +422,13 @@ public class GoogleAppsGroovy {
 
                         String fileName = u.file.substring(u.file.lastIndexOf('/')+1);
                         if(fileName.length()>=254) {
-                            int p = fileName.lastIndexOf("."), l = fileName.length();
-                            if(l-p<250)
-                                fileName = fileName.substring(0, 255-(l-p)) + fileName.substring(p);
-                            else // ill-case, extension non-existent or too long
-                                fileName = fileName.substring(l-254);
+                            int pointIndex = fileName.lastIndexOf(".");
+                            int length = fileName.length();
+                            if(l-p<250) {
+                                fileName = fileName.substring(0, 255 - (length - pointIndex)) + fileName.substring(p);
+                            } else {// ill-case, extension non-existent or too long
+                                fileName = fileName.substring(length - 254);
+                            }
                         }
                         userDoc.addAttachment(fileName, b);
                         userDoc.set("avatar", fileName );
