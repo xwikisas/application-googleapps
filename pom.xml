@@ -79,7 +79,7 @@
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
     <url>https://github.com/xwikisas/application-googleapps/tree/master</url>
-    <tag>application-googleapps-2.4.8-rc-1 </tag>
+    <tag>application-googleapps-2.4.8-RC-1 </tag>
   </scm>
   <build>
     <plugins>
