@@ -145,7 +145,7 @@
    margin-bottom: 0;
    padding-bottom: 0;
 }
-</code>
+		</code>
     </property>
     <property>
       <contentType>CSS</contentType>
@@ -275,102 +275,7 @@
     <className>XWiki.WikiMacroClass</className>
     <guid>41e5d116-4e82-408a-a49e-eac3af94af90</guid>
     <property>
-      <code>{{groovy}}
-def mainReference = services.model.createDocumentReference('', 'GoogleApps','OAuth')
-if (!services.licensing.licensor.hasLicensureForEntity(mainReference)) {
-  println """
-  {{error}}{{translation key='googleapps.error.noValidLicense' /}}{{/error}}
-  """
-} else {
-def id = xcontext.macro.params.id;
-def width = xcontext.macro.params.width;
-def height = xcontext.macro.params.height;
-def nb = Integer.parseInt(xcontext.macro.params.nb);
-def obj = doc.getObject("GoogleApps.SynchronizedDocumentClass", nb)
-def escapetool = new org.xwiki.velocity.tools.EscapeTool();
-def force = false;
-def googleApps = services.googleApps
-
-if(!googleApps.active || !googleApps.useDrive) {
-  println services.localization.render('googleapps.error.driveDisabled')
-} else {
-  // adding stylesheet
-  xwiki.ssx.use("GoogleApps.DriveMacro");
-
-  if (xcontext.macro.params.authentication) {
-    if (googleApps.authorize(false)==null) {
-      def url = googleApps.getAuthorizationURL()
-      println services.localization.render("googleapps.macro.maybeReqAuth", ["[[", "&gt;&gt;url:${url}]]"]);
-    }
-  }
-
-  if (nb==null)
-    nb = 0;
-  def embednb = (!request.nb) ? 0 : Integer.parseInt(request.nb)
-  def query = request.getParameter("query${nb}")
-
-  if (request.update=="1" &amp;&amp; nb==embednb)
-    force = true;
-
-  if (request.embed=="1") {
-    if (embednb==nb) {
-        obj = googleApps.createOrUpdateEmbedObject(request.id, doc, obj, nb);
-        doc.use(obj);
-    }
-  }
-
-    if (id!=null) {
-      println id;
-    } else if (obj!=null &amp;&amp; !force) {
-     doc.use(obj);
-     def embedLink = doc.getValue("embedLink")
-     def editLink = doc.getValue("editLink")
-     def swidth = (width.endsWith("%")) ? width : width + "px";
-     print """(% class="drive-links" style="width: ${swidth};" %)((("""
-     print """[[Change&gt;&gt;||queryString="update=1&amp;nb=${nb}"]]"""
-     if (editLink &amp;&amp; editLink.startsWith("http"))
-       print """ - [[Edit&gt;&gt;url:${editLink}]]"""
-     println ")))"
-     println """{{html clean=false}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""
-    } else {
-      def tquery = ""
-      if (query)
-       tquery = escapetool.xml(query)
-  println """
-
-{{translation key='googleapps.macro.mainHint'/}}
-
-  {{html clean=false wiki=true}}
-  &lt;form action="" method="get"&gt;
-  {{translation key='googleapps.macro.insert'/}}
-  &lt;input type="hidden" name="update" value="1" /&gt;
-  &lt;input type="hidden" name="nb" value="${nb}" /&gt;
-  &lt;input type="text" name="query${nb}" value="${tquery}" /&gt;
-  &lt;input type="submit" value="Search" /&gt;
-  &lt;/form&gt;
-  {{/html}}
-  """
-  if (query &amp;&amp; embednb==nb) {
-   def squery = "'" + query + "'"
-   def results = googleApps.listDocuments("fullText contains ${squery}", 10)
-   def nbres = results.items.size();
-
-   println "${nbres} documents found: "
-   for (entry in results.items) {
-    def docName = entry.title;
-    def embedLink = entry.embedLink;
-    if (embedLink==null)
-      embedLink = entry.alternateLink;
-    if (embedLink==null)
-     println """* ${docName}: """ + services.localization.render('googleapps.macro.canBeEmbedded')
-    else
-     println """* ${docName}: [[{{translation key='googleapps.macro.nowEmbed'/}}&gt;&gt;||queryString="embed=1&amp;nb=${nb}&amp;id=${entry.id}"]]"""
-   }
-  }
-    }
-  }
-}
-{{/groovy}}</code>
+      <code></code>
     </property>
     <property>
       <contentDescription/>

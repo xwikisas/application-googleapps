@@ -59,16 +59,6 @@
       <version>${licensing.version}</version>
     </dependency>
   </dependencies>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/xwikisas/application-googleapps/issues</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
-    <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
-    <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>HEAD</tag>
-  </scm>
   <build>
     <plugins>
       <plugin>
@@ -91,6 +81,20 @@
               <action>INSERT_TEXT</action>
               <content>src/main/resources/GoogleApps/GoogleAppsConfigClass.js</content>
             </transformation>
+            <transformation>
+              <file>GoogleApps/DriveMacro.xml</file>
+              <xpath>/xwikidoc/object[className[text()='XWiki.WikiMacroClass']]/property/code</xpath>
+              <action>INSERT_TEXT</action>
+              <content>src/main/resources/GoogleApps/DriveMacro.groovy</content>
+            </transformation>
+            <transformation>
+              <file>GoogleApps/LoginUIExtension.xml</file>
+              <xpath>/xwikidoc/object[className[text()='XWiki.UIExtensionClass']]/property/content</xpath>
+              <action>INSERT_TEXT</action>
+              <content>src/main/resources/GoogleApps/LoginUIExtension.vm</content>
+            </transformation>
+
+
 
             <!-- attachment -->
             <transformation>

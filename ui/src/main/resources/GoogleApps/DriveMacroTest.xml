@@ -39,15 +39,15 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>{{velocity}}##
+  <content>{{velocity}}
     {{translation key='googleapps.macro.testIntro'/}}
 
-    #if($doc.hasAccessLevel("edit"))##
+    #if($doc.hasAccessLevel("edit"))
       {{drive width="600" height="400" authentication="1" /}}
     #else
-      #if($doc.getObject(""))##
+      #if($doc.getObject(""))
         {{drive width="600" height="400" authentication="1" /}}
-      #else##
+      #else
         {{translation key='googleapps.macro.cantTest'/}}
       #end
     #end

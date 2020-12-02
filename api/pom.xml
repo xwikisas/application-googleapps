@@ -25,7 +25,6 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>application-googleapps-api</artifactId>
-  <version>3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Google Apps Integration (API)</name>
   <description>This is the XWiki-API part of the Google Apps which allows to connect Google Apps to XWiki.</description>
@@ -43,11 +42,6 @@
       <version>1.24.1</version>
     </dependency>
     <dependency>
-      <groupId>com.google.gdata</groupId>
-      <artifactId>core</artifactId>
-      <version>1.47.1</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-people</artifactId>
       <version>v1-rev442-1.24.1</version>
@@ -57,33 +51,10 @@
       <artifactId>google-api-services-drive</artifactId>
       <version>v2-rev358-1.24.1</version>
     </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/xwikisas/application-googleapps/issues</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
-    <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
-    <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>HEAD</tag>
-  </scm>
-  <build>
-    <plugins>
-       <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-              <failOnViolation>false</failOnViolation>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>checkstyle-validation</id>
-                    <phase>none</phase>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-  </build>
-
 </project>

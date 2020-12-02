@@ -41,26 +41,26 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #set($googleApps = $services.googleApps)
-#if($googleApps.active &amp;&amp; $googleApps.useDrive)
-  #set($gdoc = $googleApps.getGoogleDocument($request.page, $request.name))
+#if($googleApps.active &amp;&amp; $googleApps.driveEnabled)
+  #set($gdoc = $googleApps.getSyncDocMetadata($request.page, $request.name))
   #if($request.confirm)
-  {{translation key='googleapps.editInGA.uploading'/}}
-   #set($gdoc = $googleApps.saveAttachmentToGoogle($request.page, $request.name))
+    {{translation key='googleapps.editInGA.uploading'/}}
+    #set($gdoc = $googleApps.saveAttachmentToGoogle($request.page, $request.name))
   #end
 
   #if($gdoc)
-  {{translation key='googleapps.editInGA.isInGDrive'/}}
+    {{translation key='googleapps.editInGA.isInGDrive'/}}
 
-  (% class="buttonwrapper" %)
-  {{html clean=false}}&lt;a href="${gdoc.editLink}" target="_blank"&gt;$services.localization.render("googleapps.edit.editingoogle.button")&lt;/a&gt;{{/html}}
+    (% class="buttonwrapper" %)
+    {{html clean=false}}&lt;a href="${gdoc.editLink}" target="_blank"&gt;$services.localization.render("googleapps.edit.editingoogle.button")&lt;/a&gt;{{/html}}
 
-  $services.localization.render("googleapps.edit.desc")
+    $services.localization.render("googleapps.edit.desc")
 
-  (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
+    (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.retrieve.button")&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;url=${escapetool.url($gdoc.exportLink)}&amp;id=${gdoc.id}"]]
   #else
-  {{translation key='googleapps.editInGA.notYetInGDrive'/}}
+    {{translation key='googleapps.editInGA.notYetInGDrive'/}}
 
-  (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
+    (% class="buttonwrapper" %)[[$services.localization.render("googleapps.edit.confirm")&gt;&gt;||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($request.name)}&amp;confirm=1"]]
   #end
 #else
   {{translation key='googleapps.error.driveDisabled'/}}
