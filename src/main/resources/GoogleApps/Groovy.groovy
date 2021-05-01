@@ -272,6 +272,7 @@ public class GoogleAppsGroovy {
         // No refresh token has been retrieved.
         if (redirect) {
             addDebug("Redirecting to authorization URL.");
+            allowRedirect();
             response.sendRedirect(getAuthorizationURL());
         }
     }
@@ -326,6 +327,7 @@ public class GoogleAppsGroovy {
             def url = storedStates.get(request.state);
             if (url!=null) {
                 addDebug("Redirecting to final destination after authorization: ${url}")
+                allowRedirect();
                 response.sendRedirect(url)
             }
         }
@@ -521,6 +523,14 @@ public class GoogleAppsGroovy {
         return xwikiUser;
     }
 
+    def allowRedirect() {
+        try {
+            Utils.getComponent(Execution.class).getContext().setProperty("bypassDomainSecurityCheck", true);
+        } catch (Exception ex) {
+            addDebug(ex);
+        }
+    }
+
     /**
      * Build and return an authorized Drive client service.
      * @return an authorized Drive client service
@@ -606,6 +616,7 @@ public class GoogleAppsGroovy {
 
         if (redirect) {
             def rurl = adoc.getURL("view", "#Attachments")
+            allowRedirect();
             context.response.sendRedirect(rurl);
         }
     }

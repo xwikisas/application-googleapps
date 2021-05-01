@@ -87,6 +87,11 @@ public class GoogleAppsAuthenticationImpl extends XWikiAuthServiceImpl {
                     def finalURL = url + "?" + sridParameter + "&xredirect=" + URLEncoder.encode(redirectBack.toString(), "UTF-8");
                     LOG.info("Redirecting to "  + finalURL);
                     redirected = true;
+                    try {
+                        Utils.getComponent(Execution.class).getContext().setProperty("bypassDomainSecurityCheck", true);
+                    } catch (Exception ex) {
+                        LOG.error(ex);
+                    }
                     context.getResponse().sendRedirect(finalURL);
                 }
             }
