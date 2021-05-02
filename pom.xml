@@ -26,7 +26,7 @@
   </parent>
   <groupId>com.xwiki.googleapps</groupId>
   <artifactId>application-googleapps</artifactId>
-  <version>2.4.9-SNAPSHOT</version>
+  <version>2.4.9</version>
   <packaging>xar</packaging>
   <name>Google Apps Integration</name>
   <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
@@ -79,7 +79,7 @@
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
     <url>https://github.com/xwikisas/application-googleapps/tree/master</url>
-    <tag>HEAD</tag>
+    <tag>application-googleapps-2.4.9</tag>
   </scm>
   <build>
     <plugins>
