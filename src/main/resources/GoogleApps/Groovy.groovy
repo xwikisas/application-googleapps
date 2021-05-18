@@ -20,6 +20,7 @@ import com.xpn.xwiki.web.Utils;
 
 import org.apache.velocity.tools.generic.EscapeTool;
 import org.apache.commons.lang.RandomStringUtils;
+import org.xwiki.context.Execution;
 import com.xpn.xwiki.api.*;
 
 public class GoogleAppsGroovy {
