@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.xwiki.parent</groupId>
     <artifactId>xwikisas-parent-platform</artifactId>
-    <version>8.4-12</version>
+    <version>11.10</version>
   </parent>
   <groupId>com.xwiki.googleapps</groupId>
   <artifactId>application-googleapps</artifactId>
@@ -31,7 +31,7 @@
   <name>Google Apps Integration</name>
   <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
-    <licensing.version>1.14.4</licensing.version>
+    <licensing.version>1.19</licensing.version>
     <!-- The list of documents that have an implicit unlimited free license. The users can view these documents without
       buying a license or getting a trial license, but they cannot edit or delete them. -->
     <xwiki.extension.licensing.publicDocuments>
@@ -44,10 +44,9 @@
     <!-- Name to display by the Extension Manager -->
     <xwiki.extension.name>Google Apps Integration (Pro)</xwiki.extension.name>
     <xwiki.extension.category>application</xwiki.extension.category>
-    <!-- Don't run CLIRR here since there's no Java code. -->
+    <!-- Don't run CLIRR or Revapi here since there's no Java code. -->
     <xwiki.clirr.skip>true</xwiki.clirr.skip>
-    <!-- Don't run enforcer here since there's no Java code to avoid java7 requirement. -->
-    <xwiki.enforcer.skip>true</xwiki.enforcer.skip>
+    <xwiki.revapi.skip>true</xwiki.revapi.skip>
   </properties>
   <dependencies>
     <dependency>
