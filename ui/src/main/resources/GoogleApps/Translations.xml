@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.2" reference="GoogleApps.Translations" locale="">
+<xwikidoc>
   <web>GoogleApps</web>
   <name>Translations</name>
   <language/>
@@ -31,7 +31,7 @@
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>Google Apps Integration Translations</title>
+  <title/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
@@ -41,7 +41,7 @@
     <name>GoogleApps.Translations</name>
     <number>0</number>
     <className>XWiki.TranslationDocumentClass</className>
-    <guid>905f8811-0b7b-401a-ae4f-fa8ee05f687e</guid>
+    <guid>01d84622-baf7-448b-96a4-93fcd4276764</guid>
     <class>
       <name>XWiki.TranslationDocumentClass</name>
       <customClass/>

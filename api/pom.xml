@@ -25,65 +25,105 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>application-googleapps-api</artifactId>
-  <version>3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Google Apps Integration (API)</name>
-  <description>This is the XWiki-API part of the Google Apps which allows to connect Google Apps to XWiki.</description>
+  <name>Google Apps Integration (pro) API</name>
+  <description>This is the java part of the extension
+    which allows users to integrate with the Google Apps
+    Cloud as well as the integration of office documents.
+  </description>
   <properties>
   </properties>
   <dependencies>
+
     <dependency>
-      <groupId>com.xwiki.licensing</groupId>
-      <artifactId>application-licensing-licensor-api</artifactId>
-      <version>${licensing.version}</version>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-oldcore</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+
+
+    <!-- just needed for Java to speak context.getRequest().get("paramName") -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.xwiki.identity-oauth</groupId>
+      <artifactId>identity-oauth-api</artifactId>
+      <version>1.4-SNAPSHOT</version>
+    </dependency>
+
+  <dependency>
+    <groupId>com.github.scribejava</groupId>
+    <artifactId>scribejava-apis</artifactId>
+    <version>6.9.0</version>
+  </dependency>
+
+  <!-- force Jackson versions to the currently supported. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.12.3</version>
     </dependency>
     <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>1.24.1</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.12.3</version>
     </dependency>
     <dependency>
-      <groupId>com.google.gdata</groupId>
-      <artifactId>core</artifactId>
-      <version>1.47.1</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.12.3</version>
     </dependency>
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-people</artifactId>
-      <version>v1-rev442-1.24.1</version>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-wikimacro-api</artifactId>
+      <version>${platform.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.platform</groupId>
+          <artifactId>xwiki-platform-security-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.commons</groupId>
+          <artifactId>xwiki-commons-cache-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.commons</groupId>
+          <artifactId>xwiki-commons-environment-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.commons</groupId>
+          <artifactId>xwiki-commons-logging-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.commons</groupId>
+          <artifactId>xwiki-commons-crypto-pkix</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.xwiki.commons</groupId>
+          <artifactId>xwiki-commons-crypto-common</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-drive</artifactId>
-      <version>v2-rev358-1.24.1</version>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-observation-api</artifactId>
+      <version>${commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-velocity</artifactId>
+      <version>${commons.version}</version>
     </dependency>
   </dependencies>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/xwikisas/application-googleapps/issues</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
-    <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
-    <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>HEAD</tag>
-  </scm>
-  <build>
-    <plugins>
-       <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-              <failOnViolation>false</failOnViolation>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>checkstyle-validation</id>
-                    <phase>none</phase>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-  </build>
+
 
 </project>

@@ -1,0 +1,7 @@
+{{velocity}}{{html clean=false}}
+<div class="col-xs-12" style="margin-bottom: 20px; padding: 0px;">
+<a href="-URL-&provider=-PROVIDER-" class="btn btn-primary col-xs-12"
+   style="background:white; border: #3F76DF solid 2px; color: #808080; font-family: Roboto Medium,Roboto,sans-serif; font-weight: bold; text-align:left;"
+><img  alt="Google Logo" src="--image-base64--GoogleApps.WebHome@GoogleApps-logo.svg--" style="height:1.2em">&nbsp;&nbsp;$services.localization.render("googleapps.loginWithGoogleApps")</a>
+</div>
+    {{/html}}{{/velocity}}

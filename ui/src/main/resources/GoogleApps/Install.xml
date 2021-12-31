@@ -29,10 +29,10 @@
   <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>Google Apps Installation</title>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <customClass/>
+  <title>GoogleApps Installation</title>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
@@ -41,14 +41,14 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #if(!$xwiki.hasAdminRights())
-You are running this script as a non admin. It will have no effect. Login as admin.
+  You are running this script as a non admin. It will have no effect. Login as admin.
 #else
-This script automatically set the owner of the pages in the Google Apps Application. This will allow the priviledged scripts included in them to work.
+  This script automatically set the owner of the pages in the GoogleApps Application. This will allow the priviledged scripts included in them to work.
 #end
 #if($request.confirm=="1")
-Assigning programming rights to the following pages:
+  Assigning programming rights to the following pages:
 #else
-[[Confirm assigning programming rights to the following pages:&gt;&gt;$doc.fullName?confirm=1]]
+  [[Confirm assigning programming rights to the following pages:&gt;&gt;$doc.fullName?confirm=1]]
 #end
 
 #foreach($item in $xwiki.searchDocuments("where doc.web='GoogleApps'"))
@@ -61,11 +61,11 @@ Assigning programming rights to the following pages:
 #set($ok = $transdoc.use("XWiki.XWikiPreferences"))
 #set($transprefs = $transdoc.getValue("documentBundles"))
 #if($transprefs.indexOf("GoogleApps.Translations")==-1)
-#if($request.confirm=="1")
-#set($transprefs = "${transprefs},GoogleApps.Translations")
-#set($ok = $transdoc.set("documentBundles", $transprefs))
-#set($ok = $transdoc.save())
-#end
+  #if($request.confirm=="1")
+    #set($transprefs = "${transprefs},GoogleApps.Translations")
+    #set($ok = $transdoc.set("documentBundles", $transprefs))
+    #set($ok = $transdoc.save())
+  #end
 * Added translation bundle to XWiki Preferences
 #end
 {{/velocity}}</content>

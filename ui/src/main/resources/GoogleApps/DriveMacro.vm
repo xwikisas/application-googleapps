@@ -1,0 +1,57 @@
+{{velocity}}
+#* @vtlvariable name="googleApps" type="com.xwiki.googleapps.GoogleAppsScriptService" *#
+#* @vtlvariable name="xwiki" type="com.xpn.xwiki.api.XWiki" *#
+#* @vtlvariable name="escapetool" type="org.apache.velocity.tools.generic.EscapeTool" *#
+#* @vtlvariable name="macroRun" type="com.xwiki.googleapps.GoogleAppsConnections.MacroRun" *#
+#set($googleApps=$services.GoogleApps)
+#set($macroRun=$googleApps.runMacro($wikimacro))
+#set($l11n=$services.localization)
+$xwiki.ssx.use("GoogleApps.DriveMacro")
+$xwiki.jsx.use('GoogleApps.JSExtension')
+#if("view" != $xcontext.action)
+{{info}}
+  ${l11n.render('googleApps.macro-is-parametrized-in-view-mode')}
+{{/info}}
+#elseif($macroRun.redirecting)
+Redirecting...
+#elseif($macroRun.mode == "authenticationNeeded")
+{{warning}}
+[[${l11n.render('googleApps.cannotauthenticate')}>>$googleApps.oAuthStartUrl]]
+{{/warning}}
+#else
+  #set($nb=$macroRun.number)
+  #if($macroRun.mode=="displayPDF")## TODO: can display pdf!
+    $l11n.render('googleApps.macro.cannotdisplaypdf')
+    $url
+  #elseif($macroRun.mode=="saveDocumentChoice")
+    $l11n.render('googleApps.macro.objectSaved')
+  #elseif($macroRun.mode=="displayEmbedIFrame")
+  {{html clean=false}}
+  <p style="font-size: smaller; text-align:right"><a href="$doc.name?writeObject=do&nb=$macroRun.number&erase=true">$l11n.render('googleApps.macro.changeMacro')</a></p>
+  <iframe src="${macroRun.url}" width="${macroRun.width}" height="${macroRun.height}">
+      iframes are missing; we cannot display
+  </iframe>
+  {{/html}}
+  #elseif($macroRun.mode=="displaySearch")
+  {{html clean=false}}
+  <div style="background-color: #EEEEEE; padding: 1em">
+      <p>$l11n.render('googleApps.macro.search.description')</p>
+      <form action="" method="get" id="googleApps-searchBox-${nb}">
+          <p>${l11n.render('googleApps.macro.search.insert')}
+              <input type="hidden" name="update" value="1"/>
+              <input type="hidden" name="nb" value="${nb}"/>
+              <input type="text" name="searchText" value=""/>
+              <input type="submit" value="${l11n.render('googleApps.macro.search.search')}"/>
+          </p>
+      </form>
+      <div id="searchResult-${nb}">&nbsp;</div>
+  </div>
+  <script type="text/javascript">
+      window.googleAppsBoxNumbers = window.googleAppsBoxNumbers || [];
+      window.googleAppsBoxNumbers.push(${nb});
+  </script>
+  {{/html}}#elseif($macroRun.mode=="displayError")
+    $l11n.render('googleApps.macro.error') {{{ ${driveURL} }}}
+  #end
+#end
+{{/velocity}}

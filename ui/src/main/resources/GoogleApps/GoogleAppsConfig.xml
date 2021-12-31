@@ -103,6 +103,19 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </clientid>
+      <cookiesTTL>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>cookiesTTL</name>
+        <number>10</number>
+        <picker>0</picker>
+        <prettyName>cookiesTTL</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </cookiesTTL>
       <domain>
         <customDisplay/>
         <disabled>0</disabled>
@@ -144,6 +157,15 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.PasswordClass</classType>
       </secret>
+      <redirectUrl>
+        <disabled>0</disabled>
+        <name>redirectUrl</name>
+        <number>6</number>
+        <prettyName>redirectUrl</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </redirectUrl>
       <skipLoginPage>
         <customDisplay/>
         <defaultValue/>
@@ -203,6 +225,9 @@
     </property>
     <property>
       <secret/>
+    </property>
+    <property>
+      <redirectUrl/>
     </property>
     <property>
       <skipLoginPage>0</skipLoginPage>
@@ -397,7 +422,7 @@
       <categoryIcon/>
     </property>
     <property>
-      <codeToExecute>#set ($mainReference = $services.model.createDocumentReference('', 'GoogleApps', 'OAuth'))
+      <codeToExecute>#set ($mainReference = $services.model.createDocumentReference('', 'GoogleApps', 'DocumentList'))
 #if (!$services.licensing.licensor.hasLicensureForEntity($mainReference))
 
   {{error}}$services.localization.render('googleapps.error.noValidLicense'){{/error}}

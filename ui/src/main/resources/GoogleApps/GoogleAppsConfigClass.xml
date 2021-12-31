@@ -154,6 +154,15 @@
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.PasswordClass</classType>
     </secret>
+    <redirectUrl>
+      <disabled>0</disabled>
+      <name>redirectUrl</name>
+      <number>6</number>
+      <prettyName>redirectUrl</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </redirectUrl>
     <skipLoginPage>
       <customDisplay/>
       <defaultValue/>

@@ -20,21 +20,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.2" reference="GoogleApps.Translations" locale="de">
+<xwikidoc version="1.3" reference="GoogleApps.DocumentList" locale="">
   <web>GoogleApps</web>
-  <name>Translations</name>
-  <language>de</language>
-  <defaultLanguage>en</defaultLanguage>
-  <translation>1</translation>
+  <name>DocumentList</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>Google Apps Integration Translations</title>
+  <title>$services.localization.render('googleapps.documentlist.title')</title>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>plain/1.0</syntaxId>
-  <hidden>false</hidden>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
   <content/>
 </xwikidoc>
