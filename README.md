@@ -12,4 +12,4 @@ This macro connects XWiki to Google Apps to allow single sign on (SSO) and the d
 * License: LGPL 2.1+
 * Translations: (done in the source within the `.properties` files of [GoogleApps](ui/src/main/resources/GoogleApps))
 * Sonar Dashboard: N/A
-* Continuous Integration Status: ...%       
+* Continuous Integration Status: [![Build Status](http://ci.xwikisas.com/view/All/job/xwikisas/job/application-googleapps/job/master/badge/icon)](http://ci.xwikisas.com/view/All/job/xwikisas/job/application-googleapps/job/master/)
