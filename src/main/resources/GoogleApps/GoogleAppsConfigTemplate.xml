@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -20,26 +20,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc>
+<xwikidoc version="1.4" reference="GoogleApps.GoogleAppsConfigTemplate" locale="">
   <web>GoogleApps</web>
   <name>GoogleAppsConfigTemplate</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
   <title>GoogleAppsConfigClass Template</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <content/>
   <object>
+    <name>GoogleApps.GoogleAppsConfigTemplate</name>
+    <number>0</number>
+    <className>GoogleApps.GoogleAppsConfigClass</className>
+    <guid>bad4b5eb-14e0-4986-9e1c-9a7863d12faa</guid>
     <class>
       <name>GoogleApps.GoogleAppsConfigClass</name>
       <customClass/>
@@ -76,6 +78,20 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </appname>
+      <authWithCookies>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>authWithCookies</name>
+        <number>9</number>
+        <prettyName>authWithCookies</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </authWithCookies>
       <clientid>
         <customDisplay/>
         <disabled>0</disabled>
@@ -89,6 +105,19 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </clientid>
+      <cookiesTTL>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>cookiesTTL</name>
+        <number>10</number>
+        <picker>0</picker>
+        <prettyName>cookiesTTL</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </cookiesTTL>
       <domain>
         <customDisplay/>
         <disabled>0</disabled>
@@ -130,17 +159,64 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.PasswordClass</classType>
       </secret>
+      <skipLoginPage>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>skipLoginPage</name>
+        <number>8</number>
+        <prettyName>skipLoginPage</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </skipLoginPage>
+      <useCookies>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <name>useCookies</name>
+        <number>7</number>
+        <prettyName>useCookies</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </useCookies>
     </class>
-    <name>GoogleApps.GoogleAppsConfigTemplate</name>
-    <number>0</number>
-    <className>GoogleApps.GoogleAppsConfigClass</className>
-    <guid>bad4b5eb-14e0-4986-9e1c-9a7863d12faa</guid>
     <property>
-      <clientid>hash:SHA-512:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e</clientid>
+      <activate/>
+    </property>
+    <property>
+      <appname/>
+    </property>
+    <property>
+      <authWithCookies/>
+    </property>
+    <property>
+      <clientid/>
+    </property>
+    <property>
+      <cookiesTTL/>
     </property>
     <property>
       <domain/>
     </property>
+    <property>
+      <scope/>
+    </property>
+    <property>
+      <secret/>
+    </property>
+    <property>
+      <skipLoginPage/>
+    </property>
+    <property>
+      <useCookies/>
+    </property>
   </object>
-  <content/>
 </xwikidoc>

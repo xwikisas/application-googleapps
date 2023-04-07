@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.xwiki.parent</groupId>
     <artifactId>xwikisas-parent-platform</artifactId>
-    <version>11.10</version>
+    <version>13.10-3</version>
   </parent>
   <groupId>com.xwiki.googleapps</groupId>
   <artifactId>application-googleapps</artifactId>
@@ -31,7 +31,7 @@
   <name>Google Apps Integration</name>
   <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
-    <licensing.version>1.22</licensing.version>
+    <licensing.version>1.24.1</licensing.version>
     <!-- The list of documents that have an implicit unlimited free license. The users can view these documents without
       buying a license or getting a trial license, but they cannot edit or delete them. -->
     <xwiki.extension.licensing.publicDocuments>
@@ -82,6 +82,21 @@
   </scm>
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseSets>
+            <licenseSet>
+              <excludes>
+                <exclude>**/LoginExtension\.js</exclude>
+                <exclude>**/GoogleAppsConfigClass\.js</exclude>
+                <exclude>**/GoogleAppsConfigSheet\.vm</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.xwiki.commons</groupId>
         <artifactId>xwiki-commons-tool-xar-plugin</artifactId>

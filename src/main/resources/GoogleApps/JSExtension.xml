@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -20,26 +20,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc>
+<xwikidoc version="1.5" reference="GoogleApps.JSExtension" locale="">
   <web>GoogleApps</web>
   <name>JSExtension</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
+  <originalMetadataAuthor>XWiki.superadmin</originalMetadataAuthor>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
   <title/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <content/>
   <object>
+    <name>GoogleApps.JSExtension</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>76a4842a-6fbc-4a50-8599-961b0272183a</guid>
     <class>
       <name>XWiki.JavaScriptExtension</name>
       <customClass/>
@@ -51,8 +54,11 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
+        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>cache</name>
         <number>5</number>
@@ -66,10 +72,13 @@
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </cache>
       <code>
+        <contenttype>PureText</contenttype>
         <disabled>0</disabled>
+        <editor>PureText</editor>
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
@@ -98,6 +107,8 @@
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>use</name>
         <number>3</number>
@@ -116,10 +127,17 @@
     <className>XWiki.JavaScriptExtension</className>
     <guid>76a4842a-6fbc-4a50-8599-961b0272183a</guid>
     <property>
-      <cache>short</cache>
+      <async_cached>0</async_cached>
     </property>
     <property>
-      <code>#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content>{{velocity}}
+#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
 #set($ok = $configdoc.use("GoogleApps.GoogleAppsConfigClass"))
 #set($active = $configdoc.getValue("activate"))
 #if($active &amp;&amp; $configdoc.getValue("scope").contains("drive"))
