@@ -58,23 +58,22 @@ $services.localization.render('googleapps.webHome.5', ["[[","&gt;&gt;DriveMacroT
 #end
 {{/velocity}}
 </content>
-    <attachment>
-        <filename>google-logo.png</filename>
-        <mimetype>image/png</mimetype>
-        <author>xwiki:XWiki.Admin</author>
-        <version>1.1</version>
-        <comment/>
-        <content/>
-        <filesize/>
-    </attachment>
-    <attachment>
-        <filename>xwiki-logo.png</filename>
-        <mimetype>image/png</mimetype>
-        <author>xwiki:XWiki.Admin</author>
-        <version>1.1</version>
-        <comment/>
-        <content/>
-        <filesize/>
-    </attachment>
-
+  <attachment>
+    <filename>google-logo.png</filename>
+    <mimetype>image/png</mimetype>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content/>
+    <filesize/>
+  </attachment>
+  <attachment>
+    <filename>xwiki-logo.png</filename>
+    <mimetype>image/png</mimetype>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content/>
+    <filesize/>
+  </attachment>
 </xwikidoc>
