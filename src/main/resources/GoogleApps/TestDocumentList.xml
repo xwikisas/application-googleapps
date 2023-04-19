@@ -50,4 +50,13 @@
   #end
 #end
 {{/velocity}}</content>
+  <attachment>
+    <filename>testcolors.xls</filename>
+    <filesize>7168</filesize>
+    <mimetype>application/vnd.ms-excel</mimetype>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content/>
+  </attachment>
 </xwikidoc>

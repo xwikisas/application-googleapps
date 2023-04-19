@@ -29,7 +29,6 @@
   <creator>xwiki:XWiki.Admin</creator>
   <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <originalMetadataAuthor>XWiki.superadmin</originalMetadataAuthor>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
   <title/>
@@ -126,14 +125,14 @@
       <cache>short</cache>
     </property>
     <property>
-      <code>define('googleapps-buttons', {
+      <code>define('googleapps-buttons-messages', {
   prefix: 'googleapps.',
   keys: [
     'edit.editingoogleapps.link',
     'import.importfromgoogleapps'
   ]
 });
-require(['jquery', 'xwiki-l10n!googleapps-buttons'], function ($, l10n) {
+require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n) {
   var listener = function () {
     var hasPagination = $("#_attachments table").length &gt; 0;
     $("#_attachments span.name").each(function (i, elem) {
@@ -148,10 +147,17 @@ require(['jquery', 'xwiki-l10n!googleapps-buttons'], function ($, l10n) {
         var filename = dlinkurl.substring(dlinkurl.lastIndexOf("/", dlinkpos) + 1, dlinkpos);
         var googleDoc = new XWiki.Document('EditInGoogleApps', 'GoogleApps');
         var queryParams = {
-          page: encodeURIComponent(XWiki.currentSpace) + '.' + encodeURIComponent(XWiki.currentPage),
+          page: XWiki.Model.serialize(XWiki.currentDocument.documentReference),
           name: filename
         };
-        searchPoint.append('&lt;a class="editlink" href="' + googleDoc.getURL('view', $.param(queryParams)) + '" title="' + l10n.get('edit.editingoogleapps.link') + '"&gt;' + l10n.get('edit.editingoogleapps.link') + '&lt;/a&gt;');
+        $('&lt;a&gt;&lt;/a&gt;')
+          .attr({
+            class: 'editlink',
+            href: googleDoc.getURL('view', $.param(queryParams)),
+            title: l10n.get('edit.editingoogleapps.link')
+          })
+          .text(l10n.get('edit.editingoogleapps.link'))
+          .appendTo(searchPoint);
       }
     });
     var attachaddform = $("#AddAttachment");
@@ -159,7 +165,18 @@ require(['jquery', 'xwiki-l10n!googleapps-buttons'], function ($, l10n) {
       return;
     }
     var googleDoc = new XWiki.Document('ImportFromGoogleApps', 'GoogleApps');
-    attachaddform.append('&lt;span class="buttonwrapper googleimport" style="float: right; position: relative; top: -25px;"&gt;&lt;a href="' + googleDoc.getURL('view', $.param({ page: encodeURIComponent(XWiki.currentSpace) + '.' + encodeURIComponent(XWiki.currentPage) })) + '"&gt;' + l10n.get('import.importfromgoogleapps') + '&lt;/a&gt;&lt;/span&gt;');
+    let spanWrapper = $('&lt;span&gt;&lt;/span&gt;')
+      .attr({
+        class: 'buttonwrapper googleimport',
+        style: 'float: right; position: relative; top: -25px;',
+      });
+    $('&lt;a&gt;&lt;/a&gt;')
+      .attr({
+        href: googleDoc.getURL('view', $.param({page: XWiki.Model.serialize(XWiki.currentDocument.documentReference)}))
+      })
+      .text(l10n.get('import.importfromgoogleapps'))
+      .appendTo(spanWrapper);
+    spanWrapper.appendTo(attachaddform);
   };
   listener();
   $(document).on('xwiki:livedata:afterEntryFetch', function (event) {
