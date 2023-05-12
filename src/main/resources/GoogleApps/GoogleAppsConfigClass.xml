@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -20,13 +20,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc>
+<xwikidoc version="1.4" reference="GoogleApps.GoogleAppsConfigClass" locale="">
   <web>GoogleApps</web>
   <name>GoogleAppsConfigClass</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
@@ -37,6 +36,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <content/>
   <class>
     <name>GoogleApps.GoogleAppsConfigClass</name>
     <customClass/>
@@ -184,6 +184,10 @@
     </useCookies>
   </class>
   <object>
+    <name>GoogleApps.GoogleAppsConfigClass</name>
+    <number>0</number>
+    <className>XWiki.ClassSheetBinding</className>
+    <guid>20e3c507-fc25-4578-9cc9-909bbb77adad</guid>
     <class>
       <name>XWiki.ClassSheetBinding</name>
       <customClass/>
@@ -194,23 +198,31 @@
       <nameField/>
       <validationScript/>
       <sheet>
+        <cache>0</cache>
+        <classname/>
         <customDisplay/>
         <disabled>0</disabled>
+        <displayType>input</displayType>
+        <hint/>
+        <idField/>
+        <multiSelect>0</multiSelect>
         <name>sheet</name>
         <number>1</number>
-        <picker>0</picker>
+        <picker>1</picker>
         <prettyName>Sheet</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators/>
         <size>30</size>
+        <sort>none</sort>
+        <sql/>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+        <valueField/>
+        <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
       </sheet>
     </class>
-    <name>GoogleApps.GoogleAppsConfigClass</name>
-    <number>0</number>
-    <className>XWiki.ClassSheetBinding</className>
-    <guid>20e3c507-fc25-4578-9cc9-909bbb77adad</guid>
     <property>
       <sheet>GoogleApps.GoogleAppsConfigSheet</sheet>
     </property>
@@ -231,8 +243,11 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
+        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>cache</name>
         <number>5</number>
@@ -280,6 +295,8 @@
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>use</name>
         <number>3</number>
@@ -297,7 +314,126 @@
       <cache>long</cache>
     </property>
     <property>
-      <code/>
+      <code>require(['jquery'], function (jQuery) {
+
+  var prefix = '#GoogleApps\\.GoogleAppsConfigClass_0_';
+
+  //deactivating
+  function deactivate(elts) {
+    elts.each(function () {
+      jQuery(jQuery(this).closest('dl')).find('label').css('color','darkgrey');
+      this.wasDisabled = jQuery(this).prop('disabled');
+      jQuery(this).prop('disabled', true);
+    });
+  }
+
+
+  // reactivating
+  function reactivate(elts) {
+    jQuery(elts).each(function () {
+      if (typeof (this.wasDisabled)) {
+        jQuery(jQuery(this).closest('dl')).find('label').css('color','black');
+        jQuery(this).prop('disabled', this.wasDisabled);
+      }
+    });
+  }
+
+
+  // updaters
+  function updateAllInputs() {
+    if (this.checked) {
+      reactivate(allInputs);
+    } else {
+      deactivate(allInputs);
+    }
+  }
+
+  function updateCookieFields() {
+    if (this.checked) {
+      reactivate(cookieInputs);
+    } else {
+      deactivate(cookieInputs);
+    }
+  }
+
+  function updateDomainHint() {
+    if (typeof(this.value)=='undefined') return;
+    var domainHint = jQuery('#googleapps-domain-livehint');
+    var valid = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(this.value);
+    if (this.value.length &gt; 0) {
+      if (valid) {
+        domainHint.text(hintTextOn.replace('\{0\}', this.value));
+        domainHint.removeClass('warningmessage');
+      } else {
+        domainHint.text(hintTextInvaliddomain.replace('\{0\}', this.value));
+        domainHint.addClass('warningmessage');
+      }
+    } else {
+      domainHint.text(hintTextOff);
+      domainHint.removeClass('warningmessage');
+    }
+  }
+
+
+  var allInput, cookieInputs;
+  var hintTextOn = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOn'))}",
+      hintTextOff = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextOff'))}",
+      hintTextInvaliddomain = "${escapetool.javascript($services.localization.render('GoogleApps.GoogleAppsConfigClass_domain.hintTextInvaliddomain'))}";
+
+  function updateScopes() {
+    var scopes = "";
+    jQuery(("input[name^='scope_']")).each(function() {
+      if(jQuery.attr(this, "disabled")!=="disabled" &amp;&amp; this.checked)
+        scopes = scopes + " " + this.name.substring('scope_'.length);
+    });
+    jQuery("input[name$='_scope']").val(scopes);
+    updateDriveNowWhat();
+  }
+
+  function readScopes() {
+      var scope = jQuery("input[name$='_scope']").val();
+      jQuery(("input[name^='scope_']")).each(function() {
+        if(jQuery.attr(this, "disabled")!=="disabled") {
+          var n = this.name.substring('scope_'.length);
+          if (scope.indexOf(n) &gt; -1) {
+            this.checked = true;
+          } else {
+            this.checked = false;
+          }
+        }
+      });
+      updateDriveNowWhat();
+  }
+
+  function updateDriveNowWhat() {
+      var driveInput = jQuery("input[name='scope_drive']")[0];
+      if(driveInput.checked) jQuery("#driveOnNowWhat").show();
+      else jQuery("#driveOnNowWhat").hide();
+  }
+
+  (function () {
+    // register listeners
+    cookieInputs = jQuery(prefix + 'skipLoginPage, ' + prefix + 'authWithCookies, ' + prefix + 'cookiesTTL');
+    jQuery(prefix + 'useCookies').each(updateCookieFields).change(updateCookieFields);
+
+    var keepThem = "name$=\'_activate\'],[name=\'formactionsac\'],[name=\'form_token\'],"
+      + "[name=\'xcontinue\'],[name=\'xredirect\'";
+
+    allInputs = jQuery(
+      '#googleapps_GoogleApps\\.GoogleAppsConfig input:not(['+keepThem+'])');
+    jQuery(prefix + 'activate').each(updateAllInputs).change(updateAllInputs);
+
+    jQuery(prefix + 'domain').each(updateDomainHint).on('change keyup', updateDomainHint);
+
+    jQuery(("input[name^='scope_']")).each(function() {
+      jQuery(this).change(function() { updateScopes(); });
+    });
+    readScopes();
+
+    jQuery('#googleapps_GoogleApps\.GoogleAppsConfig').submit(cancelCancelEdit);
+  }).defer();
+});
+</code>
     </property>
     <property>
       <name>GoogleApp Config JSExtension</name>
@@ -325,8 +461,11 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
+        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>cache</name>
         <number>5</number>
@@ -355,6 +494,8 @@
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>contentType</name>
         <number>6</number>
@@ -390,6 +531,8 @@
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>use</name>
         <number>3</number>

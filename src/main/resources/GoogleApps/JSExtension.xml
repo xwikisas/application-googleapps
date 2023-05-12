@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -20,26 +20,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc>
+<xwikidoc version="1.4" reference="GoogleApps.JSExtension" locale="">
   <web>GoogleApps</web>
   <name>JSExtension</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>GoogleApps.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <parent>GoogleApps.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
   <title/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <content/>
   <object>
+    <name>GoogleApps.JSExtension</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>76a4842a-6fbc-4a50-8599-961b0272183a</guid>
     <class>
       <name>XWiki.JavaScriptExtension</name>
       <customClass/>
@@ -51,8 +53,11 @@
       <validationScript/>
       <cache>
         <cache>0</cache>
+        <defaultValue>long</defaultValue>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>cache</name>
         <number>5</number>
@@ -66,7 +71,9 @@
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </cache>
       <code>
+        <contenttype>PureText</contenttype>
         <disabled>0</disabled>
+        <editor>PureText</editor>
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
@@ -98,6 +105,8 @@
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>use</name>
         <number>3</number>
@@ -111,50 +120,230 @@
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </use>
     </class>
-    <name>GoogleApps.JSExtension</name>
-    <number>0</number>
-    <className>XWiki.JavaScriptExtension</className>
-    <guid>76a4842a-6fbc-4a50-8599-961b0272183a</guid>
     <property>
       <cache>short</cache>
     </property>
     <property>
-      <code>#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
-#set($ok = $configdoc.use("GoogleApps.GoogleAppsConfigClass"))
-#set($active = $configdoc.getValue("activate"))
-#if($active &amp;&amp; $configdoc.getValue("scope").contains("drive"))
-var listener = function(event) {
-  if (event.memo.id == 'Attachments') {
-     var buttons = $$(".xwikibuttonlinks")
-     for (i=0;i&lt;=buttons.length;i++)
-     {
-       var dlink = (buttons[i]) ? buttons[i].getElementsByClassName("deletelink") : null;
-       if (dlink &amp;&amp; dlink[0]) {
+      <code>define('googleapps-buttons-messages', {
+  prefix: 'googleapps.',
+  keys: [
+    'edit.editingoogleapps.link',
+    'import.importfromgoogleapps'
+  ]
+});
+require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n) {
+  var listener = function () {
+    var hasPagination = $("#_attachments table").length &gt; 0;
+    $("#_attachments span.name").each(function (i, elem) {
+      var searchPoint = hasPagination ? $(elem).closest('tr').find('.attachmentActions') : $(elem.parentNode).find('.xwikibuttonlinks');
+      if ($(searchPoint).find('a.editlink').length) {
+        return;
+      }
+      var dlink = hasPagination ? $(searchPoint).find(".actiondelete") : $(searchPoint).find(".deletelink");
+      if (dlink.length &gt; 0) {
         var dlinkurl = dlink[0].href;
         var dlinkpos = dlinkurl.indexOf("?");
-        var filename = dlinkurl.substring(dlinkurl.lastIndexOf("/", dlinkpos) + 1, dlinkpos)
-        buttons[i].insert('&lt;a class="editlink" href="$xwiki.getURL("GoogleApps.EditInGoogleApps")?page=' + encodeURIComponent(XWiki.currentSpace) + '.' + encodeURIComponent(XWiki.currentPage) + '&amp;name=' + filename + '" title="$services.localization.render("googleapps.edit.editingoogleapps.link")"&gt;$services.localization.render("googleapps.edit.editingoogleapps.link")&lt;/a&gt;')
-       }
-     }
-     var attachaddform = $("AddAttachment");
-     attachaddform.insert('&lt;span class="buttonwrapper" style="float: right; position: relative; top: -25px;"&gt;&lt;a href="$xwiki.getURL("GoogleApps.ImportFromGoogleApps")?page=' + encodeURIComponent(XWiki.currentSpace) + '.' + encodeURIComponent(XWiki.currentPage) + '"&gt;$services.localization.render("googleapps.import.importfromgoogleapps")&lt;/a&gt;&lt;/span&gt;')
-     document.stopObserving("xwiki:docextra:loaded", listener);
-     delete listener;
-  }
-}.bindAsEventListener(this);
-
-document.observe("xwiki:docextra:loaded", listener);
-#end</code>
+        var filename = dlinkurl.substring(dlinkurl.lastIndexOf("/", dlinkpos) + 1, dlinkpos);
+        var googleDoc = new XWiki.Document('EditInGoogleApps', 'GoogleApps');
+        var queryParams = {
+          page: XWiki.Model.serialize(XWiki.currentDocument.documentReference),
+          name: filename
+        };
+        $('&lt;a&gt;&lt;/a&gt;')
+          .attr({
+            class: 'editlink',
+            href: googleDoc.getURL('view', $.param(queryParams)),
+            title: l10n.get('edit.editingoogleapps.link')
+          })
+          .text(l10n.get('edit.editingoogleapps.link'))
+          .appendTo(searchPoint);
+      }
+    });
+    var attachaddform = $("#AddAttachment");
+    if (attachaddform.find('.googleimport').length) {
+      return;
+    }
+    var googleDoc = new XWiki.Document('ImportFromGoogleApps', 'GoogleApps');
+    let spanWrapper = $('&lt;span&gt;&lt;/span&gt;')
+      .attr('class', 'buttonwrapper googleimport')
+      .css({
+        'float': 'right',
+        'position': 'relative',
+        'top': '-25px'
+      });
+    $('&lt;a&gt;&lt;/a&gt;')
+      .attr({
+        href: googleDoc.getURL('view', $.param({page: XWiki.Model.serialize(XWiki.currentDocument.documentReference)}))
+      })
+      .text(l10n.get('import.importfromgoogleapps'))
+      .appendTo(spanWrapper);
+    spanWrapper.appendTo(attachaddform);
+  };
+  listener();
+  $(document).on('xwiki:livedata:afterEntryFetch', function (event) {
+    if ($(event.target).attr('id') === 'docAttachments') {
+      // We need to setTimeout(0) to allow the live data to display the entries before decorating them with the buttons.
+      setTimeout(listener, 0);
+    }
+  });
+  $(document).on('xwiki:livetable:docAttachments:loadingComplete', listener);
+  $(document).on('xwiki:docextra:loaded', listener);
+});</code>
     </property>
     <property>
       <name>Google Apps Integration</name>
     </property>
     <property>
-      <parse>1</parse>
+      <parse>0</parse>
     </property>
     <property>
-      <use>always</use>
+      <use>onDemand</use>
     </property>
   </object>
-  <content/>
+  <object>
+    <name>GoogleApps.JSExtension</name>
+    <number>0</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>42f66c93-d043-4005-884e-d0f7c1c967df</guid>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>3</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>4</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>2</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>1</number>
+        <prettyName>Executed Content</prettyName>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>5</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>6</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>parameters</name>
+        <number>7</number>
+        <prettyName>Extension Parameters</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>8</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content>{{velocity}}
+#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
+#set($ok = $configdoc.use("GoogleApps.GoogleAppsConfigClass"))
+#set($active = $configdoc.getValue("activate"))
+#if($active &amp;&amp; $configdoc.getValue("scope").contains("drive"))
+  #set ($discard = $xwiki.jsx.use('GoogleApps.JSExtension'))
+#end
+{{/velocity}}</content>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.platform.template.header.after</extensionPointId>
+    </property>
+    <property>
+      <name>com.xwiki.googleapps.attachmentEditLink</name>
+    </property>
+    <property>
+      <parameters/>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
 </xwikidoc>
