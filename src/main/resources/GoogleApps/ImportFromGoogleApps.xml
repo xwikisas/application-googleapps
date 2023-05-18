@@ -59,11 +59,14 @@
 #set($result = $gagroovy.importFromGoogleApps("fullText contains ${squery}", 10))
 #foreach($entry in $result.items)
  #set($docName = $entry.title)
-* $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($docName)}&amp;url=${escapetool.url($entry.selfLink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #foreach($elink in $entry.exportLinks)
-  #set($exportData = $gagroovy.getExportLink($docName, $elink))
-  #set($stype = $exportData.type)
-  #set($newDocName = $exportData.newDocName)
- [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
+ #if ($entry.exportLinks)
+    * $docName #foreach($elink in $entry.exportLinks.entrySet())
+    #set($exportData = $gagroovy.getExportLink($docName, $elink.value))
+    #set($stype = $exportData.type)
+    #set($newDocName = $exportData.newDocName)
+    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink.value)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}&amp;mt=${escapetool.url($elink.key)}"]] #end
+ #else
+    * $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($docName)}&amp;url=${escapetool.url($entry.selfLink)}&amp;zeditLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
 
 #end
 #end
