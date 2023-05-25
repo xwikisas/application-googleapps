@@ -40,7 +40,7 @@
 #set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
 #set($ok = $gagroovy.init($xwiki, $context, $doc))
 #if($request.url)
- #set($ok = $gagroovy.retrieveFileFromGoogle($request.page, $request.name, $request.id, $request.url, $request.mt))
+ #set($ok = $gagroovy.retrieveFileFromGoogle($request.page, $request.name, $request.id, $request.url, $request.mediaType))
  #if(!$ok)
 $services.localization.render("googleapps.retrieve.fail") $request.id
  #end

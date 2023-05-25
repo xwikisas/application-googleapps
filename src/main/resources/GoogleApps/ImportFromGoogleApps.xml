@@ -60,13 +60,31 @@
 #foreach($entry in $result.items)
  #set($docName = $entry.title)
  #if ($entry.exportLinks)
-    * $docName #foreach($elink in $entry.exportLinks.entrySet())
-    #set($exportData = $gagroovy.getExportLink($docName, $elink.value))
-    #set($stype = $exportData.type)
+    * $docName #foreach($exportLink in $entry.exportLinks.entrySet())
+    #set($exportData = $gagroovy.getExportLink($docName, $exportLink.value))
     #set($newDocName = $exportData.newDocName)
-    [[${stype}&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($newDocName)}&amp;url=${escapetool.url($elink.value)}&amp;editLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}&amp;mt=${escapetool.url($elink.key)}"]] #end
+    [[$services.rendering.escape($exportData.type, 'xwiki/2.1')&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
+        $escapetool.url({
+          'page': $request.page,
+          'name': $newDocName,
+          'url':  $exportLink.value,
+          'editLink': $entry.alternateLink,
+          'version': $entry.version,
+          'id': $entry.id,
+          'mediaType': $exportLink.key
+        }), 'xwiki/2.1')"
+    ]] #end
  #else
-    * $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="page=${escapetool.url($request.page)}&amp;name=${escapetool.url($docName)}&amp;url=${escapetool.url($entry.selfLink)}&amp;zeditLink=${escapetool.url($entry.alternateLink)}&amp;version=${entry.version}&amp;id=${entry.id}"]] #end
+    * $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
+        $escapetool.url({
+          'page': $request.page,
+          'name': $docName,
+          'url':  $entry.selfLink,
+          'editLink': $entry.alternateLink,
+          'version': $entry.version,
+          'id': $entry.id
+        }), 'xwiki/2.1')"
+    ]] #end
 
 #end
 #end
