@@ -44,7 +44,6 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.Drive;
-import org.apache.tika.Tika;
 
 import com.google.api.client.http.ByteArrayContent;
 
@@ -604,16 +603,20 @@ public class GoogleAppsGroovy {
         return result;
     }
 
-    public retrieveFileFromGoogle(page, name, id, url) {
-        return retrieveFileFromGoogle(getDriveService(), page, name, id, url);
+    public retrieveFileFromGoogle(page, name, id, url, mediaType) {
+        return retrieveFileFromGoogle(getDriveService(), page, name, id, url, mediaType);
     }
 
-    public retrieveFileFromGoogle(driveService, page, name, id, url) {
+    public retrieveFileFromGoogle(driveService, page, name, id, url, mediaType) {
         addDebug("Retrieving ${name} to page ${page}: ${id} ${url}" )
         def adoc = xwiki.getDocument(page);
         try {
-            String mt = new Tika().detect(name);
-            InputStream downloadStream = driveService.files().export(id, mt).executeMediaAsInputStream();
+            InputStream downloadStream;
+            if (mediaType) {
+                downloadStream = driveService.files().export(id, mediaType).executeMediaAsInputStream();
+            } else {
+                downloadStream = driveService.files().get(id).executeMediaAsInputStream();
+            }
             saveFileToXWiki(driveService, adoc, id, name, downloadStream, true);
             return id;
         } catch (Exception e) {
