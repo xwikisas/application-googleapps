@@ -31,7 +31,7 @@
   <name>Google Apps Integration (pro) parent POM</name>
   <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
-    <licensing.version>1.14.4</licensing.version>
+    <licensing.version>1.24.3</licensing.version>
   </properties>
   <issueManagement>
     <system>GitHub</system>
