@@ -331,7 +331,7 @@ if(!googleApps.active || !googleApps.useDrive) {
      if (editLink &amp;&amp; editLink.startsWith("http"))
        print """ - [[Edit&gt;&gt;url:${editLink}]]"""
      println ")))"
-     println """{{html}}&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;{{/html}}"""
+     println """{{html clean=false}}&lt;div&gt;&lt;iframe src="${embedLink}" width="${width}" height="${height}"&gt;&lt;/iframe&gt;&lt;/div&gt;{{/html}}"""
     } else {
       def tquery = ""
       if (query)
