@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GoogleApps.SynchronizedDocumentClass" locale="">
+<xwikidoc version="1.5" reference="GoogleApps.SynchronizedDocumentClass" locale="">
   <web>GoogleApps</web>
   <name>SynchronizedDocumentClass</name>
   <language/>

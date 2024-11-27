@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GoogleApps.OAuth" locale="">
+<xwikidoc version="1.5" reference="GoogleApps.OAuth" locale="">
   <web>GoogleApps</web>
   <name>OAuth</name>
   <language/>
