@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GoogleApps.GoogleAppsScriptService" locale="">
+<xwikidoc version="1.5" reference="GoogleApps.GoogleAppsScriptService" locale="">
   <web>GoogleApps</web>
   <name>GoogleAppsScriptService</name>
   <language/>
@@ -146,6 +146,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Method body code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
@@ -192,6 +193,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Method body code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
@@ -238,6 +240,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Method body code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
