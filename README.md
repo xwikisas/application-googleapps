@@ -9,3 +9,6 @@
 * Translations: N/A
 * Sonar Dashboard: N/A
 * Continuous Integration Status: [![Build Status](http://ci.xwikisas.com/view/All/job/xwikisas/job/application-googleapps/job/master/badge/icon)](http://ci.xwikisas.com/view/All/job/xwikisas/job/application-googleapps/job/master/)
+
+# Note
+Development is done right now on the `stable-2.x` branch. Please do your commits in this branch
