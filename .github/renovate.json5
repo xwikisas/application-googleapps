@@ -25,6 +25,8 @@
   // Skip Eclipse M2E special setup "dependency"
   "ignoreDeps": ["org.eclipse.m2e:lifecycle-mapping"],
 
+  "baseBranchPatterns" : ["stable-2.x"],
+
   "packageRules": [
     // Indicate the URL to the XWiki org and xwikisas Nexus public proxy for non-Central Maven dependencies
     {
