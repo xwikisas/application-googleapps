@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.xwiki.googleapps</groupId>
 	<artifactId>application-googleapps-parent</artifactId>
-	<version>3.0</version>
+	<version>3.1-SNAPSHOT</version>
   </parent>
   <artifactId>application-googleapps</artifactId>
   <packaging>xar</packaging>
@@ -67,7 +67,7 @@
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
     <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>application-googleapps-parent-3.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <build>
     <plugins>

@@ -22,10 +22,10 @@
   <parent>
     <groupId>com.xwiki.googleapps</groupId>
     <artifactId>application-googleapps-parent</artifactId>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
   </parent>
   <artifactId>application-googleapps-api</artifactId>
-  <version>3.0</version>
+  <version>3.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Google Apps Integration (API)</name>
   <description>This is the XWiki-API part of the Google Apps which allows to connect Google Apps to XWiki.</description>
@@ -66,7 +66,7 @@
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
     <url>https://github.com/xwikisas/application-googleapps</url>
-    <tag>application-googleapps-parent-3.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <build>
     <plugins>
