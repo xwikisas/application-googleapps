@@ -36,7 +36,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>import org.apache.commons.lang.StringUtils;
+  <content>import org.apache.commons.lang3.StringUtils;
 import org.securityfilter.filter.URLPattern;
 import org.securityfilter.filter.URLPatternFactory;
 import org.securityfilter.filter.URLPatternMatcher;
