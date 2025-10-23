@@ -25,53 +25,14 @@
     <version>14.10-1</version>
   </parent>
   <groupId>com.xwiki.googleapps</groupId>
-  <artifactId>application-googleapps</artifactId>
+  <artifactId>application-googleapps-parent</artifactId>
   <version>3.2-SNAPSHOT</version>
-  <packaging>xar</packaging>
-  <name>Google Apps Integration</name>
-  <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki
-    attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.
-  </description>
+  <packaging>pom</packaging>
+  <name>Google Apps Integration (pro) parent POM</name>
+  <description>Log in to XWiki using your Google account. Import Google Apps documents as attachments. Edit XWiki attachments in Google Apps. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
     <licensing.version>1.29</licensing.version>
-    <!-- The list of documents that have an implicit unlimited free license. The users can view these documents without
-      buying a license or getting a trial license, but they cannot edit or delete them. -->
-    <xwiki.extension.licensing.publicDocuments>
-      GoogleApps.WebHome
-    </xwiki.extension.licensing.publicDocuments>
-    <xwiki.extension.licensing.excludedDocuments>
-      GoogleApps.GoogleAppsConfig,
-      GoogleApps.WebPreferences
-    </xwiki.extension.licensing.excludedDocuments>
-    <!-- Name to display by the Extension Manager -->
-    <xwiki.extension.name>Google Apps Integration (Pro)</xwiki.extension.name>
-    <xwiki.extension.category>application</xwiki.extension.category>
-    <!-- Don't run CLIRR or Revapi here since there's no Java code. -->
-    <xwiki.clirr.skip>true</xwiki.clirr.skip>
-    <xwiki.revapi.skip>true</xwiki.revapi.skip>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>com.xwiki.licensing</groupId>
-      <artifactId>application-licensing-licensor-api</artifactId>
-      <version>${licensing.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>1.23.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-people</artifactId>
-      <version>v1-rev443-1.23.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-drive</artifactId>
-      <version>v2-rev358-1.23.0</version>
-    </dependency>
-  </dependencies>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/xwikisas/application-googleapps/issues</url>
@@ -82,5 +43,8 @@
     <url>https://github.com/xwikisas/application-googleapps/tree/master</url>
     <tag>HEAD</tag>
   </scm>
-
+  <modules>
+    <module>api</module>
+    <module>ui</module>
+  </modules>
 </project>
