@@ -24,6 +24,7 @@ package com.xwiki.googleapps;/*
  * @version $Id$
  * @since 3.2
  */
+@Deprecated
 public class GoogleIntegrationDummyClass
 {
 }
