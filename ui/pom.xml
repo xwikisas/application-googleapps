@@ -27,7 +27,7 @@
   <groupId>com.xwiki.googleapps</groupId>
   <artifactId>application-googleapps</artifactId>
   <version>3.3-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>xar</packaging>
   <scm>
     <connection>scm:git:git://github.com/xwikisas/application-googleapps.git</connection>
     <developerConnection>scm:git:git@github.com:xwikisas/application-googleapps.git</developerConnection>
