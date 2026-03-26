@@ -1,4 +1,4 @@
-package com.xwiki.googleapps;/*
+/*
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -17,10 +17,12 @@ package com.xwiki.googleapps;/*
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package com.xwiki.googleapps;
 
 /**
- * This is a dummy class for the app to build without any errors and should be removed when we actually add code to
- * this module.
+ * This is a dummy class for the app to build without any errors and should be removed when we actually add code to this
+ * module.
+ *
  * @version $Id$
  * @since 3.2
  */

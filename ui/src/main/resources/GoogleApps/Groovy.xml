@@ -39,7 +39,7 @@
   <content>import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.*;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.drive.DriveScopes;
@@ -106,7 +106,7 @@ public class GoogleAppsGroovy {
 /** Global instance of the {@link FileDataStoreFactory}. */
     def DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_FILE);
 
-    def JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    def JSON_FACTORY = GsonFactory.getDefaultInstance();
 
 /** Global instance of the HTTP transport. */
     def HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
