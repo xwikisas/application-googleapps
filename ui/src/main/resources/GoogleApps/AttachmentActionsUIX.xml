@@ -20,9 +20,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.5" reference="GoogleApps.JSExtension" locale="">
+<xwikidoc version="1.7" reference="GoogleApps.AttachmentActionsUIX" locale="">
   <web>GoogleApps</web>
-  <name>JSExtension</name>
+  <name>AttachmentActionsUIX</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
@@ -34,147 +34,14 @@
   <title/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content/>
   <object>
-    <name>GoogleApps.JSExtension</name>
-    <number>0</number>
-    <className>XWiki.JavaScriptExtension</className>
-    <guid>76a4842a-6fbc-4a50-8599-961b0272183a</guid>
-    <class>
-      <name>XWiki.JavaScriptExtension</name>
-      <customClass/>
-      <customMapping/>
-      <defaultViewSheet/>
-      <defaultEditSheet/>
-      <defaultWeb/>
-      <nameField/>
-      <validationScript/>
-      <cache>
-        <cache>0</cache>
-        <defaultValue>long</defaultValue>
-        <disabled>0</disabled>
-        <displayType>select</displayType>
-        <freeText>forbidden</freeText>
-        <largeStorage>0</largeStorage>
-        <multiSelect>0</multiSelect>
-        <name>cache</name>
-        <number>5</number>
-        <prettyName>Caching policy</prettyName>
-        <relationalStorage>0</relationalStorage>
-        <separator> </separator>
-        <separators>|, </separators>
-        <size>1</size>
-        <unmodifiable>0</unmodifiable>
-        <values>long|short|default|forbid</values>
-        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-      </cache>
-      <code>
-        <contenttype>PureText</contenttype>
-        <disabled>0</disabled>
-        <editor>PureText</editor>
-        <name>code</name>
-        <number>2</number>
-        <prettyName>Code</prettyName>
-        <restricted>0</restricted>
-        <rows>20</rows>
-        <size>50</size>
-        <unmodifiable>0</unmodifiable>
-        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-      </code>
-      <name>
-        <disabled>0</disabled>
-        <name>name</name>
-        <number>1</number>
-        <prettyName>Name</prettyName>
-        <size>30</size>
-        <unmodifiable>0</unmodifiable>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-      </name>
-      <parse>
-        <disabled>0</disabled>
-        <displayFormType>select</displayFormType>
-        <displayType>yesno</displayType>
-        <name>parse</name>
-        <number>4</number>
-        <prettyName>Parse content</prettyName>
-        <unmodifiable>0</unmodifiable>
-        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
-      </parse>
-      <use>
-        <cache>0</cache>
-        <disabled>0</disabled>
-        <displayType>select</displayType>
-        <freeText>forbidden</freeText>
-        <largeStorage>0</largeStorage>
-        <multiSelect>0</multiSelect>
-        <name>use</name>
-        <number>3</number>
-        <prettyName>Use this extension</prettyName>
-        <relationalStorage>0</relationalStorage>
-        <separator> </separator>
-        <separators>|, </separators>
-        <size>1</size>
-        <unmodifiable>0</unmodifiable>
-        <values>currentPage|onDemand|always</values>
-        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-      </use>
-    </class>
-    <property>
-      <cache>short</cache>
-    </property>
-    <property>
-      <code>// The per-row 'Edit in Google Apps' link is rendered server-side by GoogleApps.AttachmentActionsUIX at the
-// org.xwiki.platform.attachment.actions extension point; only the 'Import from Google Apps' button next to the
-// upload form is added here.
-define('googleapps-buttons-messages', {
-  prefix: 'googleapps.',
-  keys: [
-    'import.importfromgoogleapps'
-  ]
-});
-require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n) {
-  var addImportButton = function () {
-    var attachaddform = $("#AddAttachment");
-    if (!attachaddform.length || attachaddform.find('.googleimport').length) {
-      return;
-    }
-    var googleDoc = new XWiki.Document('ImportFromGoogleApps', 'GoogleApps');
-    let spanWrapper = $('&lt;span&gt;&lt;/span&gt;')
-      .attr('class', 'buttonwrapper googleimport')
-      .css({
-        'float': 'right',
-        'position': 'relative',
-        'top': '-25px'
-      });
-    $('&lt;a&gt;&lt;/a&gt;')
-      .attr({
-        href: googleDoc.getURL('view', $.param({page: XWiki.Model.serialize(XWiki.currentDocument.documentReference)}))
-      })
-      .text(l10n.get('import.importfromgoogleapps'))
-      .appendTo(spanWrapper);
-    spanWrapper.appendTo(attachaddform);
-  };
-  $(addImportButton);
-  $(document).on('xwiki:docextra:loaded', addImportButton);
-});</code>
-    </property>
-    <property>
-      <name>Google Apps Integration</name>
-    </property>
-    <property>
-      <parse>0</parse>
-    </property>
-    <property>
-      <use>onDemand</use>
-    </property>
-  </object>
-  <object>
-    <name>GoogleApps.JSExtension</name>
+    <name>GoogleApps.AttachmentActionsUIX</name>
     <number>0</number>
     <className>XWiki.UIExtensionClass</className>
-    <guid>42f66c93-d043-4005-884e-d0f7c1c967df</guid>
+    <guid>17d3b2b3-5d96-4761-948b-caf1111d1376</guid>
     <class>
       <name>XWiki.UIExtensionClass</name>
       <customClass/>
@@ -230,7 +97,6 @@ require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n)
         <name>content</name>
         <number>1</number>
         <prettyName>Executed Content</prettyName>
-        <restricted>0</restricted>
         <rows>25</rows>
         <size>120</size>
         <unmodifiable>0</unmodifiable>
@@ -261,7 +127,6 @@ require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n)
         <name>parameters</name>
         <number>7</number>
         <prettyName>Extension Parameters</prettyName>
-        <restricted>0</restricted>
         <rows>10</rows>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
@@ -286,35 +151,46 @@ require(['jquery', 'xwiki-l10n!googleapps-buttons-messages'], function ($, l10n)
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </scope>
     </class>
-    <property>
+    <property type="Integer">
       <async_cached>0</async_cached>
     </property>
-    <property>
+    <property type="StringList">
       <async_context/>
     </property>
-    <property>
+    <property type="Integer">
       <async_enabled>0</async_enabled>
     </property>
-    <property>
+    <property type="LargeString">
       <content>{{velocity}}
-#set($configdoc = $xwiki.getDocument("GoogleApps.GoogleAppsConfig"))
-#set($ok = $configdoc.use("GoogleApps.GoogleAppsConfigClass"))
-#set($active = $configdoc.getValue("activate"))
-#if($active &amp;&amp; $configdoc.getValue("scope").contains("drive"))
-  #set ($discard = $xwiki.jsx.use('GoogleApps.JSExtension'))
+## Rendered by #displayAttachmentActions in the platform's attachment_macros.vm for each attachment row of the
+## Attachments tab Live Data. $attachment (an Attachment API object) and $hasEdit/$hasAdmin are read from the shared
+## Velocity context of the calling template macro, which requires this extension to stay synchronous and non-cached
+## asynchronous rendering would run in another thread without these variables, and
+## caching would replay the first attachment's link for every other row.
+#if ($attachment &amp;&amp; ($hasEdit || $hasAdmin))
+  #set ($configdoc = $xwiki.getDocument('GoogleApps.GoogleAppsConfig'))
+  #set ($discard = $configdoc.use('GoogleApps.GoogleAppsConfigClass'))
+  #if ($configdoc.getValue('activate') == 1 &amp;&amp; $!configdoc.getValue('scope').contains('drive'))
+    #set ($queryString = $escapetool.url({
+      'page': $services.model.serialize($attachment.reference.parent, 'default'),
+      'name': $attachment.filename
+    }))
+    #set ($label = $services.localization.render('googleapps.edit.editingoogleapps.link'))
+    {{html clean="false"}}&lt;a class="editlink action" title="$escapetool.xml($label)" href="$escapetool.xml($xwiki.getURL('GoogleApps.EditInGoogleApps', 'view', $queryString))"&gt;&lt;span class="action-icon"&gt;$services.icon.renderHTML('edit')&lt;/span&gt;&lt;span class="action-label"&gt;$escapetool.xml($label)&lt;/span&gt;&lt;/a&gt;{{/html}}
+  #end
 #end
 {{/velocity}}</content>
     </property>
-    <property>
-      <extensionPointId>org.xwiki.platform.template.header.after</extensionPointId>
+    <property type="String">
+      <extensionPointId>org.xwiki.platform.attachment.actions</extensionPointId>
     </property>
-    <property>
-      <name>com.xwiki.googleapps.attachmentEditLink</name>
+    <property type="String">
+      <name>com.xwiki.googleapps.attachmentActions.editInGoogleApps</name>
     </property>
-    <property>
+    <property type="LargeString">
       <parameters/>
     </property>
-    <property>
+    <property type="String">
       <scope>wiki</scope>
     </property>
   </object>
