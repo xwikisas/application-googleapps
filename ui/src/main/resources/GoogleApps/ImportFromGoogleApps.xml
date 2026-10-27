@@ -37,45 +37,49 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($pagedoc = $xwiki.getDocument($request.page))
-#set($pagetitle = $pagedoc.displayTitle)
-{{translation key=''/}}
-    {{translation key='googleapps.importGA.explain' parameters='${pagetitle},${pagedoc.fullName}'/}}
+#set ($pagedoc = $xwiki.getDocument($request.page))
+#set ($pagetitle = $pagedoc.getTitle())
+#if ("$!pagetitle" == '')
+  #set ($pagetitle = $pagedoc.getDocumentReference().getName())
+#end
+#set ($safeTitle = $services.rendering.escape($pagetitle, 'xwiki/2.1'))
+#set ($safeName  = $services.rendering.escape($pagedoc.fullName, 'xwiki/2.1'))
+$services.localization.render('googleapps.importGA.explain', [$safeTitle, $safeName])
 
-{{html clean==false wiki=true}}
+{{html}}
 &lt;form action="" method="get"&gt;
-{{translation key='googleapps.importGA.search'/}}
-&lt;input type="text" name="query" value="$!{request.query}" /&gt;
-&lt;input type="hidden" name="page" value="$!{request.page}" /&gt;
-&lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
-&lt;input type="submit" value="Search" /&gt;
+  {{translation key='googleapps.importGA.search'/}}
+  &lt;input type="text" name="query" value="$escapetool.xml($services.rendering.escape($!request.query, 'xwiki/2.1'))" /&gt;
+  &lt;input type="hidden" name="page" value="$escapetool.xml($services.rendering.escape($!request.page, 'xwiki/2.1'))" /&gt;
+  &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
+  &lt;input type="submit" value="Search" /&gt;
 &lt;/form&gt;
 {{/html}}
 
-#if($request.query)
-#set($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
-#set($ok = $gagroovy.init($xwiki, $context, $doc))
-#set($squery = "'" + $request.query + "'")
-#set($result = $gagroovy.importFromGoogleApps("fullText contains ${squery}", 10))
-#foreach($entry in $result.items)
- #set($docName = $entry.title)
- #if ($entry.exportLinks)
-    * $docName #foreach($exportLink in $entry.exportLinks.entrySet())
-    #set($exportData = $gagroovy.getExportLink($docName, $exportLink.value))
-    #set($newDocName = $exportData.newDocName)
-    [[$services.rendering.escape($exportData.type, 'xwiki/2.1')&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
-        $escapetool.url({
-          'page': $request.page,
-          'name': $newDocName,
-          'url':  $exportLink.value,
-          'editLink': $entry.alternateLink,
-          'version': $entry.version,
-          'id': $entry.id,
-          'mediaType': $exportLink.key
-        }), 'xwiki/2.1')"
-    ]] #end
- #else
-    * $docName  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
+#if ($request.query)
+  #set ($gagroovy = $xwiki.parseGroovyFromPage("GoogleApps.Groovy"))
+  #set ($ok = $gagroovy.init($xwiki, $context, $doc))
+  #set ($squery = "'" + $request.query.replace("'", "") + "'")
+  #set ($result = $gagroovy.importFromGoogleApps("fullText contains ${squery}", 10))
+  #foreach ($entry in $result.items)
+    #set ($docName = $entry.title)
+    #if ($entry.exportLinks)
+      * $services.rendering.escape($docName, 'xwiki/2.1') #foreach($exportLink in $entry.exportLinks.entrySet())
+        #set ($exportData = $gagroovy.getExportLink($docName, $exportLink.value))
+        #set ($newDocName = $exportData.newDocName)
+        [[$services.rendering.escape($exportData.type, 'xwiki/2.1')&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
+          $escapetool.url({
+            'page': $request.page,
+            'name': $newDocName,
+            'url':  $exportLink.value,
+            'editLink': $entry.alternateLink,
+            'version': $entry.version,
+            'id': $entry.id,
+            'mediaType': $exportLink.key
+          }), 'xwiki/2.1')"
+        ]] #end
+    #else
+      * $services.rendering.escape($docName, 'xwiki/2.1')  [[original&gt;&gt;RetrieveFromGoogleApps||queryString="$services.rendering.escape(
         $escapetool.url({
           'page': $request.page,
           'name': $docName,
@@ -84,9 +88,8 @@
           'version': $entry.version,
           'id': $entry.id
         }), 'xwiki/2.1')"
-    ]] #end
-
-#end
+      ]] #end
+  #end
 #end
 {{/velocity}}</content>
 </xwikidoc>
